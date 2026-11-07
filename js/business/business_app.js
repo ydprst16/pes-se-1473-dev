@@ -152,7 +152,7 @@
     const combinedFilled=currentRows.filter(r=>cell(r.ada_keluarga_label)!=='' || cell(r.ada_bang_usaha_label)!=='').length;
     const openCount=Number(statuses.OPEN||0);
     $('businessSnapshotDate').textContent=payload.importDate||'-';$('businessUpdatedAt').textContent=payload.uploadedAt?new Date(payload.uploadedAt).toLocaleString('id-ID'):'-';
-    $('bpTotal').textContent=fmt(total);$('bpFamilyFilled').textContent=fmt(familyFilled);$('bpBusinessFilled').textContent=fmt(businessFilled);
+    $('bpTotal').textContent=fmt(total);$('bpFamilyFilled').textContent=fmt(familyFilled);$('bpBusinessFilled').textContent=fmt(businessFilled);$('bpCombinedPercent').textContent=total?((combinedFilled/total)*100).toLocaleString('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2})+'%':'0,00%';$('bpCombinedDetail').textContent=`${fmt(combinedFilled)} dari ${fmt(total)} assignment memiliki minimal satu isian keluarga/usaha`;
     $('businessFamilyRows').innerHTML=summaryRows(family,familyOrder,total);
     $('businessBusinessRows').innerHTML=summaryRows(business,businessOrder,total);
     renderDonut('businessFamilyChart','family',family,familyOrder);renderDonut('businessBusinessChart','business',business,businessOrder);
@@ -183,6 +183,7 @@
     }catch(e){$('businessOfficerTable').innerHTML=`<div class="alert alert-warning mb-0">${escapeHtml(e.message)}</div>`;}
   }
   function exportRegion(){if(regionTable)regionTable.download('xlsx',`rekap_keberadaan_keluarga_usaha_${currentPayload?.importDate||'latest'}.xlsx`,{sheetName:'Rekap Keluarga Usaha'});}
+  function exportOfficer(){if(officerTable)officerTable.download('xlsx',`monitoring_petugas_${officerRole==='pencacah'?'PPL':'PML'}_${currentPayload?.importDate||'latest'}.xlsx`,{sheetName:`Monitoring ${officerRole==='pencacah'?'PPL':'PML'}`});}
 
   document.addEventListener('DOMContentLoaded',()=>{
     $('menuMonitoring')?.addEventListener('click',()=>switchModule('monitoring'));$('menuBusinessPresence')?.addEventListener('click',()=>switchModule('business'));
@@ -190,6 +191,6 @@
     $('businessExcelFile')?.addEventListener('change',handleFileChange);$('btnBusinessImport')?.addEventListener('click',uploadExcel);
     $('btnBusinessRefresh')?.addEventListener('click',async()=>{await loadLatest();await loadHistory();});$('businessHistorySelect')?.addEventListener('change',e=>loadDate(e.target.value));
     $('businessHistoryList')?.addEventListener('click',e=>{const b=e.target.closest('[data-business-date]');if(b){$('businessHistorySelect').value=b.dataset.businessDate;loadDate(b.dataset.businessDate);}});
-    $('btnBusinessExport')?.addEventListener('click',exportRegion);$('businessPplBtn')?.addEventListener('click',()=>loadOfficerData('pencacah'));$('businessPmlBtn')?.addEventListener('click',()=>loadOfficerData('pengawas'));
+    $('btnBusinessExport')?.addEventListener('click',exportRegion);$('btnBusinessOfficerExport')?.addEventListener('click',exportOfficer);$('businessPplBtn')?.addEventListener('click',()=>loadOfficerData('pencacah'));$('businessPmlBtn')?.addEventListener('click',()=>loadOfficerData('pengawas'));
   });
 })();
