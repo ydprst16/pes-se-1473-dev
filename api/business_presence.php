@@ -49,7 +49,7 @@ try {
         if (!is_array($decoded) || !isset($decoded['records']) || !is_array($decoded['records'])) bp_fail('Format payload tidak valid.');
         $records=$decoded['records'];
         if (!$records) bp_fail('Tidak ada baris data untuk diimport.');
-        $required=['prov','kab','kec','des','sls','ssls','id','ada_bang_usaha_label'];
+        $required=['prov','kab','kec','des','sls','ssls','id','ada_keluarga_label','ada_bang_usaha_label','assignment_status_alias'];
         $seen=[]; $valid=[]; $invalid=[];
         foreach ($records as $i=>$r) {
             $missing=[]; foreach ($required as $k) if (!array_key_exists($k,$r)) $missing[]=$k;
@@ -66,7 +66,7 @@ try {
             $r['ada_bang_usaha_label']=trim((string)($r['ada_bang_usaha_label'] ?? ''));
             $valid[]=$r;
         }
-        if (!$valid) bp_fail('Tidak ada record valid. Periksa format Excel.');
+        if ($invalid) bp_fail('Import dibatalkan: terdapat '.count($invalid).' baris tidak valid. Tidak ada data yang disimpan agar total assignment tetap sama dengan jumlah baris Excel. Contoh: '.($invalid[0]['reason'] ?? 'Periksa file Excel.'));
         $payload=['schemaVersion'=>1,'module'=>'business_presence','importDate'=>$date,'uploadedAt'=>date(DATE_ATOM),'sourceFile'=>$filename,'totalRows'=>count($records),'validRows'=>count($valid),'invalidRows'=>count($invalid),'records'=>$valid,'validationErrors'=>array_slice($invalid,0,200)];
         $json=json_encode($payload,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
         if ($json===false) bp_fail('Gagal membentuk JSON: '.json_last_error_msg(),500);

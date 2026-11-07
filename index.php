@@ -1251,6 +1251,9 @@
         [data-bs-theme="light"] .flatpickr-day.nextMonthDay {
             color: #9ca3af;
         }
+        .module-switcher-btn { min-height: 58px; display:flex; align-items:center; justify-content:center; gap:.25rem; font-weight:600; border-radius:12px; }
+        .module-switcher-btn span { text-align:center; }
+        @media (max-width: 575.98px) { .module-switcher-btn { min-height:64px; padding:.6rem .35rem!important; font-size:.82rem; } .module-switcher-btn i { margin-right:.15rem!important; } }
     </style>
 
 </head>
@@ -1295,9 +1298,9 @@
     </header>
 
     <div class="container-dashboard">
-        <div class="d-flex gap-2 mb-4 flex-wrap" role="tablist" aria-label="Modul aplikasi">
-            <button class="btn btn-primary" id="menuMonitoring" type="button"><i class="bi bi-speedometer2 me-1"></i> Monitoring Progress</button>
-            <button class="btn btn-outline-primary" id="menuBusinessPresence" type="button"><i class="bi bi-shop me-1"></i> Keberadaan Usaha</button>
+        <div class="row g-3 mb-4 module-switcher" role="tablist" aria-label="Modul aplikasi">
+            <div class="col-6"><button class="btn btn-primary w-100 py-3 module-switcher-btn active" id="menuMonitoring" type="button"><i class="bi bi-speedometer2 me-2"></i><span>Monitoring Progress</span></button></div>
+            <div class="col-6"><button class="btn btn-outline-primary w-100 py-3 module-switcher-btn" id="menuBusinessPresence" type="button"><i class="bi bi-people-fill me-2"></i><span>Keberadaan Keluarga/Usaha</span></button></div>
         </div>
         <section id="monitoringModule">
 
@@ -1563,7 +1566,7 @@
 
                 <div class="modal fade" id="businessUploadModal" tabindex="-1" aria-hidden="true">
                     <div class="modal-dialog modal-lg"><div class="modal-content">
-                        <div class="modal-header"><h5 class="modal-title"><i class="bi bi-file-earmark-excel me-2"></i>Upload Keberadaan Usaha</h5><button class="btn-close" data-bs-dismiss="modal"></button></div>
+                        <div class="modal-header"><h5 class="modal-title"><i class="bi bi-file-earmark-excel me-2"></i>Upload Keberadaan Keluarga/Usaha</h5><button class="btn-close" data-bs-dismiss="modal"></button></div>
                         <div class="modal-body">
                             <div class="mb-3"><label class="form-label">File Excel (.xlsx / .xls)</label><input class="form-control" type="file" id="businessExcelFile" accept=".xlsx,.xls"></div>
                             <div class="mb-3"><label class="form-label">Tanggal snapshot</label><input class="form-control" type="date" id="businessImportDate"></div>
@@ -1577,7 +1580,7 @@
 
         <section id="businessPresenceModule" class="d-none">
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
-                <div><h3 class="mb-1"><i class="bi bi-shop text-primary me-2"></i>Keberadaan Usaha</h3><div class="text-secondary small">Monitoring hasil keberadaan usaha berdasarkan file Excel harian.</div></div>
+                <div><h3 class="mb-1"><i class="bi bi-people-fill text-primary me-2"></i>Keberadaan Keluarga/Usaha</h3><div class="text-secondary small">Monitoring keberadaan keluarga, keberadaan usaha, dan status pendataan berdasarkan file Excel harian.</div></div>
                 <div class="d-flex gap-2"><button class="btn btn-outline-secondary" id="btnBusinessRefresh"><i class="bi bi-arrow-clockwise me-1"></i>Refresh</button><button class="btn btn-primary" id="btnOpenBusinessUpload"><i class="bi bi-upload me-1"></i>Upload Excel</button></div>
             </div>
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
@@ -1585,17 +1588,20 @@
                 <select class="form-select form-select-sm" id="businessHistorySelect" style="max-width:190px"><option value="">Data terbaru</option></select>
             </div>
             <div class="row g-3 mb-4" id="businessKpis">
-                <div class="col-6 col-lg-3"><div class="kpi-card"><div class="kpi-title">Total Assignment</div><div class="kpi-value" id="bpTotal">-</div></div></div>
-                <div class="col-6 col-lg-3"><div class="kpi-card"><div class="kpi-title">Sudah Diisi</div><div class="kpi-value" id="bpFilled">-</div></div></div>
-                <div class="col-6 col-lg-3"><div class="kpi-card"><div class="kpi-title">Belum Diisi</div><div class="kpi-value" id="bpEmpty">-</div></div></div>
-                <div class="col-6 col-lg-3"><div class="kpi-card"><div class="kpi-title">Persentase Isian</div><div class="kpi-value" id="bpRate">-</div></div></div>
+                <div class="col-6 col-xl-2"><div class="kpi-card h-100"><div class="kpi-title">Total Assignment</div><div class="kpi-value" id="bpTotal">-</div><div class="small text-secondary">Jumlah baris Excel</div></div></div>
+                <div class="col-6 col-xl-2"><div class="kpi-card h-100"><div class="kpi-title">Keluarga Terisi</div><div class="kpi-value" id="bpFamilyFilled">-</div><div class="small text-secondary">Belum: <span id="bpFamilyEmpty">-</span></div></div></div>
+                <div class="col-6 col-xl-2"><div class="kpi-card h-100"><div class="kpi-title">% Isian Keluarga</div><div class="kpi-value" id="bpFamilyRate">-</div><div class="small text-secondary">Dari total assignment</div></div></div>
+                <div class="col-6 col-xl-2"><div class="kpi-card h-100"><div class="kpi-title">Usaha Terisi</div><div class="kpi-value" id="bpBusinessFilled">-</div><div class="small text-secondary">Belum: <span id="bpBusinessEmpty">-</span></div></div></div>
+                <div class="col-6 col-xl-2"><div class="kpi-card h-100"><div class="kpi-title">% Isian Usaha</div><div class="kpi-value" id="bpBusinessRate">-</div><div class="small text-secondary">Dari total assignment</div></div></div>
+                <div class="col-6 col-xl-2"><div class="kpi-card h-100"><div class="kpi-title">Status Pendataan</div><div class="kpi-value" id="bpStatusCount">-</div><div class="small text-secondary">Baris dengan status</div></div></div>
             </div>
             <div class="row g-3 mb-4">
-                <div class="col-xl-5"><div class="chart-card h-100"><div class="chart-title mb-3">Distribusi Keberadaan Usaha</div><div id="businessCategoryChart" style="min-height:320px"></div></div></div>
-                <div class="col-xl-7"><div class="chart-card h-100"><div class="chart-title mb-3">Ringkasan Kategori</div><div class="table-responsive"><table class="table table-sm align-middle"><thead><tr><th>Kategori</th><th class="text-end">Jumlah</th><th class="text-end">Persentase</th></tr></thead><tbody id="businessCategoryRows"><tr><td colspan="3" class="text-secondary">Belum ada data.</td></tr></tbody></table></div></div></div>
+                <div class="col-xl-6"><div class="chart-card h-100"><div class="chart-title mb-2">Keberadaan Keluarga · ada_keluarga_label</div><div id="businessFamilyChart" style="min-height:285px"></div><div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr><th>Kategori</th><th class="text-end">Jumlah</th><th class="text-end">% Total</th></tr></thead><tbody id="businessFamilyRows"></tbody></table></div></div></div>
+                <div class="col-xl-6"><div class="chart-card h-100"><div class="chart-title mb-2">Keberadaan Usaha · ada_bang_usaha_label</div><div id="businessBusinessChart" style="min-height:285px"></div><div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr><th>Kategori</th><th class="text-end">Jumlah</th><th class="text-end">% Total</th></tr></thead><tbody id="businessBusinessRows"></tbody></table></div></div></div>
             </div>
+            <div class="chart-card mb-4"><div class="chart-title mb-3">Status Pendataan · assignment_status_alias</div><div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr><th>Status</th><th class="text-end">Jumlah Assignment</th><th class="text-end">% Total</th></tr></thead><tbody id="businessStatusRows"><tr><td colspan="3" class="text-secondary">Belum ada data.</td></tr></tbody></table></div></div>
             <div class="chart-card mb-4"><div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3"><div class="chart-title m-0">Rekapitulasi per Sub-SLS</div><button class="btn btn-sm btn-success" id="btnBusinessExport"><i class="bi bi-file-earmark-excel me-1"></i>Export Excel</button></div><div id="businessRegionTable"></div></div>
-            <div class="chart-card mb-4"><div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3"><div class="chart-title m-0">Monitoring berdasarkan Petugas</div><div class="btn-group btn-group-sm" role="group"><button class="btn btn-primary" id="businessPplBtn">PPL</button><button class="btn btn-outline-primary" id="businessPmlBtn">PML</button></div></div><div class="small text-secondary mb-2">Pencocokan dilakukan melalui kode wilayah (regionCode / idsubsls) dari JSON monitoring existing.</div><div id="businessOfficerTable"></div></div>
+            <div class="chart-card mb-4"><div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3"><div class="chart-title m-0">Monitoring berdasarkan Petugas</div><div class="btn-group btn-group-sm" role="group"><button class="btn btn-primary" id="businessPplBtn">PPL</button><button class="btn btn-outline-primary" id="businessPmlBtn">PML</button></div></div><div class="small text-secondary mb-2">Pencocokan wilayah melalui regionCode / idsubsls dari JSON monitoring existing.</div><div id="businessOfficerTable"></div></div>
             <div class="chart-card"><div class="chart-title mb-3">Riwayat Import</div><div id="businessHistoryList" class="small text-secondary">Memuat...</div></div>
         </section>
 
