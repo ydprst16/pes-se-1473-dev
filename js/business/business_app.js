@@ -129,14 +129,14 @@
 
   function renderDonut(elementId,key,counts,order){
     if(charts[key])charts[key].destroy();
-    const labels=order.filter(x=>counts[x]);
-    charts[key]=new ApexCharts($(elementId),{chart:{type:'donut',height:285,toolbar:{show:false}},labels,series:labels.map(x=>counts[x]),legend:{position:'bottom'},dataLabels:{enabled:true,formatter:v=>v.toFixed(1)+'%'},noData:{text:'Tidak ada data'}});charts[key].render();
+    const labels=order.filter(x=>x!=='Belum Diisi' && counts[x]);
+    charts[key]=new ApexCharts($(elementId),{chart:{type:'donut',height:285,toolbar:{show:false}},labels,series:labels.map(x=>counts[x]),legend:{position:'bottom'},dataLabels:{enabled:true,formatter:(_v,opts)=>Number(opts.w.config.series[opts.seriesIndex]).toLocaleString('id-ID')},noData:{text:'Belum ada isian'}});charts[key].render();
   }
   function summaryRows(counts,order,total){return order.map(x=>({name:x,count:counts[x]||0})).filter(x=>x.count||x.name==='Belum Diisi').map(x=>`<tr><td>${escapeHtml(x.name)}</td><td class="text-end fw-semibold">${fmt(x.count)}</td><td class="text-end">${total?(x.count/total*100).toFixed(2):'0.00'}%</td></tr>`).join('');}
 
   function render(payload){
     currentPayload=payload;currentRows=Array.isArray(payload.records)?payload.records:[];
-    const total=Number(payload.totalRows||currentRows.length); // Excel source row count is the denominator.
+    const total=currentRows.length; // Denominator selalu jumlah record yang benar-benar tersimpan dari seluruh baris Excel.
     const family={},business={},statuses={};
     const regions={};
     currentRows.forEach(r=>{
@@ -147,22 +147,21 @@
       const g=regions[id];g.total++;g.family[f]=(g.family[f]||0)+1;g.business[b]=(g.business[b]||0)+1;g.statuses[s]=(g.statuses[s]||0)+1;
       if(f!=='Belum Diisi')g.familyFilled++;if(b!=='Belum Diisi')g.businessFilled++;
     });
-    const familyFilled=total-(family['Belum Diisi']||0),businessFilled=total-(business['Belum Diisi']||0);
-    const familyEmpty=Math.max(0,total-familyFilled),businessEmpty=Math.max(0,total-businessFilled);
+    const familyFilled=currentRows.filter(r=>cell(r.ada_keluarga_label)!=='').length;
+    const businessFilled=currentRows.filter(r=>cell(r.ada_bang_usaha_label)!=='').length;
+    const combinedFilled=currentRows.filter(r=>cell(r.ada_keluarga_label)!=='' || cell(r.ada_bang_usaha_label)!=='').length;
+    const openCount=Number(statuses.OPEN||0);
     $('businessSnapshotDate').textContent=payload.importDate||'-';$('businessUpdatedAt').textContent=payload.uploadedAt?new Date(payload.uploadedAt).toLocaleString('id-ID'):'-';
-    $('bpTotal').textContent=fmt(total);$('bpFamilyFilled').textContent=fmt(familyFilled);$('bpFamilyRate').textContent=total?(familyFilled/total*100).toFixed(2)+'%':'0%';
-    $('bpBusinessFilled').textContent=fmt(businessFilled);$('bpBusinessRate').textContent=total?(businessFilled/total*100).toFixed(2)+'%':'0%';$('bpStatusCount').textContent=fmt(Object.values(statuses).reduce((a,b)=>a+b,0));
-    $('bpFamilyEmpty').textContent=fmt(familyEmpty);$('bpBusinessEmpty').textContent=fmt(businessEmpty);
+    $('bpTotal').textContent=fmt(total);$('bpCombinedFilled').textContent=fmt(combinedFilled);$('bpCombinedRate').textContent=total?(combinedFilled/total*100).toFixed(2)+'%':'0.00%';$('bpOpenCount').textContent=fmt(openCount);
     $('businessFamilyRows').innerHTML=summaryRows(family,familyOrder,total);
     $('businessBusinessRows').innerHTML=summaryRows(business,businessOrder,total);
-    $('businessStatusRows').innerHTML=Object.entries(statuses).sort((a,b)=>b[1]-a[1]).map(([name,count])=>`<tr><td>${escapeHtml(name)}</td><td class="text-end fw-semibold">${fmt(count)}</td><td class="text-end">${total?(count/total*100).toFixed(2):'0.00'}%</td></tr>`).join('');
+    $('businessStatusRows').innerHTML=Object.entries(statuses).sort((a,b)=>a[0]==='OPEN'?-1:b[0]==='OPEN'?1:b[1]-a[1]).map(([name,count])=>`<tr><td>${escapeHtml(name)}</td><td class="text-end fw-semibold">${fmt(count)}</td><td class="text-end">${total?(count/total*100).toFixed(2):'0.00'}%</td></tr>`).join('');
     renderDonut('businessFamilyChart','family',family,familyOrder);renderDonut('businessBusinessChart','business',business,businessOrder);
-    const regionData=Object.values(regions).map(g=>({...g,familyRate:g.total?g.familyFilled/g.total*100:0,businessRate:g.total?g.businessFilled/g.total*100:0})).sort((a,b)=>a.idsubsls.localeCompare(b.idsubsls));
+    const regionData=Object.values(regions).sort((a,b)=>a.idsubsls.localeCompare(b.idsubsls));
     if(regionTable)regionTable.destroy();
     regionTable=new Tabulator('#businessRegionTable',{data:regionData,layout:'fitDataStretch',height:'520px',pagination:true,paginationSize:20,placeholder:'Tidak ada data',columns:[
       {title:'ID Sub-SLS',field:'idsubsls',headerFilter:'input',width:170},{title:'Kecamatan',field:'kec',width:100},{title:'Desa',field:'des',width:90},{title:'SLS',field:'sls',width:80},{title:'Sub-SLS',field:'ssls',width:90},{title:'Total Baris',field:'total',hozAlign:'right',width:105},
-      {title:'Keluarga Terisi',field:'familyFilled',hozAlign:'right',width:120},{title:'% Keluarga',field:'familyRate',hozAlign:'right',formatter:c=>c.getValue().toFixed(2)+'%'},
-      {title:'Usaha Terisi',field:'businessFilled',hozAlign:'right',width:110},{title:'% Usaha',field:'businessRate',hozAlign:'right',formatter:c=>c.getValue().toFixed(2)+'%'},
+      {title:'Keluarga Terisi',field:'familyFilled',hozAlign:'right',width:120},{title:'Usaha Terisi',field:'businessFilled',hozAlign:'right',width:110},
       {title:'Status OPEN',hozAlign:'right',formatter:c=>c.getRow().getData().statuses.OPEN||0},{title:'DRAFT',hozAlign:'right',formatter:c=>c.getRow().getData().statuses.DRAFT||0},
       {title:'SUBMITTED',hozAlign:'right',formatter:c=>c.getRow().getData().statuses['SUBMITTED BY Pencacah']||0},{title:'COMPLETED',hozAlign:'right',formatter:c=>c.getRow().getData().statuses['COMPLETED BY Pengawas']||0}
     ]});
@@ -175,12 +174,11 @@
       const res=await fetch(`api/history.php?action=latest&role=${role}`,{cache:'no-store'});if(!res.ok)throw new Error('Data JSON monitoring '+(role==='pencacah'?'PPL':'PML')+' tidak tersedia.');
       const payload=await res.json(),officers=payload.data||[],byRegion={};
       currentRows.forEach(r=>{const code=r.idsubsls||idSubsls(r);if(!byRegion[code])byRegion[code]={total:0,familyFilled:0,businessFilled:0,family:{},business:{},statuses:{}};const g=byRegion[code],f=familyOf(r.ada_keluarga_label),b=businessOf(r.ada_bang_usaha_label),s=r.assignment_status_alias||'Status Kosong';g.total++;g.family[f]=(g.family[f]||0)+1;g.business[b]=(g.business[b]||0)+1;g.statuses[s]=(g.statuses[s]||0)+1;if(f!=='Belum Diisi')g.familyFilled++;if(b!=='Belum Diisi')g.businessFilled++;});
-      const rows=officers.map(o=>{let total=0,ff=0,bf=0,matched=0;const fam={},bus={},sts={};(o.regionSummary||[]).forEach(rs=>{const g=byRegion[String(rs.regionCode||'')];if(!g)return;matched++;total+=g.total;ff+=g.familyFilled;bf+=g.businessFilled;for(const [k,v] of Object.entries(g.family))fam[k]=(fam[k]||0)+v;for(const [k,v] of Object.entries(g.business))bus[k]=(bus[k]||0)+v;for(const [k,v] of Object.entries(g.statuses))sts[k]=(sts[k]||0)+v;});return{name:((typeof USERNAME_MAP!=='undefined'&&USERNAME_MAP[o.email||o.username])||o.username||o.email||'-'),email:o.email||o.username||'',matched,total,familyFilled:ff,businessFilled:bf,familyRate:total?ff/total*100:0,businessRate:total?bf/total*100:0,statuses:sts};}).filter(x=>x.matched>0).sort((a,b)=>b.businessRate-a.businessRate);
+      const rows=officers.map(o=>{let total=0,ff=0,bf=0,matched=0;const fam={},bus={},sts={};(o.regionSummary||[]).forEach(rs=>{const g=byRegion[String(rs.regionCode||'')];if(!g)return;matched++;total+=g.total;ff+=g.familyFilled;bf+=g.businessFilled;for(const [k,v] of Object.entries(g.family))fam[k]=(fam[k]||0)+v;for(const [k,v] of Object.entries(g.business))bus[k]=(bus[k]||0)+v;for(const [k,v] of Object.entries(g.statuses))sts[k]=(sts[k]||0)+v;});return{name:((typeof USERNAME_MAP!=='undefined'&&USERNAME_MAP[o.email||o.username])||o.username||o.email||'-'),email:o.email||o.username||'',matched,total,familyFilled:ff,businessFilled:bf,statuses:sts};}).filter(x=>x.matched>0).sort((a,b)=>b.total-a.total);
       if(officerTable)officerTable.destroy();
       officerTable=new Tabulator('#businessOfficerTable',{data:rows,layout:'fitDataStretch',height:'420px',pagination:true,paginationSize:15,placeholder:'Belum ada wilayah yang cocok dengan JSON petugas.',columns:[
         {title:'Nama Petugas',field:'name',headerFilter:'input',minWidth:180},{title:'Username',field:'email',minWidth:180},{title:'Sub-SLS Cocok',field:'matched',hozAlign:'right',width:120},{title:'Total Assignment',field:'total',hozAlign:'right',width:120},
-        {title:'Keluarga Terisi',field:'familyFilled',hozAlign:'right',width:120},{title:'% Keluarga',field:'familyRate',hozAlign:'right',formatter:c=>c.getValue().toFixed(2)+'%'},
-        {title:'Usaha Terisi',field:'businessFilled',hozAlign:'right',width:110},{title:'% Usaha',field:'businessRate',hozAlign:'right',formatter:c=>c.getValue().toFixed(2)+'%'},
+        {title:'Keluarga Terisi',field:'familyFilled',hozAlign:'right',width:120},{title:'Usaha Terisi',field:'businessFilled',hozAlign:'right',width:110},
         {title:'OPEN',hozAlign:'right',formatter:c=>c.getRow().getData().statuses.OPEN||0},{title:'DRAFT',hozAlign:'right',formatter:c=>c.getRow().getData().statuses.DRAFT||0},{title:'SUBMITTED',hozAlign:'right',formatter:c=>c.getRow().getData().statuses['SUBMITTED BY Pencacah']||0},{title:'COMPLETED',hozAlign:'right',formatter:c=>c.getRow().getData().statuses['COMPLETED BY Pengawas']||0}
       ]});
     }catch(e){$('businessOfficerTable').innerHTML=`<div class="alert alert-warning mb-0">${escapeHtml(e.message)}</div>`;}

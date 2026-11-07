@@ -1298,9 +1298,9 @@
     </header>
 
     <div class="container-dashboard">
-        <div class="row g-3 mb-4 module-switcher" role="tablist" aria-label="Modul aplikasi">
-            <div class="col-6"><button class="btn btn-primary w-100 py-3 module-switcher-btn active" id="menuMonitoring" type="button"><i class="bi bi-speedometer2 me-2"></i><span>Monitoring Progress</span></button></div>
-            <div class="col-6"><button class="btn btn-outline-primary w-100 py-3 module-switcher-btn" id="menuBusinessPresence" type="button"><i class="bi bi-people-fill me-2"></i><span>Keberadaan Keluarga/Usaha</span></button></div>
+        <div class="row g-2 mb-4 module-switcher justify-content-center" role="tablist" aria-label="Modul aplikasi">
+            <div class="col-12 col-sm-6 col-lg-4"><button class="btn btn-primary w-100 py-2 module-switcher-btn active" id="menuMonitoring" type="button"><i class="bi bi-speedometer2 me-2"></i><span>Monitoring Progress</span></button></div>
+            <div class="col-12 col-sm-6 col-lg-4"><button class="btn btn-outline-primary w-100 py-2 module-switcher-btn" id="menuBusinessPresence" type="button"><i class="bi bi-people-fill me-2"></i><span>Keberadaan Keluarga/Usaha</span></button></div>
         </div>
         <section id="monitoringModule">
 
@@ -1588,12 +1588,10 @@
                 <select class="form-select form-select-sm" id="businessHistorySelect" style="max-width:190px"><option value="">Data terbaru</option></select>
             </div>
             <div class="row g-3 mb-4" id="businessKpis">
-                <div class="col-6 col-xl-2"><div class="kpi-card h-100"><div class="kpi-title">Total Assignment</div><div class="kpi-value" id="bpTotal">-</div><div class="small text-secondary">Jumlah baris Excel</div></div></div>
-                <div class="col-6 col-xl-2"><div class="kpi-card h-100"><div class="kpi-title">Keluarga Terisi</div><div class="kpi-value" id="bpFamilyFilled">-</div><div class="small text-secondary">Belum: <span id="bpFamilyEmpty">-</span></div></div></div>
-                <div class="col-6 col-xl-2"><div class="kpi-card h-100"><div class="kpi-title">% Isian Keluarga</div><div class="kpi-value" id="bpFamilyRate">-</div><div class="small text-secondary">Dari total assignment</div></div></div>
-                <div class="col-6 col-xl-2"><div class="kpi-card h-100"><div class="kpi-title">Usaha Terisi</div><div class="kpi-value" id="bpBusinessFilled">-</div><div class="small text-secondary">Belum: <span id="bpBusinessEmpty">-</span></div></div></div>
-                <div class="col-6 col-xl-2"><div class="kpi-card h-100"><div class="kpi-title">% Isian Usaha</div><div class="kpi-value" id="bpBusinessRate">-</div><div class="small text-secondary">Dari total assignment</div></div></div>
-                <div class="col-6 col-xl-2"><div class="kpi-card h-100"><div class="kpi-title">Status Pendataan</div><div class="kpi-value" id="bpStatusCount">-</div><div class="small text-secondary">Baris dengan status</div></div></div>
+                <div class="col-6 col-xl-3"><div class="kpi-card h-100"><div class="kpi-title">Total Assignment</div><div class="kpi-value" id="bpTotal">-</div><div class="small text-secondary">Jumlah seluruh baris Excel</div></div></div>
+                <div class="col-6 col-xl-3"><div class="kpi-card h-100"><div class="kpi-title">Assignment dengan Isian</div><div class="kpi-value" id="bpCombinedFilled">-</div><div class="small text-secondary">Keluarga atau usaha terisi</div></div></div>
+                <div class="col-6 col-xl-3"><div class="kpi-card h-100"><div class="kpi-title">Persentase Isian Gabungan</div><div class="kpi-value" id="bpCombinedRate">-</div><div class="small text-secondary">Minimal salah satu kolom terisi</div></div></div>
+                <div class="col-6 col-xl-3"><div class="kpi-card h-100"><div class="kpi-title">Status OPEN</div><div class="kpi-value" id="bpOpenCount">-</div><div class="small text-secondary">assignment_status_alias</div></div></div>
             </div>
             <div class="row g-3 mb-4">
                 <div class="col-xl-6"><div class="chart-card h-100"><div class="chart-title mb-2">Keberadaan Keluarga · ada_keluarga_label</div><div id="businessFamilyChart" style="min-height:285px"></div><div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr><th>Kategori</th><th class="text-end">Jumlah</th><th class="text-end">% Total</th></tr></thead><tbody id="businessFamilyRows"></tbody></table></div></div></div>
