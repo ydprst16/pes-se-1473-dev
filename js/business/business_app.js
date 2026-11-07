@@ -152,18 +152,17 @@
     const combinedFilled=currentRows.filter(r=>cell(r.ada_keluarga_label)!=='' || cell(r.ada_bang_usaha_label)!=='').length;
     const openCount=Number(statuses.OPEN||0);
     $('businessSnapshotDate').textContent=payload.importDate||'-';$('businessUpdatedAt').textContent=payload.uploadedAt?new Date(payload.uploadedAt).toLocaleString('id-ID'):'-';
-    $('bpTotal').textContent=fmt(total);$('bpCombinedFilled').textContent=fmt(combinedFilled);$('bpCombinedRate').textContent=total?(combinedFilled/total*100).toFixed(2)+'%':'0.00%';$('bpOpenCount').textContent=fmt(openCount);
+    $('bpTotal').textContent=fmt(total);$('bpFamilyFilled').textContent=fmt(familyFilled);$('bpBusinessFilled').textContent=fmt(businessFilled);
     $('businessFamilyRows').innerHTML=summaryRows(family,familyOrder,total);
     $('businessBusinessRows').innerHTML=summaryRows(business,businessOrder,total);
-    $('businessStatusRows').innerHTML=Object.entries(statuses).sort((a,b)=>a[0]==='OPEN'?-1:b[0]==='OPEN'?1:b[1]-a[1]).map(([name,count])=>`<tr><td>${escapeHtml(name)}</td><td class="text-end fw-semibold">${fmt(count)}</td><td class="text-end">${total?(count/total*100).toFixed(2):'0.00'}%</td></tr>`).join('');
     renderDonut('businessFamilyChart','family',family,familyOrder);renderDonut('businessBusinessChart','business',business,businessOrder);
     const regionData=Object.values(regions).sort((a,b)=>a.idsubsls.localeCompare(b.idsubsls));
     if(regionTable)regionTable.destroy();
-    regionTable=new Tabulator('#businessRegionTable',{data:regionData,layout:'fitDataStretch',height:'520px',pagination:true,paginationSize:20,placeholder:'Tidak ada data',columns:[
-      {title:'ID Sub-SLS',field:'idsubsls',headerFilter:'input',width:170},{title:'Kecamatan',field:'kec',width:100},{title:'Desa',field:'des',width:90},{title:'SLS',field:'sls',width:80},{title:'Sub-SLS',field:'ssls',width:90},{title:'Total Baris',field:'total',hozAlign:'right',width:105},
-      {title:'Keluarga Terisi',field:'familyFilled',hozAlign:'right',width:120},{title:'Usaha Terisi',field:'businessFilled',hozAlign:'right',width:110},
-      {title:'Status OPEN',hozAlign:'right',formatter:c=>c.getRow().getData().statuses.OPEN||0},{title:'DRAFT',hozAlign:'right',formatter:c=>c.getRow().getData().statuses.DRAFT||0},
-      {title:'SUBMITTED',hozAlign:'right',formatter:c=>c.getRow().getData().statuses['SUBMITTED BY Pencacah']||0},{title:'COMPLETED',hozAlign:'right',formatter:c=>c.getRow().getData().statuses['COMPLETED BY Pengawas']||0}
+    regionTable=new Tabulator('#businessRegionTable',{data:regionData,layout:'fitColumns',responsiveLayout:'collapse',height:'520px',pagination:true,paginationSize:20,placeholder:'Tidak ada data',columnDefaults:{headerSort:true,headerWordWrap:true,tooltip:true},columns:[
+      {title:'ID Sub-SLS',field:'idsubsls',headerFilter:'input',minWidth:145,widthGrow:1},{title:'Kecamatan',field:'kec',minWidth:85,widthGrow:0.8},{title:'Desa',field:'des',minWidth:75,widthGrow:0.7},{title:'SLS',field:'sls',minWidth:65,widthGrow:0.6},{title:'Sub-SLS',field:'ssls',minWidth:75,widthGrow:0.7},{title:'Total Baris',field:'total',hozAlign:'right',minWidth:85,widthGrow:0.8},
+      {title:'Keluarga Terisi',field:'familyFilled',hozAlign:'right',minWidth:95,widthGrow:0.9},{title:'Usaha Terisi',field:'businessFilled',hozAlign:'right',minWidth:90,widthGrow:0.9},
+      {title:'Status OPEN',hozAlign:'right',minWidth:85,widthGrow:0.8,formatter:c=>c.getRow().getData().statuses.OPEN||0},{title:'DRAFT',hozAlign:'right',minWidth:70,widthGrow:0.6,formatter:c=>c.getRow().getData().statuses.DRAFT||0},
+      {title:'SUBMITTED',hozAlign:'right',minWidth:90,widthGrow:0.8,formatter:c=>c.getRow().getData().statuses['SUBMITTED BY Pencacah']||0},{title:'COMPLETED',hozAlign:'right',minWidth:95,widthGrow:0.8,formatter:c=>c.getRow().getData().statuses['COMPLETED BY Pengawas']||0}
     ]});
     loadOfficerData(officerRole);
   }
@@ -176,10 +175,10 @@
       currentRows.forEach(r=>{const code=r.idsubsls||idSubsls(r);if(!byRegion[code])byRegion[code]={total:0,familyFilled:0,businessFilled:0,family:{},business:{},statuses:{}};const g=byRegion[code],f=familyOf(r.ada_keluarga_label),b=businessOf(r.ada_bang_usaha_label),s=r.assignment_status_alias||'Status Kosong';g.total++;g.family[f]=(g.family[f]||0)+1;g.business[b]=(g.business[b]||0)+1;g.statuses[s]=(g.statuses[s]||0)+1;if(f!=='Belum Diisi')g.familyFilled++;if(b!=='Belum Diisi')g.businessFilled++;});
       const rows=officers.map(o=>{let total=0,ff=0,bf=0,matched=0;const fam={},bus={},sts={};(o.regionSummary||[]).forEach(rs=>{const g=byRegion[String(rs.regionCode||'')];if(!g)return;matched++;total+=g.total;ff+=g.familyFilled;bf+=g.businessFilled;for(const [k,v] of Object.entries(g.family))fam[k]=(fam[k]||0)+v;for(const [k,v] of Object.entries(g.business))bus[k]=(bus[k]||0)+v;for(const [k,v] of Object.entries(g.statuses))sts[k]=(sts[k]||0)+v;});return{name:((typeof USERNAME_MAP!=='undefined'&&USERNAME_MAP[o.email||o.username])||o.username||o.email||'-'),email:o.email||o.username||'',matched,total,familyFilled:ff,businessFilled:bf,statuses:sts};}).filter(x=>x.matched>0).sort((a,b)=>b.total-a.total);
       if(officerTable)officerTable.destroy();
-      officerTable=new Tabulator('#businessOfficerTable',{data:rows,layout:'fitDataStretch',height:'420px',pagination:true,paginationSize:15,placeholder:'Belum ada wilayah yang cocok dengan JSON petugas.',columns:[
-        {title:'Nama Petugas',field:'name',headerFilter:'input',minWidth:180},{title:'Username',field:'email',minWidth:180},{title:'Sub-SLS Cocok',field:'matched',hozAlign:'right',width:120},{title:'Total Assignment',field:'total',hozAlign:'right',width:120},
-        {title:'Keluarga Terisi',field:'familyFilled',hozAlign:'right',width:120},{title:'Usaha Terisi',field:'businessFilled',hozAlign:'right',width:110},
-        {title:'OPEN',hozAlign:'right',formatter:c=>c.getRow().getData().statuses.OPEN||0},{title:'DRAFT',hozAlign:'right',formatter:c=>c.getRow().getData().statuses.DRAFT||0},{title:'SUBMITTED',hozAlign:'right',formatter:c=>c.getRow().getData().statuses['SUBMITTED BY Pencacah']||0},{title:'COMPLETED',hozAlign:'right',formatter:c=>c.getRow().getData().statuses['COMPLETED BY Pengawas']||0}
+      officerTable=new Tabulator('#businessOfficerTable',{data:rows,layout:'fitColumns',responsiveLayout:'collapse',height:'420px',pagination:true,paginationSize:15,placeholder:'Belum ada wilayah yang cocok dengan JSON petugas.',columnDefaults:{headerSort:true,headerWordWrap:true,tooltip:true},columns:[
+        {title:'Nama Petugas',field:'name',headerFilter:'input',minWidth:145,widthGrow:1.4},{title:'Username',field:'email',minWidth:150,widthGrow:1.4},{title:'Sub-SLS Cocok',field:'matched',hozAlign:'right',minWidth:95,widthGrow:0.8},{title:'Total Assignment',field:'total',hozAlign:'right',minWidth:105,widthGrow:0.9},
+        {title:'Keluarga Terisi',field:'familyFilled',hozAlign:'right',minWidth:100,widthGrow:0.9},{title:'Usaha Terisi',field:'businessFilled',hozAlign:'right',minWidth:95,widthGrow:0.9},
+        {title:'OPEN',hozAlign:'right',minWidth:70,widthGrow:0.6,formatter:c=>c.getRow().getData().statuses.OPEN||0},{title:'DRAFT',hozAlign:'right',minWidth:70,widthGrow:0.6,formatter:c=>c.getRow().getData().statuses.DRAFT||0},{title:'SUBMITTED',hozAlign:'right',minWidth:90,widthGrow:0.8,formatter:c=>c.getRow().getData().statuses['SUBMITTED BY Pencacah']||0},{title:'COMPLETED',hozAlign:'right',minWidth:95,widthGrow:0.8,formatter:c=>c.getRow().getData().statuses['COMPLETED BY Pengawas']||0}
       ]});
     }catch(e){$('businessOfficerTable').innerHTML=`<div class="alert alert-warning mb-0">${escapeHtml(e.message)}</div>`;}
   }
