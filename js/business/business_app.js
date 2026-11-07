@@ -38,10 +38,10 @@
     $('businessPresenceModule').classList.toggle('d-none', monitoring);
     $('menuMonitoring').classList.toggle('active', monitoring);
     $('menuBusinessPresence').classList.toggle('active', !monitoring);
-    $('menuMonitoring').classList.toggle('btn-primary', monitoring);
-    $('menuMonitoring').classList.toggle('btn-outline-primary', !monitoring);
-    $('menuBusinessPresence').classList.toggle('btn-primary', !monitoring);
-    $('menuBusinessPresence').classList.toggle('btn-outline-primary', monitoring);
+    $('menuMonitoring').setAttribute('aria-selected', monitoring ? 'true' : 'false');
+    $('menuBusinessPresence').setAttribute('aria-selected', monitoring ? 'false' : 'true');
+    $('menuMonitoring').tabIndex = monitoring ? 0 : -1;
+    $('menuBusinessPresence').tabIndex = monitoring ? -1 : 0;
     if (!monitoring && !currentPayload) { loadLatest(); loadHistory(); }
   }
 

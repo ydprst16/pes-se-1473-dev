@@ -1251,9 +1251,26 @@
         [data-bs-theme="light"] .flatpickr-day.nextMonthDay {
             color: #9ca3af;
         }
-        .module-switcher-btn { min-height: 58px; display:flex; align-items:center; justify-content:center; gap:.25rem; font-weight:600; border-radius:12px; }
-        .module-switcher-btn span { text-align:center; }
-        @media (max-width: 575.98px) { .module-switcher-btn { min-height:64px; padding:.6rem .35rem!important; font-size:.82rem; } .module-switcher-btn i { margin-right:.15rem!important; } }
+        /* Secondary module navigation: compact underline tabs below the main app header */
+        .module-navigation {
+            display:flex; align-items:center; gap:clamp(1.25rem, 3vw, 2.25rem);
+            border-bottom:1px solid var(--border); margin:0 0 1.5rem; padding:0 .15rem;
+            overflow-x:auto; scrollbar-width:thin;
+        }
+        .module-navigation .module-tab {
+            appearance:none; border:0; border-bottom:3px solid transparent; background:transparent;
+            color:var(--text-mute); padding:.85rem .15rem .78rem; margin-bottom:-1px;
+            display:inline-flex; align-items:center; gap:.55rem; white-space:nowrap;
+            font-size:.92rem; font-weight:600; transition:color .18s ease,border-color .18s ease;
+        }
+        .module-navigation .module-tab i { font-size:1rem; }
+        .module-navigation .module-tab:hover { color:var(--text); }
+        .module-navigation .module-tab.active { color:var(--primary); border-bottom-color:var(--primary); }
+        .module-navigation .module-tab:focus-visible { outline:2px solid var(--primary); outline-offset:3px; border-radius:4px; }
+        @media (max-width:575.98px) {
+            .module-navigation { gap:1.25rem; margin-bottom:1.1rem; }
+            .module-navigation .module-tab { font-size:.82rem; padding:.75rem .1rem .68rem; }
+        }
     </style>
 
 </head>
@@ -1298,10 +1315,14 @@
     </header>
 
     <div class="container-dashboard">
-        <div class="row g-2 mb-4 module-switcher justify-content-center" role="tablist" aria-label="Modul aplikasi">
-            <div class="col-12 col-sm-6 col-lg-4"><button class="btn btn-primary w-100 py-2 module-switcher-btn active" id="menuMonitoring" type="button"><i class="bi bi-speedometer2 me-2"></i><span>Monitoring Progress</span></button></div>
-            <div class="col-12 col-sm-6 col-lg-4"><button class="btn btn-outline-primary w-100 py-2 module-switcher-btn" id="menuBusinessPresence" type="button"><i class="bi bi-people-fill me-2"></i><span>Keberadaan Keluarga/Usaha</span></button></div>
-        </div>
+        <nav class="module-navigation" role="tablist" aria-label="Navigasi modul">
+            <button class="module-tab active" id="menuMonitoring" type="button" role="tab" aria-selected="true" aria-controls="monitoringModule">
+                <i class="bi bi-speedometer2"></i><span>Monitoring Progress</span>
+            </button>
+            <button class="module-tab" id="menuBusinessPresence" type="button" role="tab" aria-selected="false" aria-controls="businessPresenceModule">
+                <i class="bi bi-people-fill"></i><span>Keberadaan Keluarga/Usaha</span>
+            </button>
+        </nav>
         <section id="monitoringModule">
 
         <div class="mb-4 d-flex justify-content-center">
