@@ -132,7 +132,11 @@
     const labels=order.filter(x=>x!=='Belum Diisi' && counts[x]);
     charts[key]=new ApexCharts($(elementId),{chart:{type:'donut',height:285,toolbar:{show:false}},labels,series:labels.map(x=>counts[x]),legend:{position:'bottom'},dataLabels:{enabled:true,formatter:(_v,opts)=>Number(opts.w.config.series[opts.seriesIndex]).toLocaleString('id-ID')},noData:{text:'Belum ada isian'}});charts[key].render();
   }
-  function summaryRows(counts,order,total){return order.map(x=>({name:x,count:counts[x]||0})).filter(x=>x.count||x.name==='Belum Diisi').map(x=>`<tr><td>${escapeHtml(x.name)}</td><td class="text-end fw-semibold">${fmt(x.count)}</td><td class="text-end">${total?(x.count/total*100).toFixed(2):'0.00'}%</td></tr>`).join('');}
+  function summaryRows(counts,order,total){
+    const rows=order.filter(name=>name!=='Belum Diisi').map(name=>({name,count:counts[name]||0})).filter(x=>x.count>0);
+    if(!rows.length)return '<tr><td colspan="3" class="text-center text-secondary py-4">Belum ada hasil isian</td></tr>';
+    return rows.map(x=>{const pct=total?(x.count/total*100):0;return `<tr><td><span class="bp-category-name">${escapeHtml(x.name)}</span><div class="bp-category-track"><div class="bp-category-fill" style="width:${Math.min(100,pct).toFixed(2)}%"></div></div></td><td class="text-end"><span class="bp-count-pill">${fmt(x.count)}</span></td><td class="text-end fw-semibold">${pct.toLocaleString('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2})}%</td></tr>`;}).join('');
+  }
 
   function render(payload){
     currentPayload=payload;currentRows=Array.isArray(payload.records)?payload.records:[];
