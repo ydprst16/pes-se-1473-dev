@@ -24,7 +24,7 @@
   };
   const familyOrder = ['Ditemukan','Baru','Tidak Ditemukan (STOP)','Meninggal','Belum Diisi'];
   const businessOrder = ['Ditemukan','Baru','Tidak Ditemukan','Tutup','Ganda','Data dari Kantor Pusat (KP)','Belum Diisi'];
-  const api = (action, extra={}) => `api/business_presence.php?${new URLSearchParams({action,...extra})}`;
+  const api = (action, extra={}) => `api/business_presence.php?${new URLSearchParams({action,...extra,_ts:Date.now()})}`;
   const fmt = (n) => Number(n || 0).toLocaleString('id-ID');
   const escapeHtml = (v) => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const cell = (v) => v == null ? '' : String(v).trim();
@@ -116,7 +116,7 @@
   }
 
   async function loadLatest(){
-    try{const res=await fetch(api('latest'),{cache:'no-store'});if(!res.ok)throw new Error('Belum ada snapshot Keberadaan Keluarga/Usaha.');render(await res.json());}
+    try{const res=await fetch(api('latest'),{cache:'no-store'});if(!res.ok)throw new Error('Belum ada snapshot Keberadaan Keluarga/Usaha.');await render(await res.json());}
     catch(e){$('businessSnapshotDate').textContent='Belum tersedia';$('businessUpdatedAt').textContent='-';$('businessRegionTable').innerHTML=`<div class="alert alert-info mb-0">${escapeHtml(e.message)} Silakan upload Excel pertama.</div>`;}
   }
   async function loadHistory(){
@@ -142,20 +142,24 @@
   function metric(label,value){return `<div class="bp-mobile-metric"><div class="bp-mobile-metric-label">${label}</div><div class="bp-mobile-metric-value">${fmt(value||0)}</div></div>`;}
   function renderRegionMobile(rows){
     const host=$('businessRegionMobile');if(!host)return;
-    host.innerHTML=mobileSearchHtml('bpRegionSearch','Cari ID Sub-SLS, kecamatan, desa, SLS...')+`<div id="bpRegionCards"></div>`;
-    const draw=(q='')=>{const filtered=rows.filter(r=>[r.idsubsls,r.kec,r.des,r.sls,r.ssls].some(v=>String(v||'').toLowerCase().includes(q.toLowerCase())));$('bpRegionCards').innerHTML=filtered.length?filtered.map(r=>`<article class="bp-mobile-card"><div class="bp-mobile-card-head"><div><div class="bp-mobile-card-title">Sub-SLS ${escapeHtml(r.idsubsls||'-')}</div><div class="bp-mobile-card-sub">${escapeHtml([r.kec,r.des,r.sls,r.ssls].filter(Boolean).join(' · ')||'Wilayah tidak lengkap')}</div></div><span class="badge text-bg-primary">${fmt(r.total)} baris</span></div><div class="bp-mobile-metrics">${metric('Keluarga terisi',r.familyFilled)}${metric('Usaha terisi',r.businessFilled)}${metric('Status OPEN',r.statuses.OPEN)}${metric('DRAFT',r.statuses.DRAFT)}${metric('SUBMITTED',r.statuses['SUBMITTED BY Pencacah'])}${metric('COMPLETED',r.statuses['COMPLETED BY Pengawas'])}</div></article>`).join(''):'<div class="bp-mobile-empty">Tidak ada Sub-SLS yang cocok.</div>';
-      const count=host.querySelector('[data-count-for="bpRegionSearch"]');if(count)count.textContent=`Menampilkan ${filtered.length.toLocaleString('id-ID')} dari ${rows.length.toLocaleString('id-ID')} Sub-SLS`;
-    };draw();$('bpRegionSearch').addEventListener('input',e=>draw(e.target.value));
+    host.innerHTML=mobileSearchHtml('bpRegionSearch','Cari ID Sub-SLS, kecamatan, desa, SLS...')+`<div id="bpRegionCards"></div><div id="bpRegionPager" class="bp-mobile-pager"></div>`;
+    let page=0;const pageSize=8;
+    const draw=(q='')=>{const filtered=rows.filter(r=>[r.idsubsls,r.kec,r.des,r.sls,r.ssls].some(v=>String(v||'').toLowerCase().includes(q.toLowerCase())));const pages=Math.max(1,Math.ceil(filtered.length/pageSize));page=Math.min(page,pages-1);const shown=filtered.slice(page*pageSize,(page+1)*pageSize);$('bpRegionCards').innerHTML=shown.length?shown.map(r=>`<article class="bp-mobile-card"><div class="bp-mobile-card-head"><div><div class="bp-mobile-card-title">Sub-SLS ${escapeHtml(r.idsubsls||'-')}</div><div class="bp-mobile-card-sub">${escapeHtml([r.kec,r.des,r.sls,r.ssls].filter(Boolean).join(' · ')||'Wilayah tidak lengkap')}</div></div><span class="badge text-bg-primary">${fmt(r.total)} assignment</span></div><div class="bp-mobile-metrics">${metric('Keluarga terisi',r.familyFilled)}${metric('Usaha terisi',r.businessFilled)}${metric('OPEN',r.statuses.OPEN)}${metric('DRAFT',r.statuses.DRAFT)}${metric('SUBMITTED',r.statuses['SUBMITTED BY Pencacah'])}${metric('COMPLETED',r.statuses['COMPLETED BY Pengawas'])}</div></article>`).join(''):'<div class="bp-mobile-empty">Tidak ada Sub-SLS yang cocok.</div>';
+      const count=host.querySelector('[data-count-for="bpRegionSearch"]');if(count)count.textContent=`Menampilkan ${filtered.length? page*pageSize+1:0}–${Math.min((page+1)*pageSize,filtered.length)} dari ${filtered.length.toLocaleString('id-ID')} Sub-SLS`;
+      $('bpRegionPager').innerHTML=filtered.length>pageSize?`<button class="btn btn-sm btn-outline-secondary" data-page="prev" ${page===0?'disabled':''}>Sebelumnya</button><span>Halaman ${page+1} / ${pages}</span><button class="btn btn-sm btn-outline-secondary" data-page="next" ${page>=pages-1?'disabled':''}>Berikutnya</button>`:'';
+    };draw();$('bpRegionSearch').addEventListener('input',e=>{page=0;draw(e.target.value)});$('bpRegionPager').addEventListener('click',e=>{const b=e.target.closest('[data-page]');if(!b)return;page+=b.dataset.page==='next'?1:-1;draw($('bpRegionSearch').value)});
   }
   function renderOfficerMobile(rows){
     const host=$('businessOfficerMobile');if(!host)return;
-    host.innerHTML=mobileSearchHtml('bpOfficerSearch','Cari nama petugas atau username...')+`<div id="bpOfficerCards"></div>`;
-    const draw=(q='')=>{const filtered=rows.filter(r=>[r.name,r.email].some(v=>String(v||'').toLowerCase().includes(q.toLowerCase())));$('bpOfficerCards').innerHTML=filtered.length?filtered.map(r=>`<article class="bp-mobile-card"><div class="bp-mobile-card-head"><div><div class="bp-mobile-card-title">${escapeHtml(r.name||'-')}</div><div class="bp-mobile-card-sub">${escapeHtml(r.email||'-')}</div></div><span class="badge text-bg-primary">${fmt(r.total)} assignment</span></div><div class="bp-mobile-metrics">${metric('Sub-SLS cocok',r.matched)}${metric('Keluarga terisi',r.familyFilled)}${metric('Usaha terisi',r.businessFilled)}${metric('OPEN',r.statuses.OPEN)}${metric('DRAFT',r.statuses.DRAFT)}${metric('SUBMITTED',r.statuses['SUBMITTED BY Pencacah'])}${metric('COMPLETED',r.statuses['COMPLETED BY Pengawas'])}</div></article>`).join(''):'<div class="bp-mobile-empty">Tidak ada petugas yang cocok.</div>';
-      const count=host.querySelector('[data-count-for="bpOfficerSearch"]');if(count)count.textContent=`Menampilkan ${filtered.length.toLocaleString('id-ID')} dari ${rows.length.toLocaleString('id-ID')} petugas`;
-    };draw();$('bpOfficerSearch').addEventListener('input',e=>draw(e.target.value));
+    host.innerHTML=mobileSearchHtml('bpOfficerSearch','Cari nama petugas atau username...')+`<div id="bpOfficerCards"></div><div id="bpOfficerPager" class="bp-mobile-pager"></div>`;
+    let page=0;const pageSize=8;
+    const draw=(q='')=>{const filtered=rows.filter(r=>[r.name,r.email].some(v=>String(v||'').toLowerCase().includes(q.toLowerCase())));const pages=Math.max(1,Math.ceil(filtered.length/pageSize));page=Math.min(page,pages-1);const shown=filtered.slice(page*pageSize,(page+1)*pageSize);$('bpOfficerCards').innerHTML=shown.length?shown.map(r=>`<article class="bp-mobile-card"><div class="bp-mobile-card-head"><div><div class="bp-mobile-card-title">${escapeHtml(r.name||'-')}</div><div class="bp-mobile-card-sub">${escapeHtml(r.email||'-')}</div></div><span class="badge text-bg-primary">${fmt(r.total)} assignment</span></div><div class="bp-mobile-metrics">${metric('Sub-SLS cocok',r.matched)}${metric('Keluarga terisi',r.familyFilled)}${metric('Usaha terisi',r.businessFilled)}${metric('OPEN',r.statuses.OPEN)}${metric('DRAFT',r.statuses.DRAFT)}${metric('SUBMITTED',r.statuses['SUBMITTED BY Pencacah'])}${metric('COMPLETED',r.statuses['COMPLETED BY Pengawas'])}</div></article>`).join(''):'<div class="bp-mobile-empty">Tidak ada petugas yang cocok.</div>';
+      const count=host.querySelector('[data-count-for="bpOfficerSearch"]');if(count)count.textContent=`Menampilkan ${filtered.length? page*pageSize+1:0}–${Math.min((page+1)*pageSize,filtered.length)} dari ${filtered.length.toLocaleString('id-ID')} petugas`;
+      $('bpOfficerPager').innerHTML=filtered.length>pageSize?`<button class="btn btn-sm btn-outline-secondary" data-page="prev" ${page===0?'disabled':''}>Sebelumnya</button><span>Halaman ${page+1} / ${pages}</span><button class="btn btn-sm btn-outline-secondary" data-page="next" ${page>=pages-1?'disabled':''}>Berikutnya</button>`:'';
+    };draw();$('bpOfficerSearch').addEventListener('input',e=>{page=0;draw(e.target.value)});$('bpOfficerPager').addEventListener('click',e=>{const b=e.target.closest('[data-page]');if(!b)return;page+=b.dataset.page==='next'?1:-1;draw($('bpOfficerSearch').value)});
   }
 
-  function render(payload){
+  async function render(payload){
     currentPayload=payload;currentRows=Array.isArray(payload.records)?payload.records:[];
     const total=currentRows.length; // Denominator selalu jumlah record yang benar-benar tersimpan dari seluruh baris Excel.
     const family={},business={},statuses={};
@@ -181,18 +185,18 @@
     renderRegionMobile(regionData);
     if(regionTable)regionTable.destroy();
     regionTable=new Tabulator('#businessRegionTable',{data:regionData,layout:'fitColumns',responsiveLayout:'collapse',height:'520px',pagination:true,paginationSize:20,placeholder:'Tidak ada data',columnDefaults:{headerSort:true,headerWordWrap:true,tooltip:true},columns:[
-      {title:'ID Sub-SLS',field:'idsubsls',headerFilter:'input',minWidth:145,widthGrow:1},{title:'Kecamatan',field:'kec',minWidth:85,widthGrow:0.8},{title:'Desa',field:'des',minWidth:75,widthGrow:0.7},{title:'SLS',field:'sls',minWidth:65,widthGrow:0.6},{title:'Sub-SLS',field:'ssls',minWidth:75,widthGrow:0.7},{title:'Total Baris',field:'total',hozAlign:'right',minWidth:85,widthGrow:0.8},
+      {title:'ID Sub-SLS',field:'idsubsls',headerFilter:'input',minWidth:145,widthGrow:1},{title:'Kecamatan',field:'kec',minWidth:85,widthGrow:0.8},{title:'Desa',field:'des',minWidth:75,widthGrow:0.7},{title:'SLS',field:'sls',minWidth:65,widthGrow:0.6},{title:'Sub-SLS',field:'ssls',minWidth:75,widthGrow:0.7},{title:'Total Assignment',field:'total',hozAlign:'right',minWidth:85,widthGrow:0.8},
       {title:'Keluarga Terisi',field:'familyFilled',hozAlign:'right',minWidth:95,widthGrow:0.9},{title:'Usaha Terisi',field:'businessFilled',hozAlign:'right',minWidth:90,widthGrow:0.9},
       {title:'Status OPEN',hozAlign:'right',minWidth:85,widthGrow:0.8,formatter:c=>c.getRow().getData().statuses.OPEN||0},{title:'DRAFT',hozAlign:'right',minWidth:70,widthGrow:0.6,formatter:c=>c.getRow().getData().statuses.DRAFT||0},
       {title:'SUBMITTED',hozAlign:'right',minWidth:90,widthGrow:0.8,formatter:c=>c.getRow().getData().statuses['SUBMITTED BY Pencacah']||0},{title:'COMPLETED',hozAlign:'right',minWidth:95,widthGrow:0.8,formatter:c=>c.getRow().getData().statuses['COMPLETED BY Pengawas']||0}
     ]});
-    loadOfficerData(officerRole);
+    await loadOfficerData(officerRole);
   }
 
   async function loadOfficerData(role){
     officerRole=role;$('businessPplBtn').className=`btn ${role==='pencacah'?'btn-primary':'btn-outline-primary'}`;$('businessPmlBtn').className=`btn ${role==='pengawas'?'btn-primary':'btn-outline-primary'}`;
     try{
-      const res=await fetch(`api/history.php?action=latest&role=${role}`,{cache:'no-store'});if(!res.ok)throw new Error('Data JSON monitoring '+(role==='pencacah'?'PPL':'PML')+' tidak tersedia.');
+      const res=await fetch(`api/history.php?action=latest&role=${role}&_ts=${Date.now()}`,{cache:'no-store'});if(!res.ok)throw new Error('Data JSON monitoring '+(role==='pencacah'?'PPL':'PML')+' tidak tersedia.');
       const payload=await res.json(),officers=payload.data||[],byRegion={};
       currentRows.forEach(r=>{const code=r.idsubsls||idSubsls(r);if(!byRegion[code])byRegion[code]={total:0,familyFilled:0,businessFilled:0,family:{},business:{},statuses:{}};const g=byRegion[code],f=familyOf(r.ada_keluarga_label),b=businessOf(r.ada_bang_usaha_label),s=r.assignment_status_alias||'Status Kosong';g.total++;g.family[f]=(g.family[f]||0)+1;g.business[b]=(g.business[b]||0)+1;g.statuses[s]=(g.statuses[s]||0)+1;if(f!=='Belum Diisi')g.familyFilled++;if(b!=='Belum Diisi')g.businessFilled++;});
       const rows=officers.map(o=>{let total=0,ff=0,bf=0,matched=0;const fam={},bus={},sts={};(o.regionSummary||[]).forEach(rs=>{const g=byRegion[String(rs.regionCode||'')];if(!g)return;matched++;total+=g.total;ff+=g.familyFilled;bf+=g.businessFilled;for(const [k,v] of Object.entries(g.family))fam[k]=(fam[k]||0)+v;for(const [k,v] of Object.entries(g.business))bus[k]=(bus[k]||0)+v;for(const [k,v] of Object.entries(g.statuses))sts[k]=(sts[k]||0)+v;});return{name:((typeof USERNAME_MAP!=='undefined'&&USERNAME_MAP[o.email||o.username])||o.username||o.email||'-'),email:o.email||o.username||'',matched,total,familyFilled:ff,businessFilled:bf,statuses:sts};}).filter(x=>x.matched>0).sort((a,b)=>b.total-a.total);

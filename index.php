@@ -1641,6 +1641,8 @@
                 .bp-mobile-status{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
                 .bp-mobile-status span{font-size:.7rem;padding:4px 7px;border-radius:7px;background:var(--bs-body-bg);border:1px solid var(--bs-border-color);font-variant-numeric:tabular-nums}
                 .bp-mobile-empty{text-align:center;color:var(--bs-secondary-color);padding:18px}
+                .bp-mobile-pager{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:12px 0 2px;padding-top:10px;border-top:1px solid var(--bs-border-color);font-size:.78rem;color:var(--bs-secondary-color)}
+                .bp-mobile-pager .btn{min-width:104px}
                 @media(max-width:767.98px){.bp-desktop-table{display:none!important}.bp-mobile-list{display:block}.bp-mobile-list .bp-mobile-count{font-size:.75rem;color:var(--bs-secondary-color);margin-bottom:8px}.chart-card{padding:14px!important}.chart-title{line-height:1.3}}
             </style>
             <div class="row g-3 mb-4">
