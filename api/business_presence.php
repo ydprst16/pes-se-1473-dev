@@ -37,7 +37,10 @@ function bp_upload($path,$content) {
 }
 function bp_download($path) {
     global $BUCKET;
-    return bp_sb('GET', "/object/{$BUCKET}/".$path);
+    // Cache-busting diperlukan saat membaca ulang object yang baru saja di-upsert.
+    // Tanpa ini, layer cache dapat mengembalikan snapshot lama dengan jumlah record berbeda.
+    $nonce = str_replace('.', '', (string) microtime(true));
+    return bp_sb('GET', "/object/{$BUCKET}/".$path.'?bp_verify='.$nonce, ['Cache-Control: no-cache, no-store, must-revalidate','Pragma: no-cache']);
 }
 function bp_list($prefix) {
     global $BUCKET;
@@ -87,14 +90,29 @@ try {
         if ($snapshot['error'] || $snapshot['code']<200 || $snapshot['code']>=300) {
             bp_fail('Gagal menyimpan histori Supabase. HTTP='.$snapshot['code'].'; CURL='.($snapshot['error'] ?: '-').'; RESPONSE='.($snapshot['body'] ?: '-'),502);
         }
-        // Pastikan file histori benar-benar dapat dibaca kembali sebelum menyatakan sukses.
-        $verify=bp_download($historyPath);
-        if ($verify['error'] || $verify['code']!==200) {
-            bp_fail('Upload histori belum dapat diverifikasi. HTTP='.$verify['code'].'; CURL='.($verify['error'] ?: '-').'; RESPONSE='.($verify['body'] ?: '-').'; PATH='.$historyPath,502);
+        // Verifikasi hasil upsert. Baca ulang dengan cache-busting dan retry karena
+        // pembacaan pertama kadang masih mengembalikan object lama dari cache Storage.
+        $verified=null; $verify=null; $verifyOk=false;
+        for ($attempt=1; $attempt<=4; $attempt++) {
+            $verify=bp_download($historyPath);
+            if (!$verify['error'] && $verify['code']===200) {
+                $candidate=json_decode($verify['body'],true);
+                if (is_array($candidate)
+                    && ($candidate['importDate'] ?? '')===$date
+                    && ($candidate['sourceFile'] ?? '')===$filename
+                    && ($candidate['uploadedAt'] ?? '')===($payload['uploadedAt'] ?? '')
+                    && (int)($candidate['totalRows'] ?? -1)===count($records)
+                    && count($candidate['records'] ?? [])===count($valid)) {
+                    $verified=$candidate; $verifyOk=true; break;
+                }
+            }
+            if ($attempt<4) usleep(500000);
         }
-        $verified=json_decode($verify['body'],true);
-        if (!is_array($verified) || ($verified['importDate'] ?? '')!==$date || count($verified['records'] ?? [])!==count($valid)) {
-            bp_fail('Verifikasi histori gagal: isi file tidak sesuai dengan tanggal atau jumlah assignment yang diunggah.',502);
+        if (!$verifyOk) {
+            $seenCount=is_array($candidate ?? null) ? count($candidate['records'] ?? []) : -1;
+            $seenDate=is_array($candidate ?? null) ? ($candidate['importDate'] ?? '-') : '-';
+            $seenFile=is_array($candidate ?? null) ? ($candidate['sourceFile'] ?? '-') : '-';
+            bp_fail('Histori sudah diunggah, tetapi pembacaan verifikasi belum cocok setelah 4 percobaan. Target: tanggal='.$date.', file='.$filename.', assignment='.count($valid).'. Terbaca: tanggal='.$seenDate.', file='.$seenFile.', assignment='.$seenCount.'. HTTP='.($verify['code'] ?? 0).'; CURL='.($verify['error'] ?? '-').'; PATH='.$historyPath,502);
         }
         $latest=bp_upload($GLOBALS['PREFIX'].'latest.json',$json);
         if ($latest['error'] || $latest['code']<200 || $latest['code']>=300) {
