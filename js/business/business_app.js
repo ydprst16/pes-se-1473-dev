@@ -138,6 +138,23 @@
     return rows.map(x=>{const pct=total?(x.count/total*100):0;return `<tr><td><span class="bp-category-name">${escapeHtml(x.name)}</span><div class="bp-category-track"><div class="bp-category-fill" style="width:${Math.min(100,pct).toFixed(2)}%"></div></div></td><td class="text-end"><span class="bp-count-pill">${fmt(x.count)}</span></td><td class="text-end fw-semibold">${pct.toLocaleString('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2})}%</td></tr>`;}).join('');
   }
 
+  function mobileSearchHtml(id,placeholder){return `<div class="bp-mobile-search"><input type="search" id="${id}" placeholder="${placeholder}" autocomplete="off"></div><div class="bp-mobile-count" data-count-for="${id}"></div>`;}
+  function metric(label,value){return `<div class="bp-mobile-metric"><div class="bp-mobile-metric-label">${label}</div><div class="bp-mobile-metric-value">${fmt(value||0)}</div></div>`;}
+  function renderRegionMobile(rows){
+    const host=$('businessRegionMobile');if(!host)return;
+    host.innerHTML=mobileSearchHtml('bpRegionSearch','Cari ID Sub-SLS, kecamatan, desa, SLS...')+`<div id="bpRegionCards"></div>`;
+    const draw=(q='')=>{const filtered=rows.filter(r=>[r.idsubsls,r.kec,r.des,r.sls,r.ssls].some(v=>String(v||'').toLowerCase().includes(q.toLowerCase())));$('bpRegionCards').innerHTML=filtered.length?filtered.map(r=>`<article class="bp-mobile-card"><div class="bp-mobile-card-head"><div><div class="bp-mobile-card-title">Sub-SLS ${escapeHtml(r.idsubsls||'-')}</div><div class="bp-mobile-card-sub">${escapeHtml([r.kec,r.des,r.sls,r.ssls].filter(Boolean).join(' · ')||'Wilayah tidak lengkap')}</div></div><span class="badge text-bg-primary">${fmt(r.total)} baris</span></div><div class="bp-mobile-metrics">${metric('Keluarga terisi',r.familyFilled)}${metric('Usaha terisi',r.businessFilled)}${metric('Status OPEN',r.statuses.OPEN)}${metric('DRAFT',r.statuses.DRAFT)}${metric('SUBMITTED',r.statuses['SUBMITTED BY Pencacah'])}${metric('COMPLETED',r.statuses['COMPLETED BY Pengawas'])}</div></article>`).join(''):'<div class="bp-mobile-empty">Tidak ada Sub-SLS yang cocok.</div>';
+      const count=host.querySelector('[data-count-for="bpRegionSearch"]');if(count)count.textContent=`Menampilkan ${filtered.length.toLocaleString('id-ID')} dari ${rows.length.toLocaleString('id-ID')} Sub-SLS`;
+    };draw();$('bpRegionSearch').addEventListener('input',e=>draw(e.target.value));
+  }
+  function renderOfficerMobile(rows){
+    const host=$('businessOfficerMobile');if(!host)return;
+    host.innerHTML=mobileSearchHtml('bpOfficerSearch','Cari nama petugas atau username...')+`<div id="bpOfficerCards"></div>`;
+    const draw=(q='')=>{const filtered=rows.filter(r=>[r.name,r.email].some(v=>String(v||'').toLowerCase().includes(q.toLowerCase())));$('bpOfficerCards').innerHTML=filtered.length?filtered.map(r=>`<article class="bp-mobile-card"><div class="bp-mobile-card-head"><div><div class="bp-mobile-card-title">${escapeHtml(r.name||'-')}</div><div class="bp-mobile-card-sub">${escapeHtml(r.email||'-')}</div></div><span class="badge text-bg-primary">${fmt(r.total)} assignment</span></div><div class="bp-mobile-metrics">${metric('Sub-SLS cocok',r.matched)}${metric('Keluarga terisi',r.familyFilled)}${metric('Usaha terisi',r.businessFilled)}${metric('OPEN',r.statuses.OPEN)}${metric('DRAFT',r.statuses.DRAFT)}${metric('SUBMITTED',r.statuses['SUBMITTED BY Pencacah'])}${metric('COMPLETED',r.statuses['COMPLETED BY Pengawas'])}</div></article>`).join(''):'<div class="bp-mobile-empty">Tidak ada petugas yang cocok.</div>';
+      const count=host.querySelector('[data-count-for="bpOfficerSearch"]');if(count)count.textContent=`Menampilkan ${filtered.length.toLocaleString('id-ID')} dari ${rows.length.toLocaleString('id-ID')} petugas`;
+    };draw();$('bpOfficerSearch').addEventListener('input',e=>draw(e.target.value));
+  }
+
   function render(payload){
     currentPayload=payload;currentRows=Array.isArray(payload.records)?payload.records:[];
     const total=currentRows.length; // Denominator selalu jumlah record yang benar-benar tersimpan dari seluruh baris Excel.
@@ -161,6 +178,7 @@
     $('businessBusinessRows').innerHTML=summaryRows(business,businessOrder,total);
     renderDonut('businessFamilyChart','family',family,familyOrder);renderDonut('businessBusinessChart','business',business,businessOrder);
     const regionData=Object.values(regions).sort((a,b)=>a.idsubsls.localeCompare(b.idsubsls));
+    renderRegionMobile(regionData);
     if(regionTable)regionTable.destroy();
     regionTable=new Tabulator('#businessRegionTable',{data:regionData,layout:'fitColumns',responsiveLayout:'collapse',height:'520px',pagination:true,paginationSize:20,placeholder:'Tidak ada data',columnDefaults:{headerSort:true,headerWordWrap:true,tooltip:true},columns:[
       {title:'ID Sub-SLS',field:'idsubsls',headerFilter:'input',minWidth:145,widthGrow:1},{title:'Kecamatan',field:'kec',minWidth:85,widthGrow:0.8},{title:'Desa',field:'des',minWidth:75,widthGrow:0.7},{title:'SLS',field:'sls',minWidth:65,widthGrow:0.6},{title:'Sub-SLS',field:'ssls',minWidth:75,widthGrow:0.7},{title:'Total Baris',field:'total',hozAlign:'right',minWidth:85,widthGrow:0.8},
@@ -178,6 +196,7 @@
       const payload=await res.json(),officers=payload.data||[],byRegion={};
       currentRows.forEach(r=>{const code=r.idsubsls||idSubsls(r);if(!byRegion[code])byRegion[code]={total:0,familyFilled:0,businessFilled:0,family:{},business:{},statuses:{}};const g=byRegion[code],f=familyOf(r.ada_keluarga_label),b=businessOf(r.ada_bang_usaha_label),s=r.assignment_status_alias||'Status Kosong';g.total++;g.family[f]=(g.family[f]||0)+1;g.business[b]=(g.business[b]||0)+1;g.statuses[s]=(g.statuses[s]||0)+1;if(f!=='Belum Diisi')g.familyFilled++;if(b!=='Belum Diisi')g.businessFilled++;});
       const rows=officers.map(o=>{let total=0,ff=0,bf=0,matched=0;const fam={},bus={},sts={};(o.regionSummary||[]).forEach(rs=>{const g=byRegion[String(rs.regionCode||'')];if(!g)return;matched++;total+=g.total;ff+=g.familyFilled;bf+=g.businessFilled;for(const [k,v] of Object.entries(g.family))fam[k]=(fam[k]||0)+v;for(const [k,v] of Object.entries(g.business))bus[k]=(bus[k]||0)+v;for(const [k,v] of Object.entries(g.statuses))sts[k]=(sts[k]||0)+v;});return{name:((typeof USERNAME_MAP!=='undefined'&&USERNAME_MAP[o.email||o.username])||o.username||o.email||'-'),email:o.email||o.username||'',matched,total,familyFilled:ff,businessFilled:bf,statuses:sts};}).filter(x=>x.matched>0).sort((a,b)=>b.total-a.total);
+      renderOfficerMobile(rows);
       if(officerTable)officerTable.destroy();
       officerTable=new Tabulator('#businessOfficerTable',{data:rows,layout:'fitColumns',responsiveLayout:'collapse',height:'420px',pagination:true,paginationSize:15,placeholder:'Belum ada wilayah yang cocok dengan JSON petugas.',columnDefaults:{headerSort:true,headerWordWrap:true,tooltip:true},columns:[
         {title:'Nama Petugas',field:'name',headerFilter:'input',minWidth:145,widthGrow:1.4},{title:'Username',field:'email',minWidth:150,widthGrow:1.4},{title:'Sub-SLS Cocok',field:'matched',hozAlign:'right',minWidth:95,widthGrow:0.8},{title:'Total Assignment',field:'total',hozAlign:'right',minWidth:105,widthGrow:0.9},
