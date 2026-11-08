@@ -97,9 +97,15 @@
       // Otomatis isi tanggal snapshot dari nama file yyyymmdd_hhmmss.xlsx.
       const filenameDate=file.name.match(/^(\d{4})(\d{2})(\d{2})_\d{6}\.xlsx?$/i);
       if(!filenameDate)throw new Error('Nama file harus mengikuti format yyyymmdd_hhmmss.xlsx, contoh 20261107_095351.xlsx.');
+      const year=Number(filenameDate[1]);
+      const month=Number(filenameDate[2]);
+      const day=Number(filenameDate[3]);
       const isoDate=`${filenameDate[1]}-${filenameDate[2]}-${filenameDate[3]}`;
-      const parsedDate=new Date(`${isoDate}T00:00:00`);
-      if(Number.isNaN(parsedDate.getTime()) || parsedDate.toISOString().slice(0,10)!==isoDate)throw new Error(`Tanggal pada nama file tidak valid: ${isoDate}`);
+      // Validasi kalender menggunakan UTC getters agar tidak bergeser karena zona waktu browser (mis. WIB).
+      // Jangan gunakan toISOString() dari tanggal tengah malam lokal karena dapat berubah menjadi hari sebelumnya.
+      const parsedDate=new Date(Date.UTC(year, month-1, day));
+      if(parsedDate.getUTCFullYear()!==year || parsedDate.getUTCMonth()!==month-1 || parsedDate.getUTCDate()!==day)
+        throw new Error(`Tanggal pada nama file tidak valid: ${isoDate}`);
       $('businessImportDate').value=isoDate;
       $('businessImportDate').readOnly=true;
       // Do not import a partial file: the denominator must always equal the original Excel row count.
