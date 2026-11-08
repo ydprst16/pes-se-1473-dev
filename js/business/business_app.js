@@ -226,8 +226,12 @@
       const hrefMatch=rawUrl.match(/href\s*=\s*["']([^"']+)["']/i);
       if(hrefMatch) url=hrefMatch[1];
       else if(/^https?:\/\//i.test(rawUrl)) url=rawUrl;
+      const districtCode=String(code).slice(0,7);
+      const wilayahRef=(typeof SUBSLS_MAP!=='undefined' && SUBSLS_MAP[code]) || {};
+      const districtName=(typeof REGION_MAP!=='undefined' && REGION_MAP[districtCode]) || r.kec || '-';
+      const villageName=wilayahRef.nmdesa || r.des || '-';
       return {
-        rowNumber:index+1, idsubsls:code, kec:r.kec||'',des:r.des||'',sls:r.sls||'',ssls:r.ssls||'',
+        rowNumber:index+1, idsubsls:code, kec:districtName,des:villageName,sls:r.sls||'',ssls:r.ssls||'',
         nama:r.nama||'',url,
         pplNames:[...names.ppl].join(', ')||'-',
         pmlNames:[...names.pml].join(', ')||'-',
@@ -242,13 +246,13 @@
       {title:'ID Sub-SLS',field:'idsubsls',headerFilter:'input',minWidth:145,widthGrow:1},
       {title:'Kecamatan',field:'kec',minWidth:95,widthGrow:0.8},{title:'Desa',field:'des',minWidth:80,widthGrow:0.7},
       {title:'SLS',field:'sls',minWidth:70,widthGrow:0.6},{title:'Sub-SLS',field:'ssls',minWidth:75,widthGrow:0.6},
-      {title:'Nama (Excel)',field:'nama',headerFilter:'input',minWidth:190,widthGrow:1.6,formatter:c=>escapeHtml(c.getValue())},
-      {title:'URL FASIH',field:'url',minWidth:100,widthGrow:0.7,formatter:c=>{const u=c.getValue();return u&&/^https?:\/\//i.test(u)?`<a href="${escapeHtml(u)}" target="_blank" rel="noopener noreferrer">Buka Assignment</a>`:'-';}},
+      {title:'Nama Keluarga/Usaha',field:'nama',headerFilter:'input',minWidth:190,widthGrow:1.6,formatter:c=>escapeHtml(c.getValue())},
       {title:'Nama PPL',field:'pplNames',minWidth:160,widthGrow:1.2,formatter:c=>escapeHtml(c.getValue())},
       {title:'Nama PML',field:'pmlNames',minWidth:160,widthGrow:1.2,formatter:c=>escapeHtml(c.getValue())},
       {title:'Keberadaan Keluarga',field:'family',minWidth:145,widthGrow:1},
       {title:'Keberadaan Usaha',field:'business',minWidth:145,widthGrow:1},
-      {title:'Status Assignment',field:'status',minWidth:155,widthGrow:1}
+      {title:'Status Assignment',field:'status',minWidth:155,widthGrow:1},
+      {title:'URL FASIH',field:'url',minWidth:120,widthGrow:0.8,formatter:c=>{const u=c.getValue();return u&&/^https?:\/\//i.test(u)?`<a href="${escapeHtml(u)}" target="_blank" rel="noopener noreferrer">Buka Assignment</a>`:'-';}}
     ]});
   }
 
