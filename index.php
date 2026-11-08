@@ -1654,7 +1654,6 @@
             </div>
             <div class="chart-card mt-5 mb-4"><div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3"><div class="chart-title m-0">Rekapitulasi per Sub-SLS</div><button class="btn btn-sm btn-success" id="btnBusinessExport"><i class="bi bi-file-earmark-excel me-1"></i>Export Excel</button></div><div id="businessRegionTable" class="bp-data-table"></div></div>
             <div class="chart-card mb-4"><div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3"><div class="chart-title m-0">Monitoring berdasarkan Petugas</div><div class="d-flex align-items-center gap-2 flex-wrap"><div class="btn-group btn-group-sm" role="group"><button class="btn btn-primary" id="businessPplBtn">PPL</button><button class="btn btn-outline-primary" id="businessPmlBtn">PML</button></div><button class="btn btn-sm btn-success" id="btnBusinessOfficerExport"><i class="bi bi-file-earmark-excel me-1"></i>Export Excel</button></div></div><div class="small text-secondary mb-2">Pencocokan wilayah melalui regionCode / idsubsls dari JSON monitoring existing.</div><div id="businessOfficerTable" class="bp-data-table"></div></div>
-            <div class="chart-card"><div class="chart-title mb-3">Riwayat Import</div><div id="businessHistoryList" class="small text-secondary">Memuat...</div></div>
         </section>
 
             </div>

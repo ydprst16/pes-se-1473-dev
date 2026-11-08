@@ -200,10 +200,33 @@
     $('businessBusinessRows').innerHTML=summaryRows(business,businessOrder,total);
     renderDonut('businessFamilyChart','family',family,familyOrder);renderDonut('businessBusinessChart','business',business,businessOrder);
     const regionData=Object.values(regions).sort((a,b)=>a.idsubsls.localeCompare(b.idsubsls));
+    // Tambahkan nama PPL/PML ke setiap Sub-SLS berdasarkan regionCode.
+    // Satu Sub-SLS dapat memiliki lebih dari satu petugas; semua nama ditampilkan.
+    const officerNames={};
+    for (const role of ['pencacah','pengawas']) {
+      try {
+        const response=await fetch(`api/history.php?action=latest&role=${role}&_ts=${Date.now()}`,{cache:'no-store'});
+        if(!response.ok) continue;
+        const result=await response.json();
+        (result.data||[]).forEach(o=>{
+          const name=(typeof USERNAME_MAP!=='undefined'&&USERNAME_MAP[o.email||o.username])||o.username||o.email||'-';
+          (o.regionSummary||[]).forEach(rs=>{
+            const code=String(rs.regionCode||'');
+            if(!officerNames[code])officerNames[code]={ppl:new Set(),pml:new Set()};
+            officerNames[code][role==='pencacah'?'ppl':'pml'].add(name);
+          });
+        });
+      } catch(e) { console.warn('Gagal memuat nama petugas '+role,e); }
+    }
+    regionData.forEach(r=>{
+      const names=officerNames[r.idsubsls]||{ppl:new Set(),pml:new Set()};
+      r.pplNames=[...names.ppl].join(', ')||'-';
+      r.pmlNames=[...names.pml].join(', ')||'-';
+    });
 
     if(regionTable)regionTable.destroy();
     regionTable=new Tabulator('#businessRegionTable',{data:regionData,layout:(window.matchMedia('(max-width: 767.98px)').matches?'fitDataTable':'fitColumns'),responsiveLayout:false,height:'520px',pagination:true,paginationSize:20,placeholder:'Tidak ada data',columnDefaults:{headerSort:true,headerWordWrap:true,tooltip:true},columns:[
-      {title:'ID Sub-SLS',field:'idsubsls',headerFilter:'input',minWidth:145,widthGrow:1},{title:'Kecamatan',field:'kec',minWidth:85,widthGrow:0.8},{title:'Desa',field:'des',minWidth:75,widthGrow:0.7},{title:'SLS',field:'sls',minWidth:65,widthGrow:0.6},{title:'Sub-SLS',field:'ssls',minWidth:75,widthGrow:0.7},{title:'Total Assignment',field:'total',hozAlign:'right',minWidth:85,widthGrow:0.8},
+      {title:'ID Sub-SLS',field:'idsubsls',headerFilter:'input',minWidth:145,widthGrow:1},{title:'Kecamatan',field:'kec',minWidth:85,widthGrow:0.8},{title:'Desa',field:'des',minWidth:75,widthGrow:0.7},{title:'SLS',field:'sls',minWidth:65,widthGrow:0.6},{title:'Sub-SLS',field:'ssls',minWidth:75,widthGrow:0.7},{title:'Nama PPL',field:'pplNames',minWidth:145,widthGrow:1.3,formatter:c=>escapeHtml(c.getValue())},{title:'Nama PML',field:'pmlNames',minWidth:145,widthGrow:1.3,formatter:c=>escapeHtml(c.getValue())},{title:'Total Assignment',field:'total',hozAlign:'right',minWidth:85,widthGrow:0.8},
       {title:'Keluarga Terisi',field:'familyFilled',hozAlign:'right',minWidth:95,widthGrow:0.9},{title:'Usaha Terisi',field:'businessFilled',hozAlign:'right',minWidth:90,widthGrow:0.9},
       {title:'Status OPEN',hozAlign:'right',minWidth:85,widthGrow:0.8,formatter:c=>c.getRow().getData().statuses.OPEN||0},{title:'DRAFT',hozAlign:'right',minWidth:70,widthGrow:0.6,formatter:c=>c.getRow().getData().statuses.DRAFT||0},
       {title:'SUBMITTED',hozAlign:'right',minWidth:90,widthGrow:0.8,formatter:c=>c.getRow().getData().statuses['SUBMITTED BY Pencacah']||0},{title:'COMPLETED',hozAlign:'right',minWidth:95,widthGrow:0.8,formatter:c=>c.getRow().getData().statuses['COMPLETED BY Pengawas']||0}
