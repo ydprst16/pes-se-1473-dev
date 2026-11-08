@@ -29,9 +29,21 @@ function bp_sb($method, $path, $headers=[], $body=null) {
     $out=curl_exec($ch); $code=curl_getinfo($ch,CURLINFO_HTTP_CODE); $err=curl_error($ch); curl_close($ch);
     return ['code'=>$code,'body'=>$out,'error'=>$err];
 }
-function bp_upload($path,$content) { global $BUCKET; return bp_sb('POST',"/object/{$BUCKET}/".$path,['Content-Type: application/json','x-upsert: true'],$content); }
-function bp_download($path) { global $BUCKET; return bp_sb('GET',"/object/{$BUCKET}/".$path); }
-function bp_list($prefix) { global $BUCKET; return bp_sb('POST',"/object/list/{$BUCKET}",['Content-Type: application/json'],json_encode(['prefix'=>$prefix,'limit'=>1000,'offset'=>0,'sortBy'=>['column'=>'name','order'=>'desc']])); }
+function bp_storage_path($path) {
+    return implode('/', array_map('rawurlencode', explode('/', ltrim($path, '/'))));
+}
+function bp_upload($path,$content) {
+    global $BUCKET;
+    return bp_sb('POST', "/object/{$BUCKET}/".bp_storage_path($path), ['Content-Type: application/json','x-upsert: true'], $content);
+}
+function bp_download($path) {
+    global $BUCKET;
+    return bp_sb('GET', "/object/{$BUCKET}/".bp_storage_path($path));
+}
+function bp_list($prefix) {
+    global $BUCKET;
+    return bp_sb('POST', "/object/list/{$BUCKET}", ['Content-Type: application/json'], json_encode(['prefix'=>$prefix,'limit'=>1000,'offset'=>0,'sortBy'=>['column'=>'name','order'=>'desc']]));
+}
 function bp_fail($message,$code=400) { http_response_code($code); echo json_encode(['status'=>'error','message'=>$message],JSON_UNESCAPED_UNICODE); exit; }
 
 $action=$_GET['action'] ?? '';
@@ -71,12 +83,26 @@ try {
         $json=json_encode($payload,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
         if ($json===false) bp_fail('Gagal membentuk JSON: '.json_last_error_msg(),500);
         // Simpan snapshot terlebih dahulu; latest hanya diperbarui setelah snapshot sukses.
-        $snapshot=bp_upload($GLOBALS['PREFIX'].'history/'.$date.'.json',$json);
-        if ($snapshot['code']>=400) bp_fail('Gagal menyimpan snapshot: '.$snapshot['body'],502);
+        $historyPath=$GLOBALS['PREFIX'].'history/'.$date.'.json';
+        $snapshot=bp_upload($historyPath,$json);
+        if ($snapshot['error'] || $snapshot['code']<200 || $snapshot['code']>=300) {
+            bp_fail('Gagal menyimpan histori Supabase (HTTP '.$snapshot['code'].'): '.($snapshot['error'] ?: $snapshot['body']),502);
+        }
+        // Pastikan file histori benar-benar dapat dibaca kembali sebelum menyatakan sukses.
+        $verify=bp_download($historyPath);
+        if ($verify['error'] || $verify['code']!==200) {
+            bp_fail('Upload diterima tetapi verifikasi histori gagal (HTTP '.$verify['code'].'). Periksa bucket dan path '.$historyPath.'.',502);
+        }
+        $verified=json_decode($verify['body'],true);
+        if (!is_array($verified) || ($verified['importDate'] ?? '')!==$date || count($verified['records'] ?? [])!==count($valid)) {
+            bp_fail('Verifikasi histori gagal: isi file tidak sesuai dengan tanggal atau jumlah assignment yang diunggah.',502);
+        }
         $latest=bp_upload($GLOBALS['PREFIX'].'latest.json',$json);
-        if ($latest['code']>=400) bp_fail('Snapshot tersimpan, tetapi latest gagal diperbarui: '.$latest['body'],502);
+        if ($latest['error'] || $latest['code']<200 || $latest['code']>=300) {
+            bp_fail('Histori '.$historyPath.' tersimpan dan terverifikasi, tetapi latest gagal diperbarui: '.($latest['error'] ?: $latest['body']),502);
+        }
         sec_audit_write(['action'=>'business_presence_upload','filename'=>$filename,'date'=>$date,'size'=>strlen($json),'status'=>'success','error'=>null]);
-        echo json_encode(['status'=>'ok','date'=>$date,'totalRows'=>count($records),'validRows'=>count($valid),'invalidRows'=>count($invalid),'latestPath'=>$GLOBALS['PREFIX'].'latest.json','historyPath'=>$GLOBALS['PREFIX'].'history/'.$date.'.json']);
+        echo json_encode(['status'=>'ok','date'=>$date,'totalRows'=>count($records),'validRows'=>count($valid),'invalidRows'=>count($invalid),'latestPath'=>$GLOBALS['PREFIX'].'latest.json','historyPath'=>$historyPath,'historyVerified'=>true]);
         exit;
     }
     if ($action==='latest' || $action==='get') {
