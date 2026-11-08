@@ -59,8 +59,21 @@ try {
         if (!preg_match('/^(\d{4})(\d{2})(\d{2})_\d{6}\.xlsx?$/i', $filename, $fm)) {
             bp_fail('Nama file tidak sesuai format yyyymmdd_hhmmss.xlsx. Contoh: 20261107_095351.xlsx.');
         }
-        $date=$fm[1].'-'.$fm[2].'-'.$fm[3];
-        if (!checkdate((int)$fm[2],(int)$fm[3],(int)$fm[1])) bp_fail('Tanggal pada nama file tidak valid: '.$date);
+        // Parse tanggal secara eksplisit dan pastikan hasil format identik.
+        // Ini menghindari ketergantungan pada validasi tanggal yang ambigu
+        // serta memberi diagnostik jika server menerima nilai yang berbeda.
+        $year  = (int)$fm[1];
+        $month = (int)$fm[2];
+        $day   = (int)$fm[3];
+        $date  = sprintf('%04d-%02d-%02d', $year, $month, $day);
+        $parsedDate = DateTimeImmutable::createFromFormat('!Y-m-d', $date);
+        $dateErrors = DateTimeImmutable::getLastErrors();
+        $dateHasErrors = is_array($dateErrors) &&
+            ($dateErrors['warning_count'] > 0 || $dateErrors['error_count'] > 0);
+        if (!$parsedDate || $dateHasErrors || $parsedDate->format('Y-m-d') !== $date) {
+            bp_fail('Tanggal pada nama file tidak valid: '.$date.
+                ' (filename='.$filename.', year='.$year.', month='.$month.', day='.$day.')');
+        }
         $raw=$_POST['payload'] ?? file_get_contents('php://input');
         if (!$raw) bp_fail('Payload JSON kosong.');
         if (strlen($raw)>25*1024*1024) bp_fail('Payload melebihi batas 25 MB.',413);
