@@ -1643,6 +1643,9 @@
                 .bp-mobile-empty{text-align:center;color:var(--bs-secondary-color);padding:18px}
                 .bp-mobile-pager{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:12px 0 2px;padding-top:10px;border-top:1px solid var(--bs-border-color);font-size:.78rem;color:var(--bs-secondary-color)}
                 .bp-mobile-pager .btn{min-width:104px}
+                .bp-data-table{display:block;width:100%;max-width:100%;min-width:0}
+                .bp-data-table .tabulator{width:100%;max-width:100%;box-sizing:border-box}
+                .bp-data-table .tabulator-header,.bp-data-table .tabulator-tableholder{width:100%}.bp-data-table .tabulator-cell,.bp-data-table .tabulator-col-title{white-space:normal;overflow-wrap:anywhere;font-size:12px}
                 @media(max-width:767.98px){.bp-data-table{display:block;width:100%;max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}.bp-data-table .tabulator{min-width:1050px}.bp-data-table .tabulator-tableholder{overflow-x:auto!important}.bp-data-table .tabulator-cell,.bp-data-table .tabulator-col-title{font-size:12px}.chart-card{padding:14px!important}.chart-title{line-height:1.3}}
             </style>
             <div class="row g-3 mb-4">

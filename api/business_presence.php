@@ -24,21 +24,20 @@ if (!$SB_URL || !$SB_KEY) { http_response_code(500); echo json_encode(['status'=
 function bp_sb($method, $path, $headers=[], $body=null) {
     global $SB_URL, $SB_KEY;
     $ch = curl_init(rtrim($SB_URL,'/').'/storage/v1'.$path);
-    curl_setopt_array($ch,[CURLOPT_CUSTOMREQUEST=>$method,CURLOPT_RETURNTRANSFER=>true,CURLOPT_HTTPHEADER=>array_merge(['Authorization: Bearer '.$SB_KEY,'apikey: '.$SB_KEY],$headers),CURLOPT_TIMEOUT=>60,CURLOPT_CONNECTTIMEOUT=>10]);
+    curl_setopt_array($ch,[CURLOPT_CUSTOMREQUEST=>$method,CURLOPT_RETURNTRANSFER=>true,CURLOPT_HTTPHEADER=>array_merge(['Authorization: Bearer '.$SB_KEY,'apikey: '.$SB_KEY],$headers),CURLOPT_TIMEOUT=>120,CURLOPT_CONNECTTIMEOUT=>15]);
     if ($body !== null) curl_setopt($ch,CURLOPT_POSTFIELDS,$body);
     $out=curl_exec($ch); $code=curl_getinfo($ch,CURLINFO_HTTP_CODE); $err=curl_error($ch); curl_close($ch);
     return ['code'=>$code,'body'=>$out,'error'=>$err];
 }
-function bp_storage_path($path) {
-    return implode('/', array_map('rawurlencode', explode('/', ltrim($path, '/'))));
-}
 function bp_upload($path,$content) {
     global $BUCKET;
-    return bp_sb('POST', "/object/{$BUCKET}/".bp_storage_path($path), ['Content-Type: application/json','x-upsert: true'], $content);
+    // Samakan endpoint dan format path dengan api/history.php yang sudah terbukti
+    // berhasil menyimpan histori PPL/PML pada bucket yang sama.
+    return bp_sb('POST', "/object/{$BUCKET}/".$path, ['Content-Type: application/json','x-upsert: true'], $content);
 }
 function bp_download($path) {
     global $BUCKET;
-    return bp_sb('GET', "/object/{$BUCKET}/".bp_storage_path($path));
+    return bp_sb('GET', "/object/{$BUCKET}/".$path);
 }
 function bp_list($prefix) {
     global $BUCKET;
@@ -86,12 +85,12 @@ try {
         $historyPath=$GLOBALS['PREFIX'].'history/'.$date.'.json';
         $snapshot=bp_upload($historyPath,$json);
         if ($snapshot['error'] || $snapshot['code']<200 || $snapshot['code']>=300) {
-            bp_fail('Gagal menyimpan histori Supabase (HTTP '.$snapshot['code'].'): '.($snapshot['error'] ?: $snapshot['body']),502);
+            bp_fail('Gagal menyimpan histori Supabase. HTTP='.$snapshot['code'].'; CURL='.($snapshot['error'] ?: '-').'; RESPONSE='.($snapshot['body'] ?: '-'),502);
         }
         // Pastikan file histori benar-benar dapat dibaca kembali sebelum menyatakan sukses.
         $verify=bp_download($historyPath);
         if ($verify['error'] || $verify['code']!==200) {
-            bp_fail('Upload diterima tetapi verifikasi histori gagal (HTTP '.$verify['code'].'). Periksa bucket dan path '.$historyPath.'.',502);
+            bp_fail('Upload histori belum dapat diverifikasi. HTTP='.$verify['code'].'; CURL='.($verify['error'] ?: '-').'; RESPONSE='.($verify['body'] ?: '-').'; PATH='.$historyPath,502);
         }
         $verified=json_decode($verify['body'],true);
         if (!is_array($verified) || ($verified['importDate'] ?? '')!==$date || count($verified['records'] ?? [])!==count($valid)) {
@@ -99,7 +98,7 @@ try {
         }
         $latest=bp_upload($GLOBALS['PREFIX'].'latest.json',$json);
         if ($latest['error'] || $latest['code']<200 || $latest['code']>=300) {
-            bp_fail('Histori '.$historyPath.' tersimpan dan terverifikasi, tetapi latest gagal diperbarui: '.($latest['error'] ?: $latest['body']),502);
+            bp_fail('Histori '.$historyPath.' tersimpan dan terverifikasi, tetapi latest gagal diperbarui. HTTP='.$latest['code'].'; CURL='.($latest['error'] ?: '-').'; RESPONSE='.($latest['body'] ?: '-'),502);
         }
         sec_audit_write(['action'=>'business_presence_upload','filename'=>$filename,'date'=>$date,'size'=>strlen($json),'status'=>'success','error'=>null]);
         echo json_encode(['status'=>'ok','date'=>$date,'totalRows'=>count($records),'validRows'=>count($valid),'invalidRows'=>count($invalid),'latestPath'=>$GLOBALS['PREFIX'].'latest.json','historyPath'=>$historyPath,'historyVerified'=>true]);

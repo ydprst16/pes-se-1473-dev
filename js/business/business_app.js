@@ -105,12 +105,14 @@
     const password=$('businessUploadPassword').value;if(!password){Swal.fire('Password diperlukan','Masukkan password upload.','warning');return;}
     const btn=$('btnBusinessImport');btn.disabled=true;btn.innerHTML='<span class="spinner-border spinner-border-sm me-1"></span>Mengunggah...';
     try{
-      const fd=new FormData();fd.append('password',password);fd.append('date',$('businessImportDate').value||new Date().toISOString().slice(0,10));fd.append('filename',file.name);fd.append('payload',JSON.stringify(currentPayload));
+      const selectedDate=$('businessImportDate').value;
+      if(!selectedDate)throw new Error('Tanggal snapshot harus dipilih.');
+      const fd=new FormData();fd.append('password',password);fd.append('date',selectedDate);fd.append('filename',file.name);fd.append('payload',JSON.stringify(currentPayload));
       const res=await fetch(api('upload'),{method:'POST',body:fd}),result=await res.json();
       if(!res.ok||result.status!=='ok')throw new Error(result.message||'Import gagal.');
       bootstrap.Modal.getOrCreateInstance($('businessUploadModal')).hide();$('businessUploadPassword').value='';$('businessExcelFile').value='';currentPayload=null;
-      await loadLatest();await loadHistory();
-      Swal.fire({icon:'success',title:'Import berhasil',html:`Total baris Excel: <b>${fmt(result.totalRows)}</b><br>Berhasil disimpan: <b>${fmt(result.validRows)}</b>`});
+      await loadDate(result.date);await loadHistory();
+      Swal.fire({icon:'success',title:'Import berhasil',html:`Histori <b>${escapeHtml(result.date)}</b> tersimpan dan terverifikasi di Supabase.<br>Total baris Excel: <b>${fmt(result.totalRows)}</b><br>Berhasil disimpan: <b>${fmt(result.validRows)}</b>`});
     }catch(e){Swal.fire('Import gagal',e.message,'error');}
     finally{btn.disabled=!currentPayload;btn.innerHTML='<i class="bi bi-cloud-upload me-1"></i> Import ke Supabase';}
   }
@@ -184,7 +186,7 @@
     const regionData=Object.values(regions).sort((a,b)=>a.idsubsls.localeCompare(b.idsubsls));
 
     if(regionTable)regionTable.destroy();
-    regionTable=new Tabulator('#businessRegionTable',{data:regionData,layout:'fitDataTable',responsiveLayout:false,height:'520px',pagination:true,paginationSize:20,placeholder:'Tidak ada data',columnDefaults:{headerSort:true,headerWordWrap:true,tooltip:true},columns:[
+    regionTable=new Tabulator('#businessRegionTable',{data:regionData,layout:(window.matchMedia('(max-width: 767.98px)').matches?'fitDataTable':'fitColumns'),responsiveLayout:false,height:'520px',pagination:true,paginationSize:20,placeholder:'Tidak ada data',columnDefaults:{headerSort:true,headerWordWrap:true,tooltip:true},columns:[
       {title:'ID Sub-SLS',field:'idsubsls',headerFilter:'input',minWidth:145,widthGrow:1},{title:'Kecamatan',field:'kec',minWidth:85,widthGrow:0.8},{title:'Desa',field:'des',minWidth:75,widthGrow:0.7},{title:'SLS',field:'sls',minWidth:65,widthGrow:0.6},{title:'Sub-SLS',field:'ssls',minWidth:75,widthGrow:0.7},{title:'Total Assignment',field:'total',hozAlign:'right',minWidth:85,widthGrow:0.8},
       {title:'Keluarga Terisi',field:'familyFilled',hozAlign:'right',minWidth:95,widthGrow:0.9},{title:'Usaha Terisi',field:'businessFilled',hozAlign:'right',minWidth:90,widthGrow:0.9},
       {title:'Status OPEN',hozAlign:'right',minWidth:85,widthGrow:0.8,formatter:c=>c.getRow().getData().statuses.OPEN||0},{title:'DRAFT',hozAlign:'right',minWidth:70,widthGrow:0.6,formatter:c=>c.getRow().getData().statuses.DRAFT||0},
@@ -202,7 +204,7 @@
       const rows=officers.map(o=>{let total=0,ff=0,bf=0,matched=0;const fam={},bus={},sts={};(o.regionSummary||[]).forEach(rs=>{const g=byRegion[String(rs.regionCode||'')];if(!g)return;matched++;total+=g.total;ff+=g.familyFilled;bf+=g.businessFilled;for(const [k,v] of Object.entries(g.family))fam[k]=(fam[k]||0)+v;for(const [k,v] of Object.entries(g.business))bus[k]=(bus[k]||0)+v;for(const [k,v] of Object.entries(g.statuses))sts[k]=(sts[k]||0)+v;});return{name:((typeof USERNAME_MAP!=='undefined'&&USERNAME_MAP[o.email||o.username])||o.username||o.email||'-'),email:o.email||o.username||'',matched,total,familyFilled:ff,businessFilled:bf,statuses:sts};}).filter(x=>x.matched>0).sort((a,b)=>b.total-a.total);
   
       if(officerTable)officerTable.destroy();
-      officerTable=new Tabulator('#businessOfficerTable',{data:rows,layout:'fitDataTable',responsiveLayout:false,height:'420px',pagination:true,paginationSize:15,placeholder:'Belum ada wilayah yang cocok dengan JSON petugas.',columnDefaults:{headerSort:true,headerWordWrap:true,tooltip:true},columns:[
+      officerTable=new Tabulator('#businessOfficerTable',{data:rows,layout:(window.matchMedia('(max-width: 767.98px)').matches?'fitDataTable':'fitColumns'),responsiveLayout:false,height:'420px',pagination:true,paginationSize:15,placeholder:'Belum ada wilayah yang cocok dengan JSON petugas.',columnDefaults:{headerSort:true,headerWordWrap:true,tooltip:true},columns:[
         {title:'Nama Petugas',field:'name',headerFilter:'input',minWidth:145,widthGrow:1.4},{title:'Username',field:'email',minWidth:150,widthGrow:1.4},{title:'Sub-SLS Cocok',field:'matched',hozAlign:'right',minWidth:95,widthGrow:0.8},{title:'Total Assignment',field:'total',hozAlign:'right',minWidth:105,widthGrow:0.9},
         {title:'Keluarga Terisi',field:'familyFilled',hozAlign:'right',minWidth:100,widthGrow:0.9},{title:'Usaha Terisi',field:'businessFilled',hozAlign:'right',minWidth:95,widthGrow:0.9},
         {title:'OPEN',hozAlign:'right',minWidth:70,widthGrow:0.6,formatter:c=>c.getRow().getData().statuses.OPEN||0},{title:'DRAFT',hozAlign:'right',minWidth:70,widthGrow:0.6,formatter:c=>c.getRow().getData().statuses.DRAFT||0},{title:'SUBMITTED',hozAlign:'right',minWidth:90,widthGrow:0.8,formatter:c=>c.getRow().getData().statuses['SUBMITTED BY Pencacah']||0},{title:'COMPLETED',hozAlign:'right',minWidth:95,widthGrow:0.8,formatter:c=>c.getRow().getData().statuses['COMPLETED BY Pengawas']||0}
