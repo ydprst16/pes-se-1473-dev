@@ -94,6 +94,14 @@
     try{
       if(!/\.xlsx?$/i.test(file.name))throw new Error('Pilih file .xlsx atau .xls.');
       const parsed=await parseExcel(file);setPreview(parsed,file);
+      // Otomatis isi tanggal snapshot dari nama file yyyymmdd_hhmmss.xlsx.
+      const filenameDate=file.name.match(/^(\d{4})(\d{2})(\d{2})_\d{6}\.xlsx?$/i);
+      if(!filenameDate)throw new Error('Nama file harus mengikuti format yyyymmdd_hhmmss.xlsx, contoh 20261107_095351.xlsx.');
+      const isoDate=`${filenameDate[1]}-${filenameDate[2]}-${filenameDate[3]}`;
+      const parsedDate=new Date(`${isoDate}T00:00:00`);
+      if(Number.isNaN(parsedDate.getTime()) || parsedDate.toISOString().slice(0,10)!==isoDate)throw new Error(`Tanggal pada nama file tidak valid: ${isoDate}`);
+      $('businessImportDate').value=isoDate;
+      $('businessImportDate').readOnly=true;
       // Do not import a partial file: the denominator must always equal the original Excel row count.
       if(parsed.errors.length)throw new Error('Import dibatalkan karena ada baris bermasalah. Perbaiki Excel agar seluruh baris dapat diproses.');
       currentPayload={records:parsed.valid,totalRows:parsed.rows.length};$('btnBusinessImport').disabled=false;
@@ -105,14 +113,16 @@
     const password=$('businessUploadPassword').value;if(!password){Swal.fire('Password diperlukan','Masukkan password upload.','warning');return;}
     const btn=$('btnBusinessImport');btn.disabled=true;btn.innerHTML='<span class="spinner-border spinner-border-sm me-1"></span>Mengunggah...';
     try{
-      const selectedDate=$('businessImportDate').value;
-      if(!selectedDate)throw new Error('Tanggal snapshot harus dipilih.');
+      const filenameDate=file.name.match(/^(\d{4})(\d{2})(\d{2})_\d{6}\.xlsx?$/i);
+      if(!filenameDate)throw new Error('Nama file harus mengikuti format yyyymmdd_hhmmss.xlsx.');
+      const selectedDate=`${filenameDate[1]}-${filenameDate[2]}-${filenameDate[3]}`;
       const fd=new FormData();fd.append('password',password);fd.append('date',selectedDate);fd.append('filename',file.name);fd.append('payload',JSON.stringify(currentPayload));
       const res=await fetch(api('upload'),{method:'POST',body:fd}),result=await res.json();
       if(!res.ok||result.status!=='ok')throw new Error(result.message||'Import gagal.');
       bootstrap.Modal.getOrCreateInstance($('businessUploadModal')).hide();$('businessUploadPassword').value='';$('businessExcelFile').value='';currentPayload=null;
       await loadDate(result.date);await loadHistory();
-      Swal.fire({icon:'success',title:'Import berhasil',html:`Histori <b>${escapeHtml(result.date)}</b> tersimpan dan terverifikasi di Supabase.<br>Total baris Excel: <b>${fmt(result.totalRows)}</b><br>Berhasil disimpan: <b>${fmt(result.validRows)}</b>`});
+      const latestInfo=result.latestUpdated?'Snapshot terbaru diperbarui.':`Snapshot terbaru tetap ${escapeHtml(result.latestDate||'-')}; file ini disimpan sebagai histori.`;
+      Swal.fire({icon:'success',title:'Import berhasil',html:`Histori <b>${escapeHtml(result.date)}</b> tersimpan dan terverifikasi di Supabase.<br>Total baris Excel: <b>${fmt(result.totalRows)}</b><br>Berhasil disimpan: <b>${fmt(result.validRows)}</b><br><small>${latestInfo}</small>`});
     }catch(e){Swal.fire('Import gagal',e.message,'error');}
     finally{btn.disabled=!currentPayload;btn.innerHTML='<i class="bi bi-cloud-upload me-1"></i> Import ke Supabase';}
   }

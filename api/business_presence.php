@@ -53,9 +53,14 @@ try {
     if ($action==='upload' && $_SERVER['REQUEST_METHOD']==='POST') {
         $auth=sec_verify_upload_password($_POST['password'] ?? '');
         if (!$auth['ok']) bp_fail($auth['error'],$auth['code']);
-        $date=$_POST['date'] ?? date('Y-m-d');
-        $filename=basename($_POST['filename'] ?? 'business-presence.xlsx');
-        if (!preg_match('/^\d{4}-\d{2}-\d{2}$/',$date) || !checkdate((int)substr($date,5,2),(int)substr($date,8,2),(int)substr($date,0,4))) bp_fail('Tanggal snapshot tidak valid.');
+        $filename=basename($_POST['filename'] ?? '');
+        // Tanggal snapshot selalu berasal dari nama file: yyyymmdd_hhmmss.xlsx.
+        // Tanggal pilihan di browser tidak dijadikan sumber kebenaran.
+        if (!preg_match('/^(\d{4})(\d{2})(\d{2})_\d{6}\.xlsx?$/i', $filename, $fm)) {
+            bp_fail('Nama file tidak sesuai format yyyymmdd_hhmmss.xlsx. Contoh: 20261107_095351.xlsx.');
+        }
+        $date=$fm[1].'-'.$fm[2].'-'.$fm[3];
+        if (!checkdate((int)$fm[2],(int)$fm[3],(int)$fm[1])) bp_fail('Tanggal pada nama file tidak valid: '.$date);
         $raw=$_POST['payload'] ?? file_get_contents('php://input');
         if (!$raw) bp_fail('Payload JSON kosong.');
         if (strlen($raw)>25*1024*1024) bp_fail('Payload melebihi batas 25 MB.',413);
@@ -114,12 +119,22 @@ try {
             $seenFile=is_array($candidate ?? null) ? ($candidate['sourceFile'] ?? '-') : '-';
             bp_fail('Histori sudah diunggah, tetapi pembacaan verifikasi belum cocok setelah 4 percobaan. Target: tanggal='.$date.', file='.$filename.', assignment='.count($valid).'. Terbaca: tanggal='.$seenDate.', file='.$seenFile.', assignment='.$seenCount.'. HTTP='.($verify['code'] ?? 0).'; CURL='.($verify['error'] ?? '-').'; PATH='.$historyPath,502);
         }
-        $latest=bp_upload($GLOBALS['PREFIX'].'latest.json',$json);
-        if ($latest['error'] || $latest['code']<200 || $latest['code']>=300) {
-            bp_fail('Histori '.$historyPath.' tersimpan dan terverifikasi, tetapi latest gagal diperbarui. HTTP='.$latest['code'].'; CURL='.($latest['error'] ?: '-').'; RESPONSE='.($latest['body'] ?: '-'),502);
+        // latest.json merepresentasikan tanggal data paling baru, bukan upload terakhir.
+        // Upload file historis (mis. 7 Nov saat ini 8 Nov) hanya menambah histori.
+        $latestPath=$GLOBALS['PREFIX'].'latest.json';
+        $latestCurrent=bp_download($latestPath);
+        $latestCurrentData=(!$latestCurrent['error'] && $latestCurrent['code']===200) ? json_decode($latestCurrent['body'],true) : null;
+        $currentLatestDate=is_array($latestCurrentData) ? ($latestCurrentData['importDate'] ?? '') : '';
+        $latestUpdated=false;
+        if ($currentLatestDate==='' || strcmp($date,$currentLatestDate)>=0) {
+            $latest=bp_upload($latestPath,$json);
+            if ($latest['error'] || $latest['code']<200 || $latest['code']>=300) {
+                bp_fail('Histori '.$historyPath.' tersimpan dan terverifikasi, tetapi latest gagal diperbarui. HTTP='.$latest['code'].'; CURL='.($latest['error'] ?: '-').'; RESPONSE='.($latest['body'] ?: '-'),502);
+            }
+            $latestUpdated=true;
         }
         sec_audit_write(['action'=>'business_presence_upload','filename'=>$filename,'date'=>$date,'size'=>strlen($json),'status'=>'success','error'=>null]);
-        echo json_encode(['status'=>'ok','date'=>$date,'totalRows'=>count($records),'validRows'=>count($valid),'invalidRows'=>count($invalid),'latestPath'=>$GLOBALS['PREFIX'].'latest.json','historyPath'=>$historyPath,'historyVerified'=>true]);
+        echo json_encode(['status'=>'ok','date'=>$date,'totalRows'=>count($records),'validRows'=>count($valid),'invalidRows'=>count($invalid),'latestPath'=>$GLOBALS['PREFIX'].'latest.json','historyPath'=>$historyPath,'historyVerified'=>true,'latestUpdated'=>$latestUpdated,'latestDate'=>($latestUpdated?$date:$currentLatestDate)]);
         exit;
     }
     if ($action==='latest' || $action==='get') {
