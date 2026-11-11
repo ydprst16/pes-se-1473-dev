@@ -144,6 +144,51 @@
   }
   async function loadDate(date){if(!date)return loadLatest();try{const r=await fetch(api('get',{date}),{cache:'no-store'}),j=await r.json();if(!r.ok)throw new Error(j.message||'Snapshot tidak ditemukan');render(j);}catch(e){Swal.fire('Gagal membuka snapshot',e.message,'error');}}
 
+
+  function businessKpiValues(payload){
+    const rows=Array.isArray(payload?.records)?payload.records:[];
+    const total=rows.length;
+    const family=rows.filter(r=>cell(r.ada_keluarga_label)!=='').length;
+    const business=rows.filter(r=>cell(r.ada_bang_usaha_label)!=='').length;
+    const combined=rows.filter(r=>cell(r.ada_keluarga_label)!==''||cell(r.ada_bang_usaha_label)!=='').length;
+    return {total,family,business,combinedPercent:total?combined/total*100:0};
+  }
+  function renderBusinessChange(id,current,previous,previousDate,isPercent=false){
+    const el=$(id);if(!el)return;
+    if(!previous){el.className='bp-kpi-change';el.textContent='—';el.style.color='#9ca3af';return;}
+    const diff=current-previous;
+    const rounded=isPercent?Number(diff.toFixed(2)):Math.round(diff);
+    const zero=rounded===0,up=rounded>0;
+    el.className='bp-kpi-change';
+    el.style.color=zero?'#9ca3af':(up?'#22c55e':'#ef4444');
+    const symbol=zero?'▬':(up?'▲':'▼');
+    const amount=isPercent?`${Math.abs(rounded).toFixed(2).replace('.',',')} poin`:fmt(Math.abs(rounded));
+    const sign=zero?'':(up?'+':'−');
+    el.textContent=`${symbol} ${sign}${amount}`;
+  }
+  async function updateBusinessKpiComparison(payload){
+    const currentDate=String(payload?.importDate||'');
+    try{
+      const listResponse=await fetch(api('list'),{cache:'no-store'});
+      if(!listResponse.ok)throw new Error('Histori tidak tersedia');
+      const list=await listResponse.json();
+      const dates=(list.items||[]).map(x=>x.date).filter(d=>/^\d{4}-\d{2}-\d{2}$/.test(d)&&d<currentDate).sort().reverse();
+      if(!dates.length){['bpTotalChange','bpFamilyChange','bpBusinessChange','bpCombinedChange'].forEach(id=>renderBusinessChange(id,0,null,null));return;}
+      const previousDate=dates[0];
+      const previousResponse=await fetch(api('get',{date:previousDate}),{cache:'no-store'});
+      if(!previousResponse.ok)throw new Error('Snapshot sebelumnya tidak dapat dibaca');
+      const previousPayload=await previousResponse.json();
+      const now=businessKpiValues(payload),before=businessKpiValues(previousPayload);
+      renderBusinessChange('bpTotalChange',now.total,before.total,previousDate);
+      renderBusinessChange('bpFamilyChange',now.family,before.family,previousDate);
+      renderBusinessChange('bpBusinessChange',now.business,before.business,previousDate);
+      renderBusinessChange('bpCombinedChange',now.combinedPercent,before.combinedPercent,previousDate,true);
+    }catch(error){
+      console.warn('Perbandingan KPI Keberadaan gagal dimuat:',error);
+      ['bpTotalChange','bpFamilyChange','bpBusinessChange','bpCombinedChange'].forEach(id=>{const el=$(id);if(el){el.className='bp-kpi-change';el.textContent='— Perbandingan tidak tersedia';}});
+    }
+  }
+
   function renderDonut(elementId,key,counts,order){
     if(charts[key])charts[key].destroy();
     const labels=order.filter(x=>x!=='Belum Diisi' && counts[x]);
@@ -254,6 +299,7 @@
       {title:'Status Assignment',field:'status',minWidth:155,widthGrow:1},
       {title:'URL FASIH',field:'url',minWidth:120,widthGrow:0.8,formatter:c=>{const u=c.getValue();return u&&/^https?:\/\//i.test(u)?`<a href="${escapeHtml(u)}" target="_blank" rel="noopener noreferrer">Buka Assignment</a>`:'-';}}
     ]});
+    await updateBusinessKpiComparison(payload);
   }
 
   function exportRegion(){if(regionTable)regionTable.download('xlsx',`rekap_keberadaan_keluarga_usaha_${currentPayload?.importDate||'latest'}.xlsx`,{sheetName:'Rekap Keluarga Usaha'});}

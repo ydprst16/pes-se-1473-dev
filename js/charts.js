@@ -79,6 +79,21 @@ let distributionChart = null;
 
 const BUCKET_LABELS = ["0-20%", "20-40%", "40-60%", "60-80%", "80-100%"];
 
+// Ukuran chart mengikuti viewport dan jumlah kategori agar SVG tidak
+// meluber keluar card pada perangkat mobile.
+function isMobileChart() {
+  return window.matchMedia && window.matchMedia("(max-width: 768px)").matches;
+}
+function chartHeightForRows(count, desktopBase = 430, mobileRow = 42, mobileMin = 300) {
+  return isMobileChart()
+    ? Math.max(mobileMin, Math.min(760, count * mobileRow + 105))
+    : desktopBase;
+}
+function shortAxisLabel(value, max = 17) {
+  const text = String(value ?? "");
+  return text.length > max ? text.slice(0, max - 1) + "…" : text;
+}
+
 function bucketOf(progress) {
   if (progress < 20) return "0-20%";
   if (progress < 40) return "20-40%";
@@ -131,7 +146,7 @@ function renderStatusChart() {
   if (!el) return;
 
   statusChart = new ApexCharts(el, {
-    chart: { type: "donut", height: 360, toolbar: { show: false } },
+    chart: { type: "donut", height: isMobileChart() ? 310 : 360, width: "100%", toolbar: { show: false }, redrawOnParentResize: true, redrawOnWindowResize: true },
     labels: [
       "Open",
       "Draft",
@@ -153,7 +168,7 @@ function renderStatusChart() {
       "#ef4444",
       "#f97316",
     ],
-    legend: { position: "bottom" },
+    legend: { position: "bottom", fontSize: isMobileChart() ? "11px" : "13px", itemMargin: { horizontal: 7, vertical: 3 } },
     dataLabels: { enabled: true },
     tooltip: { y: { formatter: (v) => formatNumber(v) } },
   });
@@ -168,12 +183,13 @@ function renderRankingChart() {
   const data = Dashboard.rankings.topProgress;
 
   rankingChart = new ApexCharts(el, {
-    chart: { type: "bar", height: 430, toolbar: { show: false } },
-    plotOptions: { bar: { horizontal: true, borderRadius: 5 } },
+    chart: { type: "bar", height: chartHeightForRows(data.length, 430, 43, 320), width: "100%", toolbar: { show: false }, parentHeightOffset: 0, redrawOnParentResize: true, redrawOnWindowResize: true },
+    plotOptions: { bar: { horizontal: true, borderRadius: 5, barHeight: isMobileChart() ? "58%" : "65%" } },
     series: [
       { name: "Progress", data: data.map((x) => chartProgressField(x)) },
     ],
     xaxis: { categories: data.map((x) => x.username) },
+    yaxis: { labels: { maxWidth: isMobileChart() ? 112 : 180, style: { fontSize: isMobileChart() ? "10px" : "12px" }, formatter: (v) => isMobileChart() ? shortAxisLabel(v, 16) : v } },
     dataLabels: { enabled: true, formatter: (v) => v.toFixed(1) + "%" },
     tooltip: { y: { formatter: (v) => v.toFixed(2) + "%" } },
   });
@@ -190,12 +206,13 @@ function renderDistrictChart() {
   );
 
   districtChart = new ApexCharts(el, {
-    chart: { type: "bar", height: 420, toolbar: { show: false } },
-    plotOptions: { bar: { horizontal: true, borderRadius: 5 } },
+    chart: { type: "bar", height: chartHeightForRows(data.length, 420, 42, 320), width: "100%", toolbar: { show: false }, parentHeightOffset: 0, redrawOnParentResize: true, redrawOnWindowResize: true },
+    plotOptions: { bar: { horizontal: true, borderRadius: 5, barHeight: isMobileChart() ? "58%" : "65%" } },
     series: [
       { name: "Progress", data: data.map((item) => chartProgressField(item)) },
     ],
     xaxis: { categories: data.map((item) => item.name) },
+    yaxis: { labels: { maxWidth: isMobileChart() ? 112 : 180, style: { fontSize: isMobileChart() ? "10px" : "12px" }, formatter: (v) => isMobileChart() ? shortAxisLabel(v, 16) : v } },
     dataLabels: { enabled: true, formatter: (v) => v.toFixed(1) + "%" },
     tooltip: {
       custom: function ({ dataPointIndex }) {
@@ -235,7 +252,11 @@ function renderDistributionChart() {
   distributionChart = new ApexCharts(el, {
     chart: {
       type: "bar",
-      height: 350,
+      height: isMobileChart() ? 300 : 350,
+      width: "100%",
+      parentHeightOffset: 0,
+      redrawOnParentResize: true,
+      redrawOnWindowResize: true,
       toolbar: { show: false },
       events: {
         dataPointSelection: function (event, chartContext, config) {
@@ -244,7 +265,7 @@ function renderDistributionChart() {
         },
       },
     },
-    plotOptions: { bar: { borderRadius: 4 } },
+    plotOptions: { bar: { borderRadius: 4, columnWidth: isMobileChart() ? "48%" : "55%" } },
     series: [
       {
         name: roleLabel,
@@ -258,7 +279,7 @@ function renderDistributionChart() {
       },
     ],
     colors: ["#3b82f6"],
-    xaxis: { categories: BUCKET_LABELS },
+    xaxis: { categories: BUCKET_LABELS, labels: { style: { fontSize: isMobileChart() ? "10px" : "12px" }, rotate: isMobileChart() ? -25 : 0, trim: false } },
     dataLabels: { enabled: true },
     tooltip: {
       y: {
@@ -319,11 +340,22 @@ window.onThemeChanged = function () {
   renderCharts(); // re-render semua chart pakai warna baru
 };
 
+let chartResizeTimer = null;
+let lastChartMobileState = isMobileChart();
 window.addEventListener("resize", () => {
-  if (statusChart) statusChart.updateOptions({});
-  if (rankingChart) rankingChart.updateOptions({});
-  if (districtChart) districtChart.updateOptions({});
-  if (distributionChart) distributionChart.updateOptions({});
+  clearTimeout(chartResizeTimer);
+  chartResizeTimer = setTimeout(() => {
+    const nowMobile = isMobileChart();
+    // Rebuild only when crossing breakpoint; otherwise let Apex resize itself.
+    if (nowMobile !== lastChartMobileState) {
+      lastChartMobileState = nowMobile;
+      renderCharts();
+      return;
+    }
+    [statusChart, rankingChart, districtChart, distributionChart].forEach(chart => {
+      if (chart) chart.updateOptions({ chart: { width: "100%" } }, false, true);
+    });
+  }, 180);
 });
 
 /* ==========================================================================
