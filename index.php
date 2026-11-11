@@ -1452,8 +1452,8 @@
                 <span id="scheduleProgressStatus" class="schedule-progress-status">Menghitung progres...</span>
             </div>
             <div class="schedule-progress-grid">
-                <div><div class="schedule-progress-label">Target progres</div><div class="schedule-progress-value" id="scheduleTargetValue">—</div></div>
-                <div><div class="schedule-progress-label">Progres aktual</div><div class="schedule-progress-value" id="scheduleActualValue">—</div></div>
+                <div><div class="schedule-progress-label">Target progres</div><div class="schedule-progress-value schedule-target-value" id="scheduleTargetValue">—</div></div>
+                <div><div class="schedule-progress-label">Progres aktual</div><div class="schedule-progress-value schedule-actual-value" id="scheduleActualValue">—</div></div>
                 <div><div class="schedule-progress-label">Selisih</div><div class="schedule-progress-value" id="scheduleGapValue">—</div></div>
             </div>
             <div class="schedule-progress-track"><div id="scheduleProgressBar" class="schedule-progress-fill" style="width:0%"></div></div>
@@ -1790,6 +1790,7 @@
         .schedule-progress-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:12px}
         .schedule-progress-label{font-size:.76rem;color:var(--bs-secondary-color);margin-bottom:3px}
         .schedule-progress-value{font-size:1.35rem;font-weight:800;line-height:1.25;font-variant-numeric:tabular-nums}
+        .schedule-target-value{color:#3b82f6!important}.schedule-actual-value{color:#16a34a!important}
         .schedule-progress-track{height:9px;border-radius:99px;background:rgba(148,163,184,.2);overflow:hidden}
         .schedule-progress-fill{height:100%;border-radius:99px;background:var(--sp-accent);transition:width .35s ease}
         .schedule-progress-foot{font-size:.76rem;color:var(--bs-secondary-color);margin-top:9px}

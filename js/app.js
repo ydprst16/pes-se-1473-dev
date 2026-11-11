@@ -407,7 +407,7 @@ function renderScheduleProgress(actualProgress, assignmentTotal) {
     gapEl.style.color = gap < -0.05 ? "var(--sp-accent)" : "#16a34a";
   }
   if (statusEl) statusEl.textContent = statusText;
-  if (bar) bar.style.width = Math.min(100, actual) + "%";
+  if (bar) { bar.style.width = Math.min(100, actual) + "%"; bar.style.background = "#16a34a"; }
   if (noteEl) {
     const dateLabel = selectedYmd < startYmd ? "Periode 1–30 November 2026" : selectedYmd > endYmd ? "Akhir periode: 30 November 2026" : `Hari ke-${elapsedDays} dari 30 · ${formatDateID(selected).split(" ").slice(0,3).join(" ")}`;
     noteEl.textContent = `${dateLabel}. ${note}`;

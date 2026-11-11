@@ -318,8 +318,7 @@ function renderPerformerList(container, data, color = "primary") {
           <small class="text-muted">
             Assignment : <b>${formatNumber(item.assignment)}</b> |
             Submitted : <b>${formatNumber(item.submitted)}</b> |
-            Completed : <b>${formatNumber(item.completedByPengawas ?? 0)}</b> |
-            Approved : <b>${formatNumber(item.approved)}</b>
+            Completed : <b>${formatNumber((item.completedByPengawas ?? 0) + (item.approved ?? 0))}</b>
           </small>
         </div>
         <span class="badge bg-${color}">${formatPercent(progress)}</span>
