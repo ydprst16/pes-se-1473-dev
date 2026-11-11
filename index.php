@@ -1775,20 +1775,24 @@
                 @media(max-width:767.98px){.bp-data-table{display:block;width:100%;max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}.bp-data-table .tabulator{min-width:1050px}.bp-data-table .tabulator-tableholder{overflow-x:auto!important}.bp-data-table .tabulator-cell,.bp-data-table .tabulator-col-title{font-size:12px}.chart-card{padding:14px!important}.chart-title{line-height:1.3}}
             
         /* Evaluasi progres terhadap kalender pendataan */
-        .schedule-progress-alert{--sp-accent:#2563eb;--sp-bg:rgba(37,99,235,.07);border:1px solid var(--border-color,rgba(148,163,184,.28));border-left:4px solid var(--sp-accent);border-radius:14px;padding:16px 18px;background:var(--card-bg, var(--bs-body-bg));color:var(--text-color,inherit);box-shadow:0 4px 14px rgba(15,23,42,.04)}
+        .schedule-progress-alert{--sp-accent:#2563eb;--sp-bg:rgba(37,99,235,.09);border:1px solid var(--bs-border-color);border-left:4px solid var(--sp-accent);border-radius:16px;padding:17px 20px;background:var(--bs-tertiary-bg);color:var(--bs-body-color);box-shadow:0 5px 18px rgba(15,23,42,.06);transition:background .2s ease,border-color .2s ease,color .2s ease}
         .schedule-progress-alert.status-good{--sp-accent:#16a34a;--sp-bg:rgba(22,163,74,.08)}
         .schedule-progress-alert.status-near{--sp-accent:#d97706;--sp-bg:rgba(217,119,6,.09)}
         .schedule-progress-alert.status-low{--sp-accent:#dc2626;--sp-bg:rgba(220,38,38,.08)}
+        html[data-bs-theme="dark"] .schedule-progress-alert{background:linear-gradient(145deg,#111827,#0b1220);border-color:#263244;border-left-color:var(--sp-accent);color:#f3f4f6;box-shadow:0 8px 22px rgba(0,0,0,.18)}
+        html[data-bs-theme="dark"] .schedule-progress-label,html[data-bs-theme="dark"] .schedule-progress-foot{color:#94a3b8}
+        html[data-bs-theme="light"] .schedule-progress-alert{background:linear-gradient(145deg,#fff,#f8fafc);border-color:#e2e8f0;border-left-color:var(--sp-accent);color:#0f172a;box-shadow:0 5px 16px rgba(15,23,42,.06)}
+        html[data-bs-theme="light"] .schedule-progress-label,html[data-bs-theme="light"] .schedule-progress-foot{color:#64748b}
         .schedule-progress-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
         .schedule-progress-title{font-weight:750;font-size:1rem;display:flex;align-items:center;gap:9px}
         .schedule-progress-title i{color:var(--sp-accent);font-size:1.1rem}
         .schedule-progress-status{font-size:.76rem;font-weight:700;color:var(--sp-accent);background:var(--sp-bg);padding:6px 10px;border-radius:999px;white-space:nowrap}
         .schedule-progress-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:12px}
-        .schedule-progress-label{font-size:.76rem;color:var(--text-muted,#64748b);margin-bottom:3px}
+        .schedule-progress-label{font-size:.76rem;color:var(--bs-secondary-color);margin-bottom:3px}
         .schedule-progress-value{font-size:1.35rem;font-weight:800;line-height:1.25;font-variant-numeric:tabular-nums}
         .schedule-progress-track{height:9px;border-radius:99px;background:rgba(148,163,184,.2);overflow:hidden}
         .schedule-progress-fill{height:100%;border-radius:99px;background:var(--sp-accent);transition:width .35s ease}
-        .schedule-progress-foot{font-size:.76rem;color:var(--text-muted,#64748b);margin-top:9px}
+        .schedule-progress-foot{font-size:.76rem;color:var(--bs-secondary-color);margin-top:9px}
         @media(max-width:575.98px){.schedule-progress-alert{padding:13px 14px}.schedule-progress-head{align-items:flex-start;flex-direction:column;gap:8px}.schedule-progress-grid{gap:7px}.schedule-progress-value{font-size:1.12rem}.schedule-progress-label{font-size:.69rem}}
 </style>
             <div class="row g-3 mb-4">

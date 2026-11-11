@@ -165,6 +165,18 @@ async function renderAll() {
   if (typeof renderCharts === "function") renderCharts();
   if (typeof renderTable === "function") renderTable();
   if (typeof renderComparison === "function") renderComparison();
+  // Render once more after all dashboard data and role state are settled.
+  // This prevents the schedule banner from remaining in its initial loading state.
+  const summary = Dashboard && Dashboard.summary ? Dashboard.summary : {};
+  const total = Number(summary.assignment || 0);
+  let actual = Number(progressForRole(summary));
+  if (!Number.isFinite(actual) || (actual === 0 && total > 0)) {
+    const numerator = currentRole === "pengawas"
+      ? Number(summary.reviewed ?? summary.approved ?? 0)
+      : Number(summary.completed ?? 0);
+    actual = total > 0 ? numerator / total * 100 : 0;
+  }
+  renderScheduleProgress(actual, total);
 }
 
 function applySavedTheme() {
@@ -363,7 +375,8 @@ function renderScheduleProgress(actualProgress, assignmentTotal) {
     elapsedDays = selectedYmd > endYmd ? 30 : Math.min(30, Math.max(0, Math.floor((Date.UTC(selectedYear, selectedMonth - 1, selectedDay) - Date.UTC(2026, 10, 1)) / 86400000) + 1));
   }
   const target = elapsedDays / 30 * 100;
-  const actual = Number.isFinite(Number(actualProgress)) ? Math.max(0, Number(actualProgress)) : 0;
+  const parsedActual = Number(actualProgress);
+  const actual = Number.isFinite(parsedActual) ? Math.max(0, parsedActual) : 0;
   const gap = actual - target;
   const ratio = target > 0 ? actual / target * 100 : (actual > 0 ? 100 : 0);
 
