@@ -172,7 +172,7 @@
     const bku=rows.filter(r=>cell(r.keberadaan_usaha_label)!=='').length;
     const covered=new Set();
     rows.forEach(r=>{const id=cell(r.id);if(id&&(cell(r.ada_keluarga_label)||cell(r.ada_bang_usaha_label)||cell(r.keberadaan_usaha_label)))covered.add(id);});
-    return {total:ids.size,family,familyBusiness,bku,combinedPercent:ids.size?covered.size/ids.size*100:0};
+    return {total:rows.length,family,familyBusiness,bku,combinedPercent:ids.size?covered.size/ids.size*100:0};
   }
   function renderBusinessChange(id,current,previous,previousDate,isPercent=false){
     const el=$(id);if(!el)return;
@@ -270,7 +270,7 @@
     currentRows.forEach(r=>{const id=cell(r.id);if(id&&(cell(r.ada_keluarga_label)||cell(r.ada_bang_usaha_label)||cell(r.keberadaan_usaha_label)))coveredIds.add(id);});
     const combinedPercent=uniqueIds.size?coveredIds.size/uniqueIds.size*100:0;
     $('businessSnapshotDate').textContent=payload.importDate||'-';$('businessUpdatedAt').textContent=payload.uploadedAt?new Date(payload.uploadedAt).toLocaleString('id-ID'):'-';
-    $('bpTotal').textContent=fmt(uniqueIds.size);$('bpFamilyFilled').textContent=fmt(familyFilled);$('bpFamilyBusinessFilled').textContent=fmt(familyBusinessFilled);$('bpBkuFilled').textContent=fmt(bkuFilled);$('bpCombinedPercent').textContent=combinedPercent.toLocaleString('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2})+'%';$('bpCombinedDetail').textContent=`${fmt(coveredIds.size)} dari ${fmt(uniqueIds.size)} assignment memiliki minimal satu isian keluarga/usaha`;
+    $('bpTotal').textContent=fmt(totalRows);$('bpFamilyFilled').textContent=fmt(familyFilled);$('bpFamilyBusinessFilled').textContent=fmt(familyBusinessFilled);$('bpBkuFilled').textContent=fmt(bkuFilled);$('bpCombinedPercent').textContent=combinedPercent.toLocaleString('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2})+'%';$('bpCombinedDetail').textContent=`${fmt(coveredIds.size)} dari ${fmt(uniqueIds.size)} assignment memiliki minimal satu isian keluarga/usaha`;
     $('businessFamilyRows').innerHTML=summaryRows(family,familyOrder,uniqueIds.size);
     $('businessFamilyBusinessRows').innerHTML=summaryRows(familyBusiness,businessOrder,Math.max(1,familyBusinessFilled));
     $('businessBkuRows').innerHTML=summaryRows(bku,businessOrder,Math.max(1,bkuFilled));
