@@ -49,7 +49,7 @@
   }
   function normalizeRecord(raw) {
     const r=normalizeHeader(raw), rec={};
-    ['prov','kab','kec','des','sls','ssls','nama','alamat','ada_keluarga_label','ada_bang_usaha_label','url','is_assignment_tambahan','assignment_status_alias','date_modified','id']
+    ['prov','kab','kec','des','sls','ssls','nama','nama_usaha','alamat','ada_keluarga_label','ada_bang_usaha_label','keberadaan_usaha_label','url','is_assignment_tambahan','assignment_status_alias','date_modified','id']
       .forEach(k=>rec[k]=cell(r[k]));
     rec.idsubsls=idSubsls(rec);
     return rec;
@@ -62,29 +62,46 @@
     const raw=XLSX.utils.sheet_to_json(sheet,{defval:'',raw:false});
     if (!raw.length) throw new Error('Sheet Excel kosong.');
     const headers=Object.keys(raw[0]).map(x=>String(x).trim().toLowerCase());
-    const requiredHeaders=['prov','kab','kec','des','sls','ssls','id','ada_keluarga_label','ada_bang_usaha_label','assignment_status_alias'];
+    const requiredHeaders=['prov','kab','kec','des','sls','ssls','id','ada_keluarga_label','ada_bang_usaha_label','keberadaan_usaha_label','assignment_status_alias'];
     const missingHeaders=requiredHeaders.filter(x=>!headers.includes(x));
     if (missingHeaders.length) throw new Error('Kolom wajib tidak ditemukan: '+missingHeaders.join(', '));
-    const rows=raw.map(normalizeRecord), valid=[], errors=[], seen=new Set();
+    const rows=raw.map(normalizeRecord), valid=[], errors=[], warnings=[], seenBusinessKeys=new Map(), familyStatusById=new Map();
     rows.forEach((r,i)=>{
       const missing=['prov','kab','kec','des','sls','ssls','id'].filter(k=>!r[k]);
       if(missing.length){errors.push(`Baris ${i+2}: data identitas kosong (${missing.join(', ')})`);return;}
       if(!/^\d{16}$/.test(r.idsubsls)){errors.push(`Baris ${i+2}: idsubsls tidak valid (${r.idsubsls})`);return;}
-      if(seen.has(r.id)){errors.push(`Baris ${i+2}: UUID assignment duplikat (${r.id})`);return;}
-      seen.add(r.id); valid.push(r);
+      // Satu UUID mewakili satu keluarga. Status keluarga harus konsisten di semua baris UUID tersebut.
+      const familyValue=cell(r.ada_keluarga_label);
+      if(familyValue){
+        if(familyStatusById.has(r.id) && familyStatusById.get(r.id)!==familyValue)
+          warnings.push(`Baris ${i+2}: status keluarga berbeda untuk UUID ${r.id} (sebelumnya "${familyStatusById.get(r.id)}", sekarang "${familyValue}")`);
+        else familyStatusById.set(r.id,familyValue);
+      }
+      // UUID assignment boleh berulang karena satu keluarga dapat memiliki banyak usaha.
+      // Kombinasi UUID + nama usaha hanya ditandai sebagai kandidat duplikasi; tidak ditolak.
+      const businessName=cell(r.nama_usaha).toLocaleLowerCase('id-ID').replace(/\s+/g,' ').trim();
+      if(businessName){
+        const businessKey=r.id+'::'+businessName;
+        if(seenBusinessKeys.has(businessKey)) warnings.push(`Baris ${i+2}: kandidat catatan usaha berulang untuk UUID ${r.id} dengan nama usaha "${r.nama_usaha}" (pertama pada baris ${seenBusinessKeys.get(businessKey)})`);
+        else seenBusinessKeys.set(businessKey,i+2);
+      }
+      valid.push(r);
     });
-    return {rows,valid,errors,sheetName:wb.SheetNames[0]};
+    return {rows,valid,errors,warnings,sheetName:wb.SheetNames[0]};
   }
 
   function setPreview(parsed,file) {
-    const f={},b={},s={};
-    parsed.valid.forEach(r=>{const a=familyOf(r.ada_keluarga_label),z=businessOf(r.ada_bang_usaha_label),t=r.assignment_status_alias||'Status Kosong';f[a]=(f[a]||0)+1;b[z]=(b[z]||0)+1;s[t]=(s[t]||0)+1;});
+    const f={},b={},k={},s={};
+    const familyById=new Map();
+    parsed.valid.forEach(r=>{const id=cell(r.id);if(cell(r.ada_keluarga_label)&&!familyById.has(id))familyById.set(id,familyOf(r.ada_keluarga_label));const z=businessOf(r.ada_bang_usaha_label),u=businessOf(r.keberadaan_usaha_label),t=r.assignment_status_alias||'Status Kosong';if(z!=='Belum Diisi')b[z]=(b[z]||0)+1;if(u!=='Belum Diisi')k[u]=(k[u]||0)+1;s[t]=(s[t]||0)+1;});
+    familyById.forEach(v=>f[v]=(f[v]||0)+1);
     const pills=(obj)=>Object.entries(obj).map(([k,v])=>`<span class="badge bg-secondary">${escapeHtml(k)}: ${fmt(v)}</span>`).join(' ');
-    $('businessImportPreview').innerHTML=`<div class="alert alert-light border mb-2"><strong>${escapeHtml(file.name)}</strong><br>Sheet: ${escapeHtml(parsed.sheetName)} · Total baris Excel: <b>${fmt(parsed.rows.length)}</b> · Valid: <b class="text-success">${fmt(parsed.valid.length)}</b> · Bermasalah: <b class="text-danger">${fmt(parsed.errors.length)}</b></div>
+    $('businessImportPreview').innerHTML=`<div class="alert alert-light border mb-2"><strong>${escapeHtml(file.name)}</strong><br>Sheet: ${escapeHtml(parsed.sheetName)} · Total baris Excel: <b>${fmt(parsed.rows.length)}</b> · Valid: <b class="text-success">${fmt(parsed.valid.length)}</b> · Bermasalah: <b class="text-danger">${fmt(parsed.errors.length)}</b> · Peringatan kandidat duplikat: <b class="text-warning">${fmt(parsed.warnings.length)}</b></div>
       <div class="mb-2"><b>Keberadaan Keluarga</b><div class="d-flex flex-wrap gap-1 mt-1">${pills(f)}</div></div>
-      <div class="mb-2"><b>Keberadaan Usaha</b><div class="d-flex flex-wrap gap-1 mt-1">${pills(b)}</div></div>
+      <div class="mb-2"><b>Usaha Keluarga (ada_bang_usaha_label)</b><div class="d-flex flex-wrap gap-1 mt-1">${pills(b)}</div></div><div class="mb-2"><b>Usaha BKU (keberadaan_usaha_label)</b><div class="d-flex flex-wrap gap-1 mt-1">${pills(k)}</div></div>
       <div class="mb-2"><b>Status Pendataan</b><div class="d-flex flex-wrap gap-1 mt-1">${pills(s)}</div></div>
-      ${parsed.errors.length?`<details class="text-danger"><summary>Lihat ${parsed.errors.length} baris bermasalah</summary><ul class="mt-2">${parsed.errors.slice(0,30).map(e=>`<li>${escapeHtml(e)}</li>`).join('')}</ul></details>`:'<span class="text-success"><i class="bi bi-check-circle"></i> Seluruh baris lolos validasi. Kolom hasil yang kosong tetap dihitung sebagai belum diisi.</span>'}`;
+      ${parsed.errors.length?`<details class="text-danger"><summary>Lihat ${parsed.errors.length} baris bermasalah</summary><ul class="mt-2">${parsed.errors.slice(0,30).map(e=>`<li>${escapeHtml(e)}</li>`).join('')}</ul></details>`:'<span class="text-success"><i class="bi bi-check-circle"></i> Seluruh baris lolos validasi wajib.</span>'}
+      ${parsed.warnings.length?`<details class="text-warning mt-2"><summary>Lihat ${parsed.warnings.length} kandidat catatan usaha berulang (tetap diimpor)</summary><ul class="mt-2">${parsed.warnings.slice(0,30).map(e=>`<li>${escapeHtml(e)}</li>`).join('')}</ul></details>`:''}`;
   }
 
   async function handleFileChange() {
@@ -147,11 +164,15 @@
 
   function businessKpiValues(payload){
     const rows=Array.isArray(payload?.records)?payload.records:[];
-    const total=rows.length;
-    const family=rows.filter(r=>cell(r.ada_keluarga_label)!=='').length;
-    const business=rows.filter(r=>cell(r.ada_bang_usaha_label)!=='').length;
-    const combined=rows.filter(r=>cell(r.ada_keluarga_label)!==''||cell(r.ada_bang_usaha_label)!=='').length;
-    return {total,family,business,combinedPercent:total?combined/total*100:0};
+    const ids=new Set(rows.map(r=>cell(r.id)).filter(Boolean));
+    const familyById=new Map();
+    rows.forEach(r=>{const id=cell(r.id),v=cell(r.ada_keluarga_label);if(id&&v&&!familyById.has(id))familyById.set(id,v);});
+    const family=familyById.size;
+    const familyBusiness=rows.filter(r=>cell(r.ada_bang_usaha_label)!=='').length;
+    const bku=rows.filter(r=>cell(r.keberadaan_usaha_label)!=='').length;
+    const covered=new Set();
+    rows.forEach(r=>{const id=cell(r.id);if(id&&(cell(r.ada_keluarga_label)||cell(r.ada_bang_usaha_label)||cell(r.keberadaan_usaha_label)))covered.add(id);});
+    return {total:ids.size,family,familyBusiness,bku,combinedPercent:ids.size?covered.size/ids.size*100:0};
   }
   function renderBusinessChange(id,current,previous,previousDate,isPercent=false){
     const el=$(id);if(!el)return;
@@ -173,7 +194,7 @@
       if(!listResponse.ok)throw new Error('Histori tidak tersedia');
       const list=await listResponse.json();
       const dates=(list.items||[]).map(x=>x.date).filter(d=>/^\d{4}-\d{2}-\d{2}$/.test(d)&&d<currentDate).sort().reverse();
-      if(!dates.length){['bpTotalChange','bpFamilyChange','bpBusinessChange','bpCombinedChange'].forEach(id=>renderBusinessChange(id,0,null,null));return;}
+      if(!dates.length){['bpTotalChange','bpFamilyChange','bpFamilyBusinessChange','bpBkuChange','bpCombinedChange'].forEach(id=>renderBusinessChange(id,0,null,null));return;}
       const previousDate=dates[0];
       const previousResponse=await fetch(api('get',{date:previousDate}),{cache:'no-store'});
       if(!previousResponse.ok)throw new Error('Snapshot sebelumnya tidak dapat dibaca');
@@ -181,11 +202,12 @@
       const now=businessKpiValues(payload),before=businessKpiValues(previousPayload);
       renderBusinessChange('bpTotalChange',now.total,before.total,previousDate);
       renderBusinessChange('bpFamilyChange',now.family,before.family,previousDate);
-      renderBusinessChange('bpBusinessChange',now.business,before.business,previousDate);
+      renderBusinessChange('bpFamilyBusinessChange',now.familyBusiness,before.familyBusiness,previousDate);
+      renderBusinessChange('bpBkuChange',now.bku,before.bku,previousDate);
       renderBusinessChange('bpCombinedChange',now.combinedPercent,before.combinedPercent,previousDate,true);
     }catch(error){
       console.warn('Perbandingan KPI Keberadaan gagal dimuat:',error);
-      ['bpTotalChange','bpFamilyChange','bpBusinessChange','bpCombinedChange'].forEach(id=>{const el=$(id);if(el){el.className='bp-kpi-change';el.textContent='— Perbandingan tidak tersedia';}});
+      ['bpTotalChange','bpFamilyChange','bpFamilyBusinessChange','bpBkuChange','bpCombinedChange'].forEach(id=>{const el=$(id);if(el){el.className='bp-kpi-change';el.textContent='— Perbandingan tidak tersedia';}});
     }
   }
 
@@ -223,26 +245,36 @@
 
   async function render(payload){
     currentPayload=payload;currentRows=Array.isArray(payload.records)?payload.records:[];
-    const total=currentRows.length; // Denominator selalu jumlah record yang benar-benar tersimpan dari seluruh baris Excel.
-    const family={},business={},statuses={};
+    const totalRows=currentRows.length;
+    const uniqueIds=new Set(currentRows.map(r=>cell(r.id)).filter(Boolean));
+    const familyById=new Map();
+    const family={},familyBusiness={},bku={},statuses={};
     const regions={};
     currentRows.forEach(r=>{
-      const f=familyOf(r.ada_keluarga_label),b=businessOf(r.ada_bang_usaha_label),s=r.assignment_status_alias||'Status Kosong';
-      family[f]=(family[f]||0)+1;business[b]=(business[b]||0)+1;statuses[s]=(statuses[s]||0)+1;
-      const id=r.idsubsls||idSubsls(r);
-      if(!regions[id])regions[id]={idsubsls:id,prov:r.prov,kab:r.kab,kec:r.kec,des:r.des,sls:r.sls,ssls:r.ssls,total:0,familyFilled:0,businessFilled:0,family:{},business:{},statuses:{}};
-      const g=regions[id];g.total++;g.family[f]=(g.family[f]||0)+1;g.business[b]=(g.business[b]||0)+1;g.statuses[s]=(g.statuses[s]||0)+1;
-      if(f!=='Belum Diisi')g.familyFilled++;if(b!=='Belum Diisi')g.businessFilled++;
+      const id=cell(r.id),fv=cell(r.ada_keluarga_label),fb=businessOf(r.ada_bang_usaha_label),uv=businessOf(r.keberadaan_usaha_label),st=r.assignment_status_alias||'Status Kosong';
+      if(id&&fv&&!familyById.has(id))familyById.set(id,familyOf(fv));
+      if(fb!=='Belum Diisi')familyBusiness[fb]=(familyBusiness[fb]||0)+1;
+      if(uv!=='Belum Diisi')bku[uv]=(bku[uv]||0)+1;
+      statuses[st]=(statuses[st]||0)+1;
+      const code=r.idsubsls||idSubsls(r);
+      if(!regions[code])regions[code]={idsubsls:code,prov:r.prov,kab:r.kab,kec:r.kec,des:r.des,sls:r.sls,ssls:r.ssls,total:0,familyFilled:0,businessFilled:0,statuses:{}};
+      const g=regions[code];g.total++;g.statuses[st]=(g.statuses[st]||0)+1;
+      if(fv)g.familyFilled++;
+      if(fb!=='Belum Diisi'||uv!=='Belum Diisi')g.businessFilled++;
     });
-    const familyFilled=currentRows.filter(r=>cell(r.ada_keluarga_label)!=='').length;
-    const businessFilled=currentRows.filter(r=>cell(r.ada_bang_usaha_label)!=='').length;
-    const combinedFilled=currentRows.filter(r=>cell(r.ada_keluarga_label)!=='' || cell(r.ada_bang_usaha_label)!=='').length;
-    const openCount=Number(statuses.OPEN||0);
+    familyById.forEach(v=>family[v]=(family[v]||0)+1);
+    const familyFilled=familyById.size;
+    const familyBusinessFilled=Object.values(familyBusiness).reduce((a,b)=>a+b,0);
+    const bkuFilled=Object.values(bku).reduce((a,b)=>a+b,0);
+    const coveredIds=new Set();
+    currentRows.forEach(r=>{const id=cell(r.id);if(id&&(cell(r.ada_keluarga_label)||cell(r.ada_bang_usaha_label)||cell(r.keberadaan_usaha_label)))coveredIds.add(id);});
+    const combinedPercent=uniqueIds.size?coveredIds.size/uniqueIds.size*100:0;
     $('businessSnapshotDate').textContent=payload.importDate||'-';$('businessUpdatedAt').textContent=payload.uploadedAt?new Date(payload.uploadedAt).toLocaleString('id-ID'):'-';
-    $('bpTotal').textContent=fmt(total);$('bpFamilyFilled').textContent=fmt(familyFilled);$('bpBusinessFilled').textContent=fmt(businessFilled);$('bpCombinedPercent').textContent=total?((combinedFilled/total)*100).toLocaleString('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2})+'%':'0,00%';$('bpCombinedDetail').textContent=`${fmt(combinedFilled)} dari ${fmt(total)} assignment memiliki minimal satu isian keluarga/usaha`;
-    $('businessFamilyRows').innerHTML=summaryRows(family,familyOrder,total);
-    $('businessBusinessRows').innerHTML=summaryRows(business,businessOrder,total);
-    renderDonut('businessFamilyChart','family',family,familyOrder);renderDonut('businessBusinessChart','business',business,businessOrder);
+    $('bpTotal').textContent=fmt(uniqueIds.size);$('bpFamilyFilled').textContent=fmt(familyFilled);$('bpFamilyBusinessFilled').textContent=fmt(familyBusinessFilled);$('bpBkuFilled').textContent=fmt(bkuFilled);$('bpCombinedPercent').textContent=combinedPercent.toLocaleString('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2})+'%';$('bpCombinedDetail').textContent=`${fmt(coveredIds.size)} dari ${fmt(uniqueIds.size)} assignment memiliki minimal satu isian keluarga/usaha`;
+    $('businessFamilyRows').innerHTML=summaryRows(family,familyOrder,uniqueIds.size);
+    $('businessFamilyBusinessRows').innerHTML=summaryRows(familyBusiness,businessOrder,Math.max(1,familyBusinessFilled));
+    $('businessBkuRows').innerHTML=summaryRows(bku,businessOrder,Math.max(1,bkuFilled));
+    renderDonut('businessFamilyChart','family',family,familyOrder);renderDonut('businessFamilyBusinessChart','familyBusiness',familyBusiness,businessOrder);renderDonut('businessBkuChart','bku',bku,businessOrder);
     // Ambil seluruh petugas PPL dan PML, lalu cocokkan berdasarkan regionCode = idsubsls.
     const officerNames={};
     for (const role of ['pencacah','pengawas']) {
@@ -277,10 +309,10 @@
       const villageName=wilayahRef.nmdesa || r.des || '-';
       return {
         rowNumber:index+1, idsubsls:code, kec:districtName,des:villageName,sls:r.sls||'',ssls:r.ssls||'',
-        nama:r.nama||'',url,
+        nama:[r.nama,r.nama_usaha].filter(Boolean).join(' / '),url,
         pplNames:[...names.ppl].join(', ')||'-',
         pmlNames:[...names.pml].join(', ')||'-',
-        family:familyOf(r.ada_keluarga_label),business:businessOf(r.ada_bang_usaha_label),
+        family:familyOf(r.ada_keluarga_label),familyBusiness:businessOf(r.ada_bang_usaha_label),bku:businessOf(r.keberadaan_usaha_label),
         status:r.assignment_status_alias||'Status Kosong', id:r.id||''
       };
     });
@@ -295,7 +327,7 @@
       {title:'Nama PPL',field:'pplNames',minWidth:160,widthGrow:1.2,formatter:c=>escapeHtml(c.getValue())},
       {title:'Nama PML',field:'pmlNames',minWidth:160,widthGrow:1.2,formatter:c=>escapeHtml(c.getValue())},
       {title:'Keberadaan Keluarga',field:'family',minWidth:145,widthGrow:1},
-      {title:'Keberadaan Usaha',field:'business',minWidth:145,widthGrow:1},
+      {title:'Usaha Keluarga',field:'familyBusiness',minWidth:145,widthGrow:1},{title:'Usaha BKU',field:'bku',minWidth:145,widthGrow:1},
       {title:'Status Assignment',field:'status',minWidth:155,widthGrow:1},
       {title:'URL FASIH',field:'url',minWidth:120,widthGrow:0.8,formatter:c=>{const u=c.getValue();return u&&/^https?:\/\//i.test(u)?`<a href="${escapeHtml(u)}" target="_blank" rel="noopener noreferrer">Buka Assignment</a>`:'-';}}
     ]});

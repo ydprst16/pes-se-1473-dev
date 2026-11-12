@@ -81,8 +81,8 @@ try {
         if (!is_array($decoded) || !isset($decoded['records']) || !is_array($decoded['records'])) bp_fail('Format payload tidak valid.');
         $records=$decoded['records'];
         if (!$records) bp_fail('Tidak ada baris data untuk diimport.');
-        $required=['prov','kab','kec','des','sls','ssls','id','ada_keluarga_label','ada_bang_usaha_label','assignment_status_alias'];
-        $seen=[]; $valid=[]; $invalid=[];
+        $required=['prov','kab','kec','des','sls','ssls','id','ada_keluarga_label','ada_bang_usaha_label','keberadaan_usaha_label','assignment_status_alias'];
+        $seenBusinessKeys=[]; $duplicateBusinessCandidates=0; $valid=[]; $invalid=[];
         foreach ($records as $i=>$r) {
             $missing=[]; foreach ($required as $k) if (!array_key_exists($k,$r)) $missing[]=$k;
             if ($missing) { $invalid[]=['row'=>$i+2,'reason'=>'Kolom tidak lengkap: '.implode(', ',$missing)]; continue; }
@@ -91,15 +91,23 @@ try {
             $idsubsls=implode('',array_values($codes));
             if (!preg_match('/^\d{16}$/',$idsubsls)) { $invalid[]=['row'=>$i+2,'reason'=>'Kode wilayah tidak membentuk idsubsls 16 digit']; continue; }
             if ($id==='') { $invalid[]=['row'=>$i+2,'reason'=>'UUID assignment kosong']; continue; }
-            if (isset($seen[$id])) { $invalid[]=['row'=>$i+2,'reason'=>'UUID assignment duplikat dalam file']; continue; }
-            $seen[$id]=true;
+            // UUID assignment boleh berulang: satu assignment keluarga dapat memiliki banyak usaha.
+            // Kombinasi id + nama_usaha dicatat sebagai kandidat duplikasi, tetapi tidak ditolak
+            // karena nama usaha yang sama masih perlu diverifikasi secara substantif.
+            $businessName=strtolower(preg_replace('/\s+/u',' ',trim((string)($r['nama_usaha'] ?? ''))));
+            if ($businessName!=='') {
+                $businessKey=$id.'::'.$businessName;
+                if (isset($seenBusinessKeys[$businessKey])) $duplicateBusinessCandidates++;
+                else $seenBusinessKeys[$businessKey]=true;
+            }
             $r['id']= $id; foreach ($codes as $k=>$v) $r[$k]=$v;
             $r['idsubsls']=$idsubsls;
             $r['ada_bang_usaha_label']=trim((string)($r['ada_bang_usaha_label'] ?? ''));
+            $r['keberadaan_usaha_label']=trim((string)($r['keberadaan_usaha_label'] ?? ''));
             $valid[]=$r;
         }
         if ($invalid) bp_fail('Import dibatalkan: terdapat '.count($invalid).' baris tidak valid. Tidak ada data yang disimpan agar total assignment tetap sama dengan jumlah baris Excel. Contoh: '.($invalid[0]['reason'] ?? 'Periksa file Excel.'));
-        $payload=['schemaVersion'=>1,'module'=>'business_presence','importDate'=>$date,'uploadedAt'=>date(DATE_ATOM),'sourceFile'=>$filename,'totalRows'=>count($records),'validRows'=>count($valid),'invalidRows'=>count($invalid),'records'=>$valid,'validationErrors'=>array_slice($invalid,0,200)];
+        $payload=['schemaVersion'=>1,'module'=>'business_presence','importDate'=>$date,'uploadedAt'=>date(DATE_ATOM),'sourceFile'=>$filename,'totalRows'=>count($records),'validRows'=>count($valid),'invalidRows'=>count($invalid),'duplicateBusinessCandidates'=>$duplicateBusinessCandidates,'records'=>$valid,'validationErrors'=>array_slice($invalid,0,200)];
         $json=json_encode($payload,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
         if ($json===false) bp_fail('Gagal membentuk JSON: '.json_last_error_msg(),500);
         // Simpan snapshot terlebih dahulu; latest hanya diperbarui setelah snapshot sukses.
@@ -147,7 +155,7 @@ try {
             $latestUpdated=true;
         }
         sec_audit_write(['action'=>'business_presence_upload','filename'=>$filename,'date'=>$date,'size'=>strlen($json),'status'=>'success','error'=>null]);
-        echo json_encode(['status'=>'ok','date'=>$date,'totalRows'=>count($records),'validRows'=>count($valid),'invalidRows'=>count($invalid),'latestPath'=>$GLOBALS['PREFIX'].'latest.json','historyPath'=>$historyPath,'historyVerified'=>true,'latestUpdated'=>$latestUpdated,'latestDate'=>($latestUpdated?$date:$currentLatestDate)]);
+        echo json_encode(['status'=>'ok','date'=>$date,'totalRows'=>count($records),'validRows'=>count($valid),'invalidRows'=>count($invalid),'duplicateBusinessCandidates'=>$duplicateBusinessCandidates,'latestPath'=>$GLOBALS['PREFIX'].'latest.json','historyPath'=>$historyPath,'historyVerified'=>true,'latestUpdated'=>$latestUpdated,'latestDate'=>($latestUpdated?$date:$currentLatestDate)]);
         exit;
     }
     if ($action==='latest' || $action==='get') {
