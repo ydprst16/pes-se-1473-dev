@@ -30,7 +30,7 @@ const KPI_CONFIG = {
       { id: "open", title: "Open" },
       { id: "draft", title: "Draft" },
       { id: "submitted", title: "Submitted" },
-      { id: "approved", title: "Approved" },
+      { id: "completedByPengawas", title: "Complete" },
       { id: "rejected", title: "Rejected" },
       { id: "revoke", title: "Revoke" },
       { id: "progress", title: "Progress" },
@@ -45,7 +45,7 @@ const KPI_CONFIG = {
       { id: "open", title: "Open" },
       { id: "draft", title: "Draft" },
       { id: "submitted", title: "Backlog Approval", backlogColor: true },
-      { id: "approved", title: "Approved" },
+      { id: "completedByPengawas", title: "Complete" },
       { id: "rejected", title: "Rejected" },
       { id: "revoke", title: "Revoke" },
       { id: "progress", title: "Progress Review" },   // ← ganti label
@@ -334,7 +334,7 @@ function renderCards() {
   setText("open", formatNumber(s.open));
   setText("draft", formatNumber(s.draft));
   setText("submitted", formatNumber(s.submitted));
-  setText("approved", formatNumber(s.approved));
+  setText("completedByPengawas", formatNumber(s.completedByPengawas));
   setText("rejected", formatNumber(s.rejected));
   setText("revoke", formatNumber(s.revoked));
 

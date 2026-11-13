@@ -1676,7 +1676,7 @@
                 ["Open", "open", "bi-folder", "#0ea5e9"],
                 ["Draft", "draft", "bi-pencil-square", "#f59e0b"],
                 ["Submitted", "submitted", "bi-send-check", "#22c55e"],
-                ["Approved", "approved", "bi-patch-check", "#8b5cf6"],
+                ["Complete", "completedByPengawas", "bi-check2-circle", "#8b5cf6"],
                 ["Rejected", "rejected", "bi-x-circle", "#ef4444"],
                 ["Revoke", "revoke", "bi-arrow-counterclockwise", "#374151"],
                 ["Progress", "progress", "bi-speedometer2", "#10b981"]
