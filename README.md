@@ -690,3 +690,13 @@ The same snapshot date is an upsert: importing again for that date replaces that
 ### Petugas view
 
 The module can display a PPL/PML breakdown by matching Excel `idsubsls` to `regionSummary[].regionCode` in the existing PPL/PML JSON feeds. This is a **regional assignment mapping**, not an exact UUID-to-user join, because the current PPL/PML JSON exports contain regional summaries rather than individual assignment UUIDs. Ensure region assignments are unique between officers if the per-officer attribution is to be interpreted as exclusive.
+
+
+## SE2026 Deployment per Petugas
+
+- Tab baru: **Deployment per Petugas** pada bagian Perbandingan terhadap Assignment SE2026.
+- Sumber historis: tiga file Excel Keluarga, Usaha Keluarga, dan Usaha BKU yang dikonversi menjadi `data/deployment_status.json`.
+- Kunci pencocokan: `SSLS` dinormalisasi dengan menghapus spasi/non-digit, lalu dicocokkan dengan `Dashboard.enumerators[].regions[].idsubsls`.
+- Angka pada setiap status menggunakan penjumlahan kolom `Jumlah Assignment` pada file sumber.
+- Tabel menyajikan Muatan SE2026, rincian status masing-masing kategori, dan total per kategori.
+- File Excel sumber tidak perlu diunggah saat dashboard digunakan; JSON historis sudah disimpan di project.
