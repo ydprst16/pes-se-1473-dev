@@ -6,7 +6,7 @@
     usaha_keluarga:{title:"Usaha Keluarga",statuses:["0. Tidak Ditemukan","1. Ditemukan","2. Baru","3. Tutup","4. Ganda","7. Data diperoleh dari Kantor Pusat (KP)"]},
     usaha_bku:{title:"Usaha BKU",statuses:["0. Tidak Ditemukan","1. Ditemukan","2. Baru","3. Tutup","4. Ganda"]}
   };
-  let source=null, table=null, rowsForExport=[], detailRows={}, activeCategory="keluarga", loaded=false, donutCharts={};
+  let source=null, table=null, rowsForExport=[], detailRows={}, reconciliationRows=[], activeCategory="keluarga", loaded=false, donutCharts={};
   const normalizeId=v=>String(v??"").replace(/\D/g,"");
   const normalizeName=v=>String(v??"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim().replace(/\s+/g," ");
   const fmt=v=>Number(v||0).toLocaleString("id-ID");
@@ -62,7 +62,7 @@
     const [officers,targets]=await Promise.all([fetchPencacah(),typeof loadSe2026WorkloadTargets==="function"?loadSe2026WorkloadTargets().catch(()=>({officers:[]})):Promise.resolve({officers:[]})]);
     const targetMap=new Map((targets.officers||[]).map(o=>[normalizeName(o.name),Number(o.target)||0]));
     const bySsls=source.ssls||{}, aggregate=[], details={keluarga:[],usaha_keluarga:[],usaha_bku:[]};
-    let matched=0,unmatched=0;const assigned=new Set();
+    let matched=0,unmatched=0;const assigned=new Set(), fasihAssignments=new Map();
     officers.forEach(officer=>{
       const raw=(typeof USERNAME_MAP!=="undefined"&&USERNAME_MAP[officer.email||officer.username])||officer.username||officer.email||officer.name||"Tanpa nama";
       const name=typeof se2026DisplayName==="function"?se2026DisplayName(raw):raw;
@@ -71,6 +71,8 @@
       const summary={officer:name,target,subSlsCount:codes.length,matchedSubSls:0,unmatchedSubSls:0};
       Object.entries(statusConfig).forEach(([cat,cfg])=>{cfg.statuses.forEach((_,i)=>summary[`${cat}_${i}`]=0);summary[`${cat}_total`]=0;});
       codes.forEach(code=>{
+        if(!fasihAssignments.has(code))fasihAssignments.set(code,new Set());
+        fasihAssignments.get(code).add(name);
         const record=bySsls[code];
         if(!record){summary.unmatchedSubSls++;unmatched++;return;}
         summary.matchedSubSls++;matched++;assigned.add(code);
@@ -89,6 +91,22 @@
     });
     aggregate.sort((a,b)=>a.officer.localeCompare(b.officer,"id"));
     Object.keys(details).forEach(cat=>details[cat].sort((a,b)=>a.officer.localeCompare(b.officer,"id")||a.idsubsls.localeCompare(b.idsubsls)));
+
+    // Reconciliation is one row per unique ID: include both FASIH-only and Excel-only IDs.
+    const allIds=new Set([...Object.keys(bySsls),...fasihAssignments.keys()]);
+    reconciliationRows=[...allIds].sort().map(id=>{
+      const inExcel=Boolean(bySsls[id]);
+      const assignedOfficers=[...(fasihAssignments.get(id)||[])].sort((a,b)=>a.localeCompare(b,"id"));
+      const inFasih=assignedOfficers.length>0;
+      return {
+        idsubsls:id,
+        officers:assignedOfficers,
+        officerLabel:assignedOfficers.length?assignedOfficers.join(", "):"—",
+        categories:inExcel?Object.keys(bySsls[id]||{}).filter(cat=>statusConfig[cat]).map(cat=>statusConfig[cat].title).join(", "):"—",
+        status:inExcel&&inFasih?"Cocok":inFasih?"Tidak ada di Excel":"Tidak ditemukan di FASIH",
+        inExcel,inFasih
+      };
+    });
     rowsForExport=aggregate;detailRows=details;
     return {rows:aggregate,matched,unmatched,officerCount:officers.length,uniqueMatched:assigned.size};
   }
@@ -157,6 +175,32 @@
     const count=$("deploymentTableCount");
     if(count)count.textContent=`${fmt(table.getDataCount("active"))} baris ditemukan`;
   }
+  function renderReconciliation(){
+    const body=$("deploymentReconciliationBody");
+    const count=$("deploymentReconciliationCount");
+    if(!body)return;
+    const q=String($("deploymentReconciliationSearch")?.value||"").trim().toLowerCase();
+    const filtered=reconciliationRows.filter(row=>
+      row.idsubsls.includes(q)||row.officerLabel.toLowerCase().includes(q)||row.status.toLowerCase().includes(q)
+    );
+    if(count)count.textContent=`${fmt(filtered.length)} dari ${fmt(reconciliationRows.length)} ID`;
+    if(!filtered.length){
+      body.innerHTML='<tr><td colspan="4" class="text-center text-secondary py-4">Tidak ada ID Sub-SLS yang sesuai pencarian.</td></tr>';
+      return;
+    }
+    body.innerHTML=filtered.map(row=>{
+      const tone=row.status==="Cocok"?"success":"warning";
+      return `<tr>
+        <td class="font-monospace text-nowrap fw-semibold">${row.idsubsls}</td>
+        <td>${escapeHtml(row.officerLabel)}</td>
+        <td>${escapeHtml(row.categories)}</td>
+        <td><span class="badge rounded-pill text-bg-${tone}">${escapeHtml(row.status)}</span></td>
+      </tr>`;
+    }).join("");
+  }
+  function escapeHtml(value){
+    return String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+  }
   async function render(){
     const info=$("deploymentUpdatedInfo");
     if(info)info.textContent="Memuat data PPL/PCL dan mencocokkan Sub-SLS...";
@@ -165,7 +209,7 @@
     $("deploymentUnmatchedSsls").textContent=fmt(result.unmatched);
     $("deploymentOfficerCount").textContent=fmt(result.officerCount);
     if(info)info.textContent=`Snapshot ${source.importDate} · ${fmt(result.uniqueMatched)} ID Sub-SLS unik cocok.`;
-    renderDonutCharts();renderCategory(activeCategory);loaded=true;
+    renderReconciliation();renderDonutCharts();renderCategory(activeCategory);loaded=true;
   }
   async function loadSnapshot(date){const url=date?`api/deployment.php?action=get&date=${encodeURIComponent(date)}`:`api/deployment.php?action=latest&_ts=${Date.now()}`;const r=await fetch(url,{cache:"no-store"});if(!r.ok)throw new Error("Snapshot deployment belum tersedia. Upload tiga file Excel untuk memulai.");source=await r.json();loaded=false;await render();}
   async function refreshHistory(selected){const r=await fetch(`api/deployment.php?action=list&_ts=${Date.now()}`,{cache:"no-store"});if(!r.ok)throw new Error("Gagal memuat riwayat snapshot.");const p=await r.json();const sel=$("deploymentHistorySelect");sel.innerHTML="";if(!p.items?.length){sel.add(new Option("Belum ada snapshot",""));return;}p.items.forEach(x=>sel.add(new Option(x.date,x.date)));sel.value=selected||p.items[0].date;}
@@ -201,6 +245,7 @@
     $("deploymentHistorySelect")?.addEventListener("change",async e=>{if(!e.target.value)return;try{await loadSnapshot(e.target.value);}catch(err){setMessage(err.message,"danger");}});
     $("btnExportDeploymentOfficer")?.addEventListener("click",exportExcel);
     $("deploymentOfficerSearch")?.addEventListener("input",e=>applySearch(e.target.value));
+    $("deploymentReconciliationSearch")?.addEventListener("input",renderReconciliation);
     refreshHistory().catch(e=>{console.warn("[Deployment history]",e);const sel=$("deploymentHistorySelect");if(sel)sel.innerHTML='<option value="">Riwayat belum tersedia</option>';});
   });
 })();
