@@ -17,6 +17,18 @@ function se2026NormalizeName(value) {
 function se2026Number(value) {
   return new Intl.NumberFormat("id-ID").format(Number(value) || 0);
 }
+// Pendataan berlangsung sampai 30 November 2026. Hari ini tidak dihitung;
+// contoh 13 Nov berarti tersisa 17 hari (14–30 Nov).
+function se2026RemainingDays(now = new Date()) {
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const deadline = new Date(2026, 10, 30);
+  return Math.max(0, Math.ceil((deadline - today) / 86400000));
+}
+function se2026DailyTarget(target, actual, remainingDays = se2026RemainingDays()) {
+  if (remainingDays <= 0) return null;
+  const remainingWork = Math.max(0, (Number(target) || 0) - (Number(actual) || 0));
+  return Math.ceil(remainingWork / remainingDays);
+}
 function se2026DisplayName(value) {
   return String(value || "").toLocaleLowerCase("id-ID").replace(/(^|\s)(\p{L})/gu, (_, space, letter) => space + letter.toLocaleUpperCase("id-ID"));
 }
@@ -68,12 +80,14 @@ function renderSe2026WorkloadComparison() {
     actualByName.set(actualName, (actualByName.get(actualName) || 0) + (Number(user.assignment) || 0));
   });
 
+  const remainingDays = se2026RemainingDays();
   const rows = se2026WorkloadTargets.officers.map(officer => {
     const key = normalize(officer.name);
     const actual = actualByName.get(key) || 0;
     const target = Number(officer.target) || 0;
     const gap = actual - target;
-    return { name: se2026DisplayName(officer.name), target, actual, gap, achievement: target > 0 ? actual / target * 100 : 0, matched: actualByName.has(key) };
+    const dailyTarget = se2026DailyTarget(target, actual, remainingDays);
+    return { name: se2026DisplayName(officer.name), target, actual, gap, dailyTarget, remainingDays, achievement: target > 0 ? actual / target * 100 : 0, matched: actualByName.has(key) };
   }).sort((a,b) => a.gap - b.gap);
 
   // Keep the complete, unpaginated comparison dataset available for Excel export.
@@ -98,6 +112,7 @@ function renderSe2026WorkloadComparison() {
         { title: "Muatan SE2026", field: "target", hozAlign: "right", headerHozAlign: "center", minWidth: 105, widthGrow: 1, formatter: cell => se2026Number(cell.getValue()) },
         { title: "Assignment PES 2026", field: "actual", hozAlign: "right", headerHozAlign: "center", minWidth: 125, widthGrow: 1, formatter: cell => se2026Number(cell.getValue()) },
         { title: "Selisih", field: "gap", hozAlign: "right", headerHozAlign: "center", minWidth: 90, widthGrow: 1, formatter: cell => { const v=Number(cell.getValue())||0; return `<span class="fw-semibold ${v>=0?"text-success":"text-danger"}">${v>0?"+":""}${se2026Number(v)}</span>`; } },
+        { title: "Target Pendataan Harian", field: "dailyTarget", hozAlign: "right", headerHozAlign: "center", minWidth: 145, widthGrow: 1, formatter: cell => cell.getValue() == null ? "—" : se2026Number(cell.getValue()) },
         { title: "Pencapaian", field: "achievement", hozAlign: "right", headerHozAlign: "center", minWidth: 100, widthGrow: 1, formatter: cell => `${(Number(cell.getValue())||0).toFixed(1).replace(".",",")}%` },
       ],
     });
@@ -142,10 +157,12 @@ function exportSe2026WorkloadExcel() {
     "Muatan SE2026": row.target,
     "Assignment PES 2026": row.actual,
     "Selisih": row.gap,
+    "Target Pendataan Harian": row.dailyTarget,
+    "Sisa Hari Pendataan": row.remainingDays,
     "Pencapaian (%)": Number(row.achievement.toFixed(1))
   }));
   const worksheet = XLSX.utils.json_to_sheet(exportRows);
-  worksheet["!cols"] = [{wch:30},{wch:18},{wch:22},{wch:14},{wch:18}];
+  worksheet["!cols"] = [{wch:30},{wch:18},{wch:22},{wch:14},{wch:24},{wch:20},{wch:18}];
   const workbook = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(workbook, worksheet, "Perbandingan Petugas");
   const now = new Date();
