@@ -23,3 +23,10 @@ Sistem membaca sheet pertama dan mencari kolom `SSLS`, `Jumlah Assignment`, sert
 - PHP cURL aktif.
 - Browser memuat SheetJS/XLSX yang telah digunakan aplikasi.
 - Password upload mengikuti konfigurasi aplikasi yang sudah ada.
+
+
+## Tampilan Deployment (v47)
+- Tabel deployment dipisah menjadi tiga tab: Keluarga, Usaha Keluarga, dan Usaha BKU.
+- Pencarian berlaku untuk nama petugas dan ID Sub-SLS.
+- Baris tabel menampilkan satu petugas per ID Sub-SLS.
+- Prefix angka pada label status hanya dihilangkan pada tampilan; nama status sumber tetap dipakai untuk pemetaan data.

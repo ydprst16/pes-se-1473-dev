@@ -1494,9 +1494,17 @@
         .deployment-file-icon { width:30px; height:30px; display:grid; place-items:center; border-radius:9px; background:rgba(127,127,127,.12); font-size:14px; }
         .deployment-step { margin-left:auto; color:var(--bs-secondary-color); font-size:10px; font-weight:700; }
         .deployment-file-item input { width:100%; min-width:0; font-size:11px; }
-        .deployment-upload-footer { display:grid; grid-template-columns:minmax(190px,1fr) auto minmax(190px,1fr); gap:12px; align-items:end; margin-top:14px; }
-        .deployment-upload-button { min-height:34px; white-space:nowrap; padding-inline:16px; }
+        .deployment-upload-footer { display:flex; flex-wrap:wrap; gap:10px; align-items:end; margin-top:12px; }
+        .deployment-password { flex:0 1 220px; max-width:220px; } .deployment-history { flex:0 1 190px; max-width:190px; } .deployment-upload-button { min-height:34px; white-space:nowrap; padding-inline:13px; }
         .deployment-upload-message { margin-top:12px; padding:8px 10px; border-radius:8px; background:rgba(127,127,127,.07); font-size:11px; }
+        .deployment-category-tabs { display:flex; gap:7px; flex-wrap:wrap; margin:0 0 12px; border-bottom:1px solid var(--border); padding-bottom:10px; }
+        .deployment-category-tabs .btn { border-radius:8px; font-size:12px; padding:7px 13px; }
+        .deployment-category-tabs .btn.active { color:#fff; }
+        .deployment-category-tabs [data-category="keluarga"].active { background:#3b82f6; border-color:#3b82f6; }
+        .deployment-category-tabs [data-category="usaha_keluarga"].active { background:#0d9488; border-color:#0d9488; }
+        .deployment-category-tabs [data-category="usaha_bku"].active { background:#d97706; border-color:#d97706; }
+        .deployment-table-toolbar { display:flex; gap:10px; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:10px; }
+        .deployment-table-search { width:min(100%,320px); }
         #deploymentOfficerTable { min-width:0; width:100%; }
         #deploymentOfficerTable .tabulator { width:100%; background:var(--card-solid); color:var(--bs-body-color); border:1px solid var(--border); border-radius:10px; font-size:11px; }
         #deploymentOfficerTable .tabulator-tableholder { overflow-x:auto; }
@@ -1523,8 +1531,8 @@
         #deploymentOfficerTable .tabulator-col-group:nth-of-type(3) { border-top:3px solid #d97706; }
         [data-bs-theme="light"] #deploymentOfficerTable .tabulator-row { background:#fff; color:#1f2937; }
         [data-bs-theme="light"] #deploymentOfficerTable .tabulator-row:nth-child(even) { background:#f8fafc; }
-        @media (max-width: 900px) { .deployment-upload-footer { grid-template-columns:1fr 1fr; } .deployment-upload-button { grid-column:1/-1; grid-row:2; } }
-        @media (max-width: 650px) { .deployment-upload-card { padding:13px; } .deployment-file-grid { grid-template-columns:1fr; gap:8px; } .deployment-file-item { padding:10px; } .deployment-file-label { margin-bottom:7px; } .deployment-upload-footer { grid-template-columns:1fr; } .deployment-upload-button { grid-column:auto; grid-row:auto; width:100%; } .deployment-upload-heading { align-items:flex-start; } }
+        @media (max-width: 900px) { .deployment-password { flex-basis:200px; } .deployment-history { flex-basis:180px; } }
+        @media (max-width: 650px) { .deployment-upload-card { padding:13px; } .deployment-file-grid { grid-template-columns:1fr; gap:8px; } .deployment-file-item { padding:10px; } .deployment-file-label { margin-bottom:7px; } .deployment-upload-footer { display:grid; grid-template-columns:1fr 1fr; } .deployment-password,.deployment-history { max-width:none; width:100%; } .deployment-upload-button { grid-column:1/-1; width:100%; } .deployment-upload-heading { align-items:flex-start; } }
 </style>
 
 </head>
@@ -1981,9 +1989,9 @@
                     <span class="deployment-required"><i class="bi bi-files me-1"></i>3 file wajib</span>
                 </div>
                 <div class="deployment-file-grid">
-                    <div class="deployment-file-item family"><div class="deployment-file-label"><span class="deployment-file-icon"><i class="bi bi-people-fill"></i></span><span><strong>Keluarga</strong><small>Data keberadaan keluarga</small></span><span class="deployment-step">01</span></div><input class="form-control form-control-sm" type="file" id="deploymentFileKeluarga" accept=".xlsx,.xls"></div>
-                    <div class="deployment-file-item family-business"><div class="deployment-file-label"><span class="deployment-file-icon"><i class="bi bi-house-check-fill"></i></span><span><strong>Usaha Keluarga</strong><small>Bangunan usaha/lainnya</small></span><span class="deployment-step">02</span></div><input class="form-control form-control-sm" type="file" id="deploymentFileUsahaKeluarga" accept=".xlsx,.xls"></div>
-                    <div class="deployment-file-item bku"><div class="deployment-file-label"><span class="deployment-file-icon"><i class="bi bi-shop"></i></span><span><strong>Usaha BKU</strong><small>Data keberadaan usaha</small></span><span class="deployment-step">03</span></div><input class="form-control form-control-sm" type="file" id="deploymentFileUsahaBku" accept=".xlsx,.xls"></div>
+                    <div class="deployment-file-item family"><div class="deployment-file-label"><span class="deployment-file-icon"><i class="bi bi-people-fill"></i></span><span><strong>Keluarga</strong><small>Data keberadaan keluarga</small></span></div><input class="form-control form-control-sm" type="file" id="deploymentFileKeluarga" accept=".xlsx,.xls"></div>
+                    <div class="deployment-file-item family-business"><div class="deployment-file-label"><span class="deployment-file-icon"><i class="bi bi-house-check-fill"></i></span><span><strong>Usaha Keluarga</strong><small>Bangunan usaha/lainnya</small></span></div><input class="form-control form-control-sm" type="file" id="deploymentFileUsahaKeluarga" accept=".xlsx,.xls"></div>
+                    <div class="deployment-file-item bku"><div class="deployment-file-label"><span class="deployment-file-icon"><i class="bi bi-shop"></i></span><span><strong>Usaha BKU</strong><small>Data keberadaan usaha</small></span></div><input class="form-control form-control-sm" type="file" id="deploymentFileUsahaBku" accept=".xlsx,.xls"></div>
                 </div>
                 <div class="deployment-upload-footer">
                     <div class="deployment-password"><label class="form-label small fw-semibold mb-1" for="deploymentUploadPassword">Password upload</label><input class="form-control form-control-sm" type="password" id="deploymentUploadPassword" autocomplete="current-password" placeholder="Masukkan password upload"></div>
@@ -2002,10 +2010,17 @@
                     <div class="chart-title mb-0">Rincian Deployment per Petugas</div>
                     <div class="small text-secondary" id="deploymentUpdatedInfo">Memuat data...</div>
                 </div>
-                <div class="small text-secondary mb-3">Pencocokan: SSLS pada tiga file sumber → ID Sub-SLS/regionCode → petugas PPL/PCL dari data FASIH. Nilai merupakan jumlah assignment per status.</div>
-                <div class="table-responsive">
-                    <div id="deploymentOfficerTable"></div>
+                <div class="small text-secondary mb-3">Pencocokan: SSLS pada file sumber → ID Sub-SLS/regionCode → petugas PPL/PCL dari data FASIH. Gunakan pencarian untuk menemukan nama petugas atau ID Sub-SLS.</div>
+                <div class="deployment-category-tabs" id="deploymentCategoryTabs" role="tablist" aria-label="Kategori deployment">
+                    <button type="button" class="btn btn-outline-primary active" data-category="keluarga" role="tab" aria-selected="true"><i class="bi bi-people-fill me-1"></i>Keluarga</button>
+                    <button type="button" class="btn btn-outline-secondary" data-category="usaha_keluarga" role="tab" aria-selected="false"><i class="bi bi-house-check-fill me-1"></i>Usaha Keluarga</button>
+                    <button type="button" class="btn btn-outline-secondary" data-category="usaha_bku" role="tab" aria-selected="false"><i class="bi bi-shop me-1"></i>Usaha BKU</button>
                 </div>
+                <div class="deployment-table-toolbar">
+                    <input type="search" class="form-control form-control-sm deployment-table-search" id="deploymentOfficerSearch" placeholder="Cari nama petugas atau ID Sub-SLS..." aria-label="Cari nama petugas atau ID Sub-SLS">
+                    <div class="small text-secondary" id="deploymentTableCount">-</div>
+                </div>
+                <div class="table-responsive"><div id="deploymentOfficerTable"></div></div>
             </div>
         </section>
 

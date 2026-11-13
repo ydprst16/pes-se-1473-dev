@@ -6,7 +6,7 @@
     usaha_keluarga:{title:"Usaha Keluarga",statuses:["0. Tidak Ditemukan","1. Ditemukan","2. Baru","3. Tutup","4. Ganda","7. Data diperoleh dari Kantor Pusat (KP)"]},
     usaha_bku:{title:"Usaha BKU",statuses:["0. Tidak Ditemukan","1. Ditemukan","2. Baru","3. Tutup","4. Ganda"]}
   };
-  let source=null, table=null, rowsForExport=[], loaded=false;
+  let source=null, table=null, rowsForExport=[], detailRows={}, activeCategory="keluarga", loaded=false;
   const normalizeId=v=>String(v??"").replace(/\D/g,"");
   const normalizeName=v=>String(v??"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim().replace(/\s+/g," ");
   const fmt=v=>Number(v||0).toLocaleString("id-ID");
@@ -46,16 +46,86 @@
   async function buildRows(){
     if(!source)throw new Error("Snapshot deployment belum tersedia. Silakan upload tiga file Excel harian.");
     const [officers,targets]=await Promise.all([fetchPencacah(),typeof loadSe2026WorkloadTargets==="function"?loadSe2026WorkloadTargets().catch(()=>({officers:[]})):Promise.resolve({officers:[]})]);
-    const targetMap=new Map((targets.officers||[]).map(o=>[normalizeName(o.name),Number(o.target)||0]));const bySsls=source.ssls||{};const rows=[];let matched=0,unmatched=0;const assigned=new Set();
-    officers.forEach(officer=>{const raw=(typeof USERNAME_MAP!=="undefined"&&USERNAME_MAP[officer.email||officer.username])||officer.username||officer.email||officer.name||"Tanpa nama";const name=typeof se2026DisplayName==="function"?se2026DisplayName(raw):raw;const row={officer:name,target:targetMap.get(normalizeName(name))||0,subSlsCount:0,matchedSubSls:0,unmatchedSubSls:0};
-      Object.entries(statusConfig).forEach(([cat,cfg])=>{cfg.statuses.forEach((_,i)=>row[`${cat}_${i}`]=0);row[`${cat}_total`]=0;});
-      const codes=[...new Set((officer.regionSummary||[]).map(x=>normalizeId(x.regionCode)).filter(Boolean))];row.subSlsCount=codes.length;
-      codes.forEach(code=>{const record=bySsls[code];if(!record){row.unmatchedSubSls++;unmatched++;return;}row.matchedSubSls++;matched++;assigned.add(code);Object.entries(statusConfig).forEach(([cat,cfg])=>cfg.statuses.forEach((status,i)=>{const n=Number(record?.[cat]?.[status]||0);row[`${cat}_${i}`]+=n;row[`${cat}_total`]+=n;}));});rows.push(row);
-    });rows.sort((a,b)=>a.officer.localeCompare(b.officer,"id"));rowsForExport=rows;return {rows,matched,unmatched,officerCount:officers.length,uniqueMatched:assigned.size};
+    const targetMap=new Map((targets.officers||[]).map(o=>[normalizeName(o.name),Number(o.target)||0]));
+    const bySsls=source.ssls||{}, aggregate=[], details={keluarga:[],usaha_keluarga:[],usaha_bku:[]};
+    let matched=0,unmatched=0;const assigned=new Set();
+    officers.forEach(officer=>{
+      const raw=(typeof USERNAME_MAP!=="undefined"&&USERNAME_MAP[officer.email||officer.username])||officer.username||officer.email||officer.name||"Tanpa nama";
+      const name=typeof se2026DisplayName==="function"?se2026DisplayName(raw):raw;
+      const nameKey=normalizeName(name), target=targetMap.get(nameKey)||0;
+      const codes=[...new Set((officer.regionSummary||[]).map(x=>normalizeId(x.regionCode)).filter(Boolean))];
+      const summary={officer:name,target,subSlsCount:codes.length,matchedSubSls:0,unmatchedSubSls:0};
+      Object.entries(statusConfig).forEach(([cat,cfg])=>{cfg.statuses.forEach((_,i)=>summary[`${cat}_${i}`]=0);summary[`${cat}_total`]=0;});
+      codes.forEach(code=>{
+        const record=bySsls[code];
+        if(!record){summary.unmatchedSubSls++;unmatched++;return;}
+        summary.matchedSubSls++;matched++;assigned.add(code);
+        Object.entries(statusConfig).forEach(([cat,cfg])=>{
+          const detail={officer:name,idsubsls:code,target};
+          cfg.statuses.forEach((status,i)=>{
+            const n=Number(record?.[cat]?.[status]||0);
+            summary[`${cat}_${i}`]+=n;summary[`${cat}_total`]+=n;
+            detail[`${cat}_${i}`]=n;
+          });
+          detail[`${cat}_total`]=cfg.statuses.reduce((sum,status)=>sum+Number(record?.[cat]?.[status]||0),0);
+          details[cat].push(detail);
+        });
+      });
+      aggregate.push(summary);
+    });
+    aggregate.sort((a,b)=>a.officer.localeCompare(b.officer,"id"));
+    Object.keys(details).forEach(cat=>details[cat].sort((a,b)=>a.officer.localeCompare(b.officer,"id")||a.idsubsls.localeCompare(b.idsubsls)));
+    rowsForExport=aggregate;detailRows=details;
+    return {rows:aggregate,matched,unmatched,officerCount:officers.length,uniqueMatched:assigned.size};
   }
-  function makeCountColumn(title,field,category=""){return {title,field,sorter:"number",hozAlign:"right",headerHozAlign:"center",width:94,minWidth:84,maxWidth:112,widthGrow:0,headerWordWrap:true,headerCssClass:category?`deployment-col-${category}`:"",formatter:c=>fmt(c.getValue())};}
-  async function render(){const info=$("deploymentUpdatedInfo");if(info)info.textContent="Memuat data PPL/PCL dan mencocokkan Sub-SLS...";const result=await buildRows();$("deploymentMatchedSsls").textContent=fmt(result.matched);$("deploymentUnmatchedSsls").textContent=fmt(result.unmatched);$("deploymentOfficerCount").textContent=fmt(result.officerCount);if(info)info.textContent=`Snapshot ${source.importDate} · ${fmt(result.uniqueMatched)} ID Sub-SLS unik cocok.`;
-    const columns=[{title:"Petugas PPL/PCL",field:"officer",frozen:true,minWidth:170,widthGrow:1,headerFilter:"input",headerWordWrap:true},makeCountColumn("Muatan SE2026","target")];Object.entries(statusConfig).forEach(([cat,cfg])=>columns.push({title:cfg.title,headerHozAlign:"center",headerCssClass:`deployment-group-${cat}`,columns:[...cfg.statuses.map((st,i)=>makeCountColumn(st,`${cat}_${i}`,cat)),makeCountColumn("Total",`${cat}_total`,cat)]}));if(table)table.destroy();table=new Tabulator($("deploymentOfficerTable"),{data:result.rows,columns,layout:"fitData",height:"680px",headerWordWrap:true,responsiveLayout:false,movableColumns:true,resizableColumns:true,pagination:true,paginationSize:15,paginationSizeSelector:[15,25,50],placeholder:"Data PPL/PCL atau data deployment belum tersedia."});loaded=true;
+  const cleanStatusLabel=status=>String(status).replace(/^\s*\d+\.\s*/,"");
+  function renderCategory(category){
+    activeCategory=category;
+    const cfg=statusConfig[category], rows=detailRows[category]||[];
+    const search=$("deploymentOfficerSearch")?.value?.trim().toLowerCase()||"";
+    const columns=[
+      {title:"Nama Petugas",field:"officer",frozen:true,minWidth:175,widthGrow:2,headerFilter:false,tooltip:true},
+      {title:"ID Sub-SLS",field:"idsubsls",minWidth:145,width:155,headerHozAlign:"center",hozAlign:"center",formatter:c=>`<span class="font-monospace">${c.getValue()}</span>`},
+      ...cfg.statuses.map((status,i)=>makeCountColumn(cleanStatusLabel(status),`${category}_${i}`,category)),
+      makeCountColumn("Total",`${category}_total`,category)
+    ];
+    if(table)table.destroy();
+    table=new Tabulator($("deploymentOfficerTable"),{
+      data:rows,columns,layout:"fitColumns",height:"620px",headerWordWrap:true,
+      movableColumns:true,resizableColumns:true,responsiveLayout:false,
+      pagination:true,paginationSize:15,paginationSizeSelector:[15,25,50],
+      placeholder:"Tidak ada data untuk kategori ini.",
+      initialSort:[{column:"officer",dir:"asc"}],
+      rowFormatter:function(row){row.getElement().style.borderLeft=`3px solid ${category==="keluarga"?"#3b82f6":category==="usaha_keluarga"?"#0d9488":"#d97706"}`;}
+    });
+    if(search)applySearch(search);
+    const count=$("deploymentTableCount");
+    if(count)count.textContent=`${fmt(rows.length)} baris Sub-SLS`;
+    document.querySelectorAll("#deploymentCategoryTabs [data-category]").forEach(btn=>{
+      const active=btn.dataset.category===category;
+      btn.classList.toggle("active",active);
+      btn.classList.toggle("btn-outline-primary",category==="keluarga"&&!active);
+      btn.classList.toggle("btn-outline-secondary",!active&&category!=="keluarga");
+      btn.setAttribute("aria-selected",String(active));
+    });
+  }
+  function applySearch(value){
+    if(!table)return;
+    const q=String(value||"").trim().toLowerCase();
+    if(!q)table.clearFilter();
+    else table.setFilter((data)=>String(data.officer||"").toLowerCase().includes(q)||String(data.idsubsls||"").toLowerCase().includes(q));
+    const count=$("deploymentTableCount");
+    if(count)count.textContent=`${fmt(table.getDataCount("active"))} baris ditemukan`;
+  }
+  async function render(){
+    const info=$("deploymentUpdatedInfo");
+    if(info)info.textContent="Memuat data PPL/PCL dan mencocokkan Sub-SLS...";
+    const result=await buildRows();
+    $("deploymentMatchedSsls").textContent=fmt(result.matched);
+    $("deploymentUnmatchedSsls").textContent=fmt(result.unmatched);
+    $("deploymentOfficerCount").textContent=fmt(result.officerCount);
+    if(info)info.textContent=`Snapshot ${source.importDate} · ${fmt(result.uniqueMatched)} ID Sub-SLS unik cocok.`;
+    renderCategory(activeCategory);loaded=true;
   }
   async function loadSnapshot(date){const url=date?`api/deployment.php?action=get&date=${encodeURIComponent(date)}`:`api/deployment.php?action=latest&_ts=${Date.now()}`;const r=await fetch(url,{cache:"no-store"});if(!r.ok)throw new Error("Snapshot deployment belum tersedia. Upload tiga file Excel untuk memulai.");source=await r.json();loaded=false;await render();}
   async function refreshHistory(selected){const r=await fetch(`api/deployment.php?action=list&_ts=${Date.now()}`,{cache:"no-store"});if(!r.ok)throw new Error("Gagal memuat riwayat snapshot.");const p=await r.json();const sel=$("deploymentHistorySelect");sel.innerHTML="";if(!p.items?.length){sel.add(new Option("Belum ada snapshot",""));return;}p.items.forEach(x=>sel.add(new Option(x.date,x.date)));sel.value=selected||p.items[0].date;}
@@ -65,6 +135,8 @@
     $("deploymentHistorySelect")?.addEventListener("change",async e=>{if(!e.target.value)return;try{await loadSnapshot(e.target.value);}catch(err){setMessage(err.message,"danger");}});
     $("menuDeployment")?.addEventListener("click",async()=>{if(loaded)return;try{if(!$("deploymentHistorySelect")?.options?.length||$("deploymentHistorySelect").options[0]?.value==="")await refreshHistory();const chosen=$("deploymentHistorySelect")?.value;await loadSnapshot(chosen||null);}catch(e){console.error("[Deployment SE2026]",e);if($("deploymentUpdatedInfo"))$("deploymentUpdatedInfo").textContent=e.message;setMessage(e.message,"warning");}});
     $("btnExportDeploymentOfficer")?.addEventListener("click",exportExcel);
+    $("deploymentCategoryTabs")?.addEventListener("click",e=>{const btn=e.target.closest("[data-category]");if(btn)renderCategory(btn.dataset.category);});
+    $("deploymentOfficerSearch")?.addEventListener("input",e=>applySearch(e.target.value));
     refreshHistory().catch(e=>{console.warn("[Deployment history]",e);const sel=$("deploymentHistorySelect");if(sel)sel.innerHTML='<option value="">Riwayat belum tersedia</option>';});
   });
 })();
