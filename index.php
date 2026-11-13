@@ -1570,7 +1570,7 @@
 
         <section id="se2026WorkloadSection" class="chart-card mt-4 mb-4">
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-                <div class="chart-title mb-0"><i class="bi bi-bullseye text-primary"></i> Perbandingan Assignment per Petugas PPL/PCL</div>
+                <div class="chart-title mb-0"><i class="bi bi-bullseye text-primary"></i> Perbandingan terhadap Assignment SE2026</div>
                 <button type="button" class="btn btn-success btn-sm" id="btnExportSe2026Workload"><i class="bi bi-file-earmark-excel me-1"></i> Export Excel</button>
             </div>
             <div class="row g-3 align-items-stretch">
