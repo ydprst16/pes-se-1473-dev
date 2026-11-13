@@ -1556,6 +1556,29 @@
         [data-bs-theme="light"] #deploymentOfficerTable .tabulator-cell.tabulator-frozen{background:#e8eef7!important;color:#0f172a!important}
         [data-bs-theme="light"] #deploymentOfficerTable .tabulator-row.tabulator-row-even .tabulator-cell.tabulator-frozen{background:#dce6f3!important}
         [data-bs-theme="light"] #deploymentOfficerTable .tabulator-header .tabulator-col.tabulator-frozen{background:#d7e2f0!important;color:#0f172a!important}
+
+        /* Deployment table: full-width, theme-aware Tabulator surface. */
+        .deployment-table-wrap{width:100%;max-width:100%;min-width:0;overflow-x:auto;overscroll-behavior-x:contain}
+        #deploymentOfficerTable{width:100%;min-width:100%;max-width:100%}
+        #deploymentOfficerTable .tabulator{width:100%!important;min-width:100%!important;background:var(--bs-body-bg)!important;color:var(--bs-body-color)!important;border:1px solid var(--bs-border-color)!important}
+        #deploymentOfficerTable .tabulator-header,#deploymentOfficerTable .tabulator-header .tabulator-col,#deploymentOfficerTable .tabulator-header .tabulator-col .tabulator-col-content{background:var(--bs-tertiary-bg)!important;color:var(--bs-body-color)!important;border-color:var(--bs-border-color)!important}
+        #deploymentOfficerTable .tabulator-tableholder{width:100%;background:var(--bs-body-bg)!important;overflow-x:auto!important}
+        #deploymentOfficerTable .tabulator-row{background:var(--bs-body-bg)!important;color:var(--bs-body-color)!important;border-color:var(--bs-border-color)!important}
+        #deploymentOfficerTable .tabulator-row:nth-child(even){background:var(--bs-secondary-bg)!important}
+        #deploymentOfficerTable .tabulator-row:hover{background:var(--bs-tertiary-bg)!important}
+        #deploymentOfficerTable .tabulator-cell{background:transparent!important;color:var(--bs-body-color)!important;border-color:var(--bs-border-color)!important}
+        #deploymentOfficerTable .tabulator-footer,#deploymentOfficerTable .tabulator-paginator,#deploymentOfficerTable .tabulator-page,#deploymentOfficerTable .tabulator-page-size{background:var(--bs-tertiary-bg)!important;color:var(--bs-body-color)!important;border-color:var(--bs-border-color)!important}
+        #deploymentOfficerTable .tabulator-cell[tabulator-field="officer"]{white-space:normal!important;overflow-wrap:anywhere;min-width:220px}
+        #deploymentOfficerTable .tabulator-cell[tabulator-field="idsubsls"]{white-space:nowrap!important;overflow:visible!important;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+        #deploymentOfficerTable .tabulator-cell.tabulator-frozen{background:#172033!important;color:#f8fafc!important;opacity:1!important;box-shadow:2px 0 5px rgba(0,0,0,.16)}
+        #deploymentOfficerTable .tabulator-row:nth-child(even) .tabulator-cell.tabulator-frozen{background:#243247!important;color:#f8fafc!important}
+        #deploymentOfficerTable .tabulator-header .tabulator-col.tabulator-frozen{background:#263449!important;color:#fff!important;opacity:1!important}
+        [data-bs-theme="light"] #deploymentOfficerTable .tabulator-cell.tabulator-frozen{background:#f1f5f9!important;color:#0f172a!important}
+        [data-bs-theme="light"] #deploymentOfficerTable .tabulator-row:nth-child(even) .tabulator-cell.tabulator-frozen{background:#e2eaf4!important;color:#0f172a!important}
+        [data-bs-theme="light"] #deploymentOfficerTable .tabulator-header .tabulator-col.tabulator-frozen{background:#dbeafe!important;color:#0f172a!important}
+        [data-bs-theme="light"] #deploymentOfficerTable .tabulator-row,[data-bs-theme="light"] #deploymentOfficerTable .tabulator-cell,[data-bs-theme="light"] #deploymentOfficerTable .tabulator-header,[data-bs-theme="light"] #deploymentOfficerTable .tabulator-col{color:#0f172a!important}
+        @media(max-width:700px){.deployment-table-wrap{overflow-x:auto}#deploymentOfficerTable .tabulator{min-width:900px!important}}
+
 </style>
 
 </head>
@@ -1829,7 +1852,7 @@
                             <div class="modal-header">
                                 <h5 class="modal-title">
                                     <i class="bi bi-cloud-upload"></i>
-                                    Upload JSON <span class="badge bg-secondary ms-1" id="uploadCount">0</span>
+                                    Upload Data <span class="badge bg-secondary ms-1" id="uploadCount">0</span>
                                 </h5>
                                 <button class="btn-close" data-bs-dismiss="modal"
                                     data-testid="upload-modal-close"></button>
@@ -1838,7 +1861,9 @@
                             <div class="modal-body">
                                 <div id="dropZone" class="drop-zone" data-testid="upload-dropzone">
                                     <i class="bi bi-cloud-upload drop-zone-icon"></i>
-                                    <div class="drop-zone-title">Drag &amp; drop file <code>.json</code> di sini</div>
+                                    <div class="drop-zone-title">Upload JSON FASIH</div>
+                                    <div class="drop-zone-sub">Bagian ini hanya untuk file <code>.json</code>. Tidak wajib jika hanya ingin upload Excel Deployment.</div>
+                                    <div class="drop-zone-sub mt-1">Drag &amp; drop file <code>.json</code> di sini</div>
                                     <div class="drop-zone-sub">
                                         atau
                                         <button type="button" id="btnPickFiles"
@@ -1855,8 +1880,8 @@
 
                                 <div class="border rounded-3 p-3 mt-4" style="border-color:var(--border)!important;background:var(--card-solid)">
                                     <div class="d-flex align-items-start justify-content-between flex-wrap gap-2 mb-2">
-                                        <div><div class="fw-bold"><i class="bi bi-file-earmark-excel text-success me-1"></i>Deployment SE2026</div><div class="small text-secondary">Opsional — pilih tiga file Excel Keluarga, Usaha Keluarga, dan Usaha BKU sekaligus.</div></div>
-                                        <span class="badge text-bg-success">3 file wajib</span>
+                                        <div><div class="fw-bold"><i class="bi bi-file-earmark-excel text-success me-1"></i>Deployment SE2026</div><div class="small text-secondary">Upload Excel Deployment secara mandiri. Tidak membutuhkan file JSON.</div></div>
+                                        <span class="badge text-bg-success">3 Excel wajib untuk Deployment</span>
                                     </div>
                                     <input class="form-control form-control-sm" type="file" id="deploymentFilesAll" accept=".xlsx,.xls" multiple>
                                     <div class="small text-secondary mt-2" id="deploymentSelectedFiles">Belum ada file Excel deployment dipilih.</div>
@@ -2049,7 +2074,7 @@
                     <input type="search" class="form-control form-control-sm deployment-table-search" id="deploymentOfficerSearch" placeholder="Cari nama petugas atau ID Sub-SLS..." aria-label="Cari nama petugas atau ID Sub-SLS">
                     <div class="small text-secondary" id="deploymentTableCount">-</div>
                 </div>
-                <div class="table-responsive"><div id="deploymentOfficerTable"></div></div>
+                <div class="deployment-table-wrap"><div id="deploymentOfficerTable"></div></div>
             </div>
         </section>
 

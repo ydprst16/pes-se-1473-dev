@@ -92,7 +92,7 @@
   function makeCountColumn(title,field,category){
     return {
       title,field,hozAlign:"right",headerHozAlign:"center",
-      minWidth:94,width:104,headerWordWrap:true,
+      minWidth:100,widthGrow:1,headerWordWrap:true,
       headerCssClass:`deployment-col-header deployment-col-${category}`,
       formatter:cell=>fmt(cell.getValue()),
       bottomCalc:"sum",bottomCalcFormatter:cell=>fmt(cell.getValue()),
@@ -106,14 +106,14 @@
     const cfg=statusConfig[category], rows=detailRows[category]||[];
     const search=$("deploymentOfficerSearch")?.value?.trim().toLowerCase()||"";
     const columns=[
-      {title:"Nama Petugas",field:"officer",frozen:true,minWidth:210,width:240,variableHeight:true,formatter:"textarea",headerFilter:false,tooltip:true},
-      {title:"ID Sub-SLS",field:"idsubsls",minWidth:190,width:190,headerHozAlign:"center",hozAlign:"center",headerWordWrap:false,formatter:c=>`<span class="font-monospace">${String(c.getValue()||"")}</span>`},
+      {title:"Nama Petugas",field:"officer",frozen:true,minWidth:220,width:280,widthGrow:2,variableHeight:true,formatter:"textarea",headerFilter:false,tooltip:true},
+      {title:"ID Sub-SLS",field:"idsubsls",minWidth:190,width:220,widthGrow:1,headerHozAlign:"center",hozAlign:"center",headerWordWrap:false,formatter:c=>`<span class="font-monospace">${String(c.getValue()||"")}</span>`},
       ...cfg.statuses.map((status,i)=>makeCountColumn(cleanStatusLabel(status),`${category}_${i}`,category)),
-      {...makeCountColumn("Total",`${category}_total`,category),minWidth:108,width:116}
+      {...makeCountColumn("Total",`${category}_total`,category),minWidth:110,widthGrow:1}
     ];
     if(table)table.destroy();
     table=new Tabulator($("deploymentOfficerTable"),{
-      data:rows,columns,layout:"fitDataFill",height:"620px",headerWordWrap:true,
+      data:rows,columns,layout:"fitColumns",height:"620px",headerWordWrap:true,
       movableColumns:true,resizableColumns:true,responsiveLayout:false,
       pagination:true,paginationSize:15,paginationSizeSelector:[15,25,50],
       placeholder:"Tidak ada data untuk kategori ini.",

@@ -681,7 +681,7 @@ function resetUploadModal() {
   const fi = document.getElementById("jsonFile");
   if (fi) fi.value = "";
   const btn = document.getElementById("btnUpload");
-  if (btn) { btn.disabled = false; btn.innerHTML = '<i class="bi bi-cloud-arrow-up"></i> Upload Semua'; }
+  if (btn) { btn.disabled = false; btn.innerHTML = '<i class="bi bi-cloud-arrow-up"></i> Upload JSON Terpilih'; }
   const dz = document.getElementById("dropZone");
   if (dz) dz.classList.remove("is-dragover");
 }
@@ -925,7 +925,7 @@ async function handleUploadAll() {
   const skipped = uploader.items.filter(it => it.status === "invalid");
 
   btn.disabled = false;
-  btn.innerHTML = '<i class="bi bi-cloud-arrow-up"></i> Upload Semua';
+  btn.innerHTML = '<i class="bi bi-cloud-arrow-up"></i> Upload JSON Terpilih';
 
   // Deteksi rate limit / password salah
   const wrongPw = fail.find(x => (x.error || "").toLowerCase().includes("password"));
