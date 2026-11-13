@@ -6,7 +6,7 @@
     usaha_keluarga:{title:"Usaha Keluarga",statuses:["0. Tidak Ditemukan","1. Ditemukan","2. Baru","3. Tutup","4. Ganda","7. Data diperoleh dari Kantor Pusat (KP)"]},
     usaha_bku:{title:"Usaha BKU",statuses:["0. Tidak Ditemukan","1. Ditemukan","2. Baru","3. Tutup","4. Ganda"]}
   };
-  let source=null, table=null, rowsForExport=[], detailRows={}, activeCategory="keluarga", loaded=false;
+  let source=null, table=null, rowsForExport=[], detailRows={}, activeCategory="keluarga", loaded=false, donutCharts={};
   const normalizeId=v=>String(v??"").replace(/\D/g,"");
   const normalizeName=v=>String(v??"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim().replace(/\s+/g," ");
   const fmt=v=>Number(v||0).toLocaleString("id-ID");
@@ -80,10 +80,9 @@
   }
   const cleanStatusLabel=status=>String(status).replace(/^\s*\d+\.\s*/,"");
   function makeCountColumn(title,field,category){
-    const accent=category==="keluarga"?"#3b82f6":category==="usaha_keluarga"?"#0d9488":"#d97706";
     return {
       title,field,hozAlign:"right",headerHozAlign:"center",
-      minWidth:112,width:132,headerWordWrap:true,
+      minWidth:94,width:104,headerWordWrap:true,
       headerCssClass:`deployment-col-header deployment-col-${category}`,
       formatter:cell=>fmt(cell.getValue()),
       bottomCalc:"sum",bottomCalcFormatter:cell=>fmt(cell.getValue()),
@@ -97,14 +96,14 @@
     const cfg=statusConfig[category], rows=detailRows[category]||[];
     const search=$("deploymentOfficerSearch")?.value?.trim().toLowerCase()||"";
     const columns=[
-      {title:"Nama Petugas",field:"officer",frozen:true,minWidth:175,widthGrow:2,headerFilter:false,tooltip:true},
-      {title:"ID Sub-SLS",field:"idsubsls",minWidth:145,width:155,headerHozAlign:"center",hozAlign:"center",formatter:c=>`<span class="font-monospace">${c.getValue()}</span>`},
+      {title:"Nama Petugas",field:"officer",frozen:true,minWidth:190,width:205,headerFilter:false,tooltip:true},
+      {title:"ID Sub-SLS",field:"idsubsls",minWidth:178,width:178,headerHozAlign:"center",hozAlign:"center",headerWordWrap:false,formatter:c=>`<span class="font-monospace">${String(c.getValue()||"")}</span>`},
       ...cfg.statuses.map((status,i)=>makeCountColumn(cleanStatusLabel(status),`${category}_${i}`,category)),
-      makeCountColumn("Total",`${category}_total`,category)
+      {...makeCountColumn("Total",`${category}_total`,category),minWidth:108,width:116}
     ];
     if(table)table.destroy();
     table=new Tabulator($("deploymentOfficerTable"),{
-      data:rows,columns,layout:"fitColumns",height:"620px",headerWordWrap:true,
+      data:rows,columns,layout:"fitData",height:"620px",headerWordWrap:true,
       movableColumns:true,resizableColumns:true,responsiveLayout:false,
       pagination:true,paginationSize:15,paginationSizeSelector:[15,25,50],
       placeholder:"Tidak ada data untuk kategori ini.",
@@ -112,8 +111,30 @@
       rowFormatter:function(row){row.getElement().style.borderLeft=`3px solid ${category==="keluarga"?"#3b82f6":category==="usaha_keluarga"?"#0d9488":"#d97706"}`;}
     });
     if(search)applySearch(search);
+    document.querySelectorAll(".deployment-category-tab").forEach(btn=>{
+      const active=btn.dataset.deploymentCategory===category;
+      btn.classList.toggle("active",active);btn.setAttribute("aria-selected",active?"true":"false");
+    });
     const count=$("deploymentTableCount");
     if(count)count.textContent=`${fmt(rows.length)} baris Sub-SLS`;
+  }
+  function renderDonutCharts(){
+    const chartTargets={keluarga:"deploymentDonutKeluarga",usaha_keluarga:"deploymentDonutUsahaKeluarga",usaha_bku:"deploymentDonutBku"};
+    Object.entries(chartTargets).forEach(([category,elementId])=>{
+      const cfg=statusConfig[category], rows=detailRows[category]||[];
+      const values=cfg.statuses.map((status,i)=>rows.reduce((sum,row)=>sum+Number(row[`${category}_${i}`]||0),0));
+      const labels=cfg.statuses.map(cleanStatusLabel), total=values.reduce((a,b)=>a+b,0);
+      if(donutCharts[category]){donutCharts[category].destroy();delete donutCharts[category];}
+      const el=$(elementId);if(!el||typeof ApexCharts==="undefined")return;
+      if(!total){el.innerHTML='<div class="small text-secondary text-center pt-5">Belum ada data</div>';return;}
+      donutCharts[category]=new ApexCharts(el,{
+        chart:{type:"donut",height:150,sparkline:{enabled:false},animations:{enabled:false},toolbar:{show:false}},
+        series:values,labels,legend:{show:true,position:"bottom",fontSize:"9px",horizontalAlign:"center",itemMargin:{horizontal:5,vertical:1},markers:{width:7,height:7}},
+        dataLabels:{enabled:false},stroke:{width:1},plotOptions:{pie:{donut:{size:"67%",labels:{show:true,total:{show:true,label:"Total",fontSize:"10px",formatter:()=>fmt(total)},value:{show:false}}}}},
+        tooltip:{y:{formatter:v=>fmt(v)}},noData:{text:"Belum ada data"}
+      });
+      donutCharts[category].render();
+    });
   }
   function applySearch(value){
     if(!table)return;
@@ -131,13 +152,13 @@
     $("deploymentUnmatchedSsls").textContent=fmt(result.unmatched);
     $("deploymentOfficerCount").textContent=fmt(result.officerCount);
     if(info)info.textContent=`Snapshot ${source.importDate} · ${fmt(result.uniqueMatched)} ID Sub-SLS unik cocok.`;
-    renderCategory(activeCategory);loaded=true;
+    renderDonutCharts();renderCategory(activeCategory);loaded=true;
   }
   async function loadSnapshot(date){const url=date?`api/deployment.php?action=get&date=${encodeURIComponent(date)}`:`api/deployment.php?action=latest&_ts=${Date.now()}`;const r=await fetch(url,{cache:"no-store"});if(!r.ok)throw new Error("Snapshot deployment belum tersedia. Upload tiga file Excel untuk memulai.");source=await r.json();loaded=false;await render();}
   async function refreshHistory(selected){const r=await fetch(`api/deployment.php?action=list&_ts=${Date.now()}`,{cache:"no-store"});if(!r.ok)throw new Error("Gagal memuat riwayat snapshot.");const p=await r.json();const sel=$("deploymentHistorySelect");sel.innerHTML="";if(!p.items?.length){sel.add(new Option("Belum ada snapshot",""));return;}p.items.forEach(x=>sel.add(new Option(x.date,x.date)));sel.value=selected||p.items[0].date;}
   function exportExcel(){if(!rowsForExport.length){alert("Data deployment per petugas belum tersedia untuk diekspor.");return;}const out=rowsForExport.map(row=>{const o={"Petugas PPL/PCL":row.officer,"Muatan SE2026":row.target,"Jumlah Sub-SLS":row.subSlsCount,"Sub-SLS Cocok":row.matchedSubSls,"Sub-SLS Tidak Cocok":row.unmatchedSubSls};Object.entries(statusConfig).forEach(([cat,cfg])=>{cfg.statuses.forEach((st,i)=>o[`${cfg.title} - ${st}`]=row[`${cat}_${i}`]);o[`${cfg.title} - Total`]=row[`${cat}_total`];});return o;});const ws=XLSX.utils.json_to_sheet(out);ws["!cols"]=Object.keys(out[0]).map(k=>({wch:Math.min(48,Math.max(14,k.length+3))}));const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,"Deployment per Petugas");const d=source?.importDate||new Date().toISOString().slice(0,10);XLSX.writeFile(wb,`deployment_per_petugas_${d.replace(/-/g,"")}.xlsx`);}
   window.selectDeploymentCategory = async function(category){
-    if(!statusConfig[category])category="keluarga";
+    if(!statusConfig[category])category=activeCategory||"keluarga";
     activeCategory=category;
     try{
       if(!loaded){
@@ -155,6 +176,7 @@
     }
   };
   document.addEventListener("DOMContentLoaded",()=>{
+    document.querySelectorAll(".deployment-category-tab").forEach(btn=>btn.addEventListener("click",()=>window.selectDeploymentCategory(btn.dataset.deploymentCategory)));
     $("btnUploadDeployment")?.addEventListener("click",async()=>{const btn=$("btnUploadDeployment");btn.disabled=true;try{await uploadDaily();}catch(e){console.error("[Deployment upload]",e);setMessage(e.message,"danger");}finally{btn.disabled=false;}});
     $("deploymentHistorySelect")?.addEventListener("change",async e=>{if(!e.target.value)return;try{await loadSnapshot(e.target.value);}catch(err){setMessage(err.message,"danger");}});
     $("btnExportDeploymentOfficer")?.addEventListener("click",exportExcel);
