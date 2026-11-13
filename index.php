@@ -2039,16 +2039,18 @@
                     <h3 class="mb-1"><i class="bi bi-diagram-3-fill text-primary me-2"></i>Rekapitulasi per Petugas</h3>
                     <div class="text-secondary small">Rekap jumlah assignment Keluarga, Usaha Keluarga, dan Usaha BKU berdasarkan status untuk setiap PPL/PCL.</div>
                 </div>
-                <button class="btn btn-success btn-sm" id="btnExportDeploymentOfficer"><i class="bi bi-file-earmark-excel me-1"></i>Export Excel</button>
+                <div class="d-flex align-items-center gap-2 flex-wrap ms-auto">
+                    <div class="d-flex align-items-center gap-2">
+                        <label class="small text-secondary mb-0 text-nowrap" for="deploymentHistorySelect">Snapshot:</label>
+                        <select class="form-select form-select-sm" id="deploymentHistorySelect" style="width:auto;min-width:150px;max-width:190px"><option value="">Memuat riwayat...</option></select>
+                    </div>
+                    <button class="btn btn-success btn-sm text-nowrap" id="btnExportDeploymentOfficer"><i class="bi bi-file-earmark-excel me-1"></i>Export Excel</button>
+                </div>
             </div>
             <div class="deployment-category-tabs mb-3" role="tablist" aria-label="Kategori deployment">
                 <button type="button" class="deployment-category-tab active" data-deployment-category="keluarga" role="tab" aria-selected="true"><i class="bi bi-people-fill me-1"></i>Keluarga</button>
                 <button type="button" class="deployment-category-tab" data-deployment-category="usaha_keluarga" role="tab" aria-selected="false"><i class="bi bi-house-check-fill me-1"></i>Usaha Keluarga</button>
                 <button type="button" class="deployment-category-tab" data-deployment-category="usaha_bku" role="tab" aria-selected="false"><i class="bi bi-shop me-1"></i>Usaha BKU</button>
-            </div>
-            <div class="d-flex justify-content-end align-items-center gap-2 flex-wrap mb-3">
-                <label class="small text-secondary mb-0" for="deploymentHistorySelect">Snapshot:</label>
-                <select class="form-select form-select-sm" id="deploymentHistorySelect" style="width:auto;min-width:150px"><option value="">Memuat riwayat...</option></select>
             </div>
             <div class="chart-card mb-3" id="deploymentSummaryPanel">
                 <div class="row g-3 align-items-center">
