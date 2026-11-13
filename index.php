@@ -1533,9 +1533,6 @@
         .deployment-category-tabs{display:flex;gap:7px;flex-wrap:wrap;padding:5px;border:1px solid var(--border);border-radius:12px;background:var(--card-solid)}
         .deployment-category-tab{border:0;border-radius:8px;padding:8px 14px;background:transparent;color:var(--bs-secondary-color);font-size:12px;font-weight:700;white-space:nowrap}
         .deployment-category-tab.active{background:var(--bs-primary);color:#fff;box-shadow:0 2px 7px rgba(0,0,0,.12)}
-        .deployment-donut-card{height:100%;padding:10px 12px 5px;border:1px solid var(--border);border-radius:11px;background:var(--card-solid)}
-        .deployment-donut-title{font-size:12px;font-weight:800;margin-bottom:0}
-        .deployment-donut{height:154px;max-width:300px;margin:0 auto;overflow:hidden}
         #deploymentOfficerTable .tabulator{width:max-content;min-width:100%;}
         #deploymentOfficerTable .tabulator-tableholder{overflow-x:auto!important;overscroll-behavior-x:contain}
         #deploymentOfficerTable .tabulator-cell.tabulator-frozen{z-index:12!important;background:#172033!important;color:#f8fafc!important;box-shadow:2px 0 5px rgba(0,0,0,.18)}
@@ -1545,12 +1542,10 @@
         [data-bs-theme="light"] #deploymentOfficerTable .tabulator-row.tabulator-row-even .tabulator-cell.tabulator-frozen{background:#dce6f3!important}
         [data-bs-theme="light"] #deploymentOfficerTable .tabulator-header .tabulator-col.tabulator-frozen{background:#d7e2f0!important;color:#0f172a!important}
         #deploymentOfficerTable .tabulator-cell[tabulator-field="idsubsls"]{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;white-space:nowrap;letter-spacing:.01em}
-        @media(max-width:650px){.deployment-category-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}.deployment-category-tab{padding:9px 5px;font-size:10px}.deployment-donut{height:145px}.deployment-donut-card{padding:8px 6px}}
+        @media(max-width:650px){.deployment-category-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}.deployment-category-tab{padding:9px 5px;font-size:10px}}
         @media (max-width: 900px) { .deployment-password { flex-basis:200px; } .deployment-history { flex-basis:180px; } }
         .deployment-file-grid-single{grid-template-columns:minmax(0,1fr)}
         .deployment-file-item-all{border-top:3px solid var(--bs-primary)}
-        .deployment-donut-card{padding:14px 16px 10px}
-        .deployment-donut{height:285px;max-width:100%;margin:0 auto;overflow:visible}
         #deploymentOfficerTable .tabulator{width:100%;min-width:100%;font-size:12px}
         #deploymentOfficerTable .tabulator-cell{white-space:normal;overflow:visible;text-overflow:clip;line-height:1.35}
         #deploymentOfficerTable .tabulator-cell[tabulator-field="officer"]{white-space:normal;min-width:190px}
@@ -1561,8 +1556,6 @@
         [data-bs-theme="light"] #deploymentOfficerTable .tabulator-cell.tabulator-frozen{background:#e8eef7!important;color:#0f172a!important}
         [data-bs-theme="light"] #deploymentOfficerTable .tabulator-row.tabulator-row-even .tabulator-cell.tabulator-frozen{background:#dce6f3!important}
         [data-bs-theme="light"] #deploymentOfficerTable .tabulator-header .tabulator-col.tabulator-frozen{background:#d7e2f0!important;color:#0f172a!important}
-        @media(max-width:650px){.deployment-donut{height:285px}.deployment-donut-card{padding:12px}}
-        @media (max-width: 650px) { .deployment-upload-card { padding:13px; } .deployment-file-grid { grid-template-columns:1fr; gap:8px; } .deployment-file-item { padding:10px; } .deployment-file-label { margin-bottom:7px; } .deployment-upload-footer { display:grid; grid-template-columns:1fr 1fr; } .deployment-password,.deployment-history { max-width:none; width:100%; } .deployment-upload-button { grid-column:1/-1; width:100%; } .deployment-upload-heading { align-items:flex-start; } }
 </style>
 
 </head>
@@ -1860,6 +1853,20 @@
 
                                 <div id="fileList" class="file-list mt-3" data-testid="upload-file-list"></div>
 
+                                <div class="border rounded-3 p-3 mt-4" style="border-color:var(--border)!important;background:var(--card-solid)">
+                                    <div class="d-flex align-items-start justify-content-between flex-wrap gap-2 mb-2">
+                                        <div><div class="fw-bold"><i class="bi bi-file-earmark-excel text-success me-1"></i>Deployment SE2026</div><div class="small text-secondary">Opsional — pilih tiga file Excel Keluarga, Usaha Keluarga, dan Usaha BKU sekaligus.</div></div>
+                                        <span class="badge text-bg-success">3 file wajib</span>
+                                    </div>
+                                    <input class="form-control form-control-sm" type="file" id="deploymentFilesAll" accept=".xlsx,.xls" multiple>
+                                    <div class="small text-secondary mt-2" id="deploymentSelectedFiles">Belum ada file Excel deployment dipilih.</div>
+                                    <div class="d-flex flex-wrap align-items-center gap-2 mt-3">
+                                        <button type="button" class="btn btn-success btn-sm" id="btnUploadDeployment"><i class="bi bi-cloud-arrow-up me-1"></i>Upload Excel Deployment</button>
+                                        <span class="small text-secondary">Nama file harus diawali tanggal yyyymmdd_ dan tanggal ketiganya sama.</span>
+                                    </div>
+                                    <div id="deploymentUploadMessage" class="small mt-2" role="status">Belum ada upload deployment pada sesi ini.</div>
+                                </div>
+
                                 <div class="mt-3">
                                     <label for="uploadPassword" class="form-label small text-secondary mb-1">
                                         <i class="bi bi-shield-lock"></i> Password Upload
@@ -2018,20 +2025,9 @@
                 <button type="button" class="deployment-category-tab" data-deployment-category="usaha_keluarga" role="tab" aria-selected="false"><i class="bi bi-house-check-fill me-1"></i>Usaha Keluarga</button>
                 <button type="button" class="deployment-category-tab" data-deployment-category="usaha_bku" role="tab" aria-selected="false"><i class="bi bi-shop me-1"></i>Usaha BKU</button>
             </div>
-            <div class="deployment-upload-card mb-3">
-                <div class="deployment-upload-heading">
-                    <div><div class="chart-title mb-1">Upload Data Deployment Harian</div><div class="small text-secondary">Unggah tiga sumber Excel untuk tanggal yang sama. Setiap unggahan disimpan sebagai snapshot tersendiri.</div></div>
-                    <span class="deployment-required"><i class="bi bi-files me-1"></i>3 file wajib</span>
-                </div>
-                <div class="deployment-file-grid deployment-file-grid-single">
-                    <div class="deployment-file-item deployment-file-item-all"><div class="deployment-file-label"><span class="deployment-file-icon"><i class="bi bi-files"></i></span><span><strong>Pilih 3 file Excel sekaligus</strong><small>Keluarga · Usaha Keluarga · Usaha BKU — tanggal pada nama file harus sama</small></span></div><input class="form-control form-control-sm" type="file" id="deploymentFilesAll" accept=".xlsx,.xls" multiple><div class="small text-secondary mt-2" id="deploymentSelectedFiles">Belum ada file dipilih. Pilih ketiga file dalam satu kali pemilihan.</div></div>
-                </div>
-                <div class="deployment-upload-footer">
-                    <div class="deployment-password"><label class="form-label small fw-semibold mb-1" for="deploymentUploadPassword">Password upload</label><input class="form-control form-control-sm" type="password" id="deploymentUploadPassword" autocomplete="current-password" placeholder="Masukkan password upload"></div>
-                    <button class="btn btn-primary btn-sm deployment-upload-button" id="btnUploadDeployment"><i class="bi bi-cloud-arrow-up me-1"></i>Upload & Simpan Snapshot</button>
-                    <div class="deployment-history"><label class="form-label small fw-semibold mb-1" for="deploymentHistorySelect">Riwayat snapshot</label><select class="form-select form-select-sm" id="deploymentHistorySelect"><option value="">Memuat riwayat...</option></select></div>
-                </div>
-                <div id="deploymentUploadMessage" class="deployment-upload-message" role="status">Belum ada upload pada sesi ini.</div>
+            <div class="d-flex justify-content-end align-items-center gap-2 flex-wrap mb-3">
+                <label class="small text-secondary mb-0" for="deploymentHistorySelect">Snapshot:</label>
+                <select class="form-select form-select-sm" id="deploymentHistorySelect" style="width:auto;min-width:150px"><option value="">Memuat riwayat...</option></select>
             </div>
             <div class="row g-3 mb-3" id="deploymentSummaryCards">
                 <div class="col-12 col-md-4"><div class="kpi-card"><div class="kpi-title">Sub-SLS cocok</div><div class="kpi-value" id="deploymentMatchedSsls">-</div></div></div>
@@ -2039,9 +2035,9 @@
                 <div class="col-12 col-md-4"><div class="kpi-card"><div class="kpi-title">Petugas PPL/PCL</div><div class="kpi-value" id="deploymentOfficerCount">-</div></div></div>
             </div>
             <div class="row g-3 mb-3" id="deploymentDonutCharts">
-                <div class="col-12 col-xl-4"><div class="deployment-donut-card"><div class="deployment-donut-title text-primary"><i class="bi bi-people-fill me-1"></i>Keluarga</div><div id="deploymentDonutKeluarga" class="deployment-donut"></div><div class="table-responsive"><table class="table bp-breakdown-table mb-0"><thead><tr><th>Status</th><th class="text-end">Jumlah</th><th class="text-end">%</th></tr></thead><tbody id="deploymentDonutKeluargaRows"></tbody></table></div></div></div>
-                <div class="col-12 col-xl-4"><div class="deployment-donut-card"><div class="deployment-donut-title text-success"><i class="bi bi-house-check-fill me-1"></i>Usaha Keluarga</div><div id="deploymentDonutUsahaKeluarga" class="deployment-donut"></div><div class="table-responsive"><table class="table bp-breakdown-table mb-0"><thead><tr><th>Status</th><th class="text-end">Jumlah</th><th class="text-end">%</th></tr></thead><tbody id="deploymentDonutUsahaKeluargaRows"></tbody></table></div></div></div>
-                <div class="col-12 col-xl-4"><div class="deployment-donut-card"><div class="deployment-donut-title text-warning"><i class="bi bi-shop me-1"></i>Usaha BKU</div><div id="deploymentDonutBku" class="deployment-donut"></div><div class="table-responsive"><table class="table bp-breakdown-table mb-0"><thead><tr><th>Status</th><th class="text-end">Jumlah</th><th class="text-end">%</th></tr></thead><tbody id="deploymentDonutBkuRows"></tbody></table></div></div></div>
+                <div class="col-12 col-xl-4"><div class="bp-breakdown-card"><div class="bp-breakdown-head"><div class="bp-breakdown-icon"><i class="bi bi-people-fill"></i></div><div><div class="chart-title mb-0">Keluarga</div><div class="bp-breakdown-subtitle">Rekap status keberadaan keluarga</div></div></div><div id="deploymentDonutKeluarga" style="min-height:245px"></div><div class="table-responsive"><table class="table bp-breakdown-table"><thead><tr><th>Status</th><th class="text-end">Jumlah</th><th class="text-end">%</th></tr></thead><tbody id="deploymentDonutKeluargaRows"></tbody></table></div></div></div>
+                <div class="col-12 col-xl-4"><div class="bp-breakdown-card"><div class="bp-breakdown-head"><div class="bp-breakdown-icon"><i class="bi bi-house-check-fill"></i></div><div><div class="chart-title mb-0">Usaha Keluarga</div><div class="bp-breakdown-subtitle">Rekap status keberadaan usaha keluarga</div></div></div><div id="deploymentDonutUsahaKeluarga" style="min-height:245px"></div><div class="table-responsive"><table class="table bp-breakdown-table"><thead><tr><th>Status</th><th class="text-end">Jumlah</th><th class="text-end">%</th></tr></thead><tbody id="deploymentDonutUsahaKeluargaRows"></tbody></table></div></div></div>
+                <div class="col-12 col-xl-4"><div class="bp-breakdown-card"><div class="bp-breakdown-head"><div class="bp-breakdown-icon"><i class="bi bi-building"></i></div><div><div class="chart-title mb-0">Usaha BKU</div><div class="bp-breakdown-subtitle">Rekap status keberadaan usaha BKU</div></div></div><div id="deploymentDonutBku" style="min-height:245px"></div><div class="table-responsive"><table class="table bp-breakdown-table"><thead><tr><th>Status</th><th class="text-end">Jumlah</th><th class="text-end">%</th></tr></thead><tbody id="deploymentDonutBkuRows"></tbody></table></div></div></div>
             </div>
             <div class="chart-card">
                 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">
