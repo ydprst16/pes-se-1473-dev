@@ -265,6 +265,50 @@
             border-radius: 8px;
         }
 
+        /* SE2026 workload table: keep the same Tabulator visual language as Data Enumerator. */
+        #se2026WorkloadTable { width:100%; min-width:0; }
+        #se2026WorkloadTable .tabulator {
+            width:100%; border:1px solid var(--border) !important;
+            border-radius:10px; overflow:hidden;
+            background:var(--card-solid) !important;
+            color:var(--text) !important;
+        }
+        #se2026WorkloadTable .tabulator-header,
+        #se2026WorkloadTable .tabulator .tabulator-header,
+        #se2026WorkloadTable .tabulator .tabulator-header .tabulator-col {
+            background:var(--bg-2) !important; color:var(--text) !important;
+            border-color:var(--border) !important;
+        }
+        #se2026WorkloadTable .tabulator-tableholder { background:var(--card-solid) !important; }
+        #se2026WorkloadTable .tabulator-row { background:transparent !important; color:var(--text) !important; }
+        #se2026WorkloadTable .tabulator-row.tabulator-row-even { background:var(--row-even-bg) !important; }
+        #se2026WorkloadTable .tabulator-row:hover { background:var(--row-hover-bg) !important; }
+        #se2026WorkloadTable .tabulator-cell { background:transparent !important; color:var(--text) !important; border-color:var(--border) !important; }
+        #se2026WorkloadTable .tabulator-footer,
+        #se2026WorkloadTable .tabulator-page,
+        #se2026WorkloadTable .tabulator-page-size { background:var(--card-solid) !important; color:var(--text) !important; border-color:var(--border) !important; }
+        [data-bs-theme="light"] #se2026WorkloadTable .tabulator,
+        [data-bs-theme="light"] #se2026WorkloadTable .tabulator-tableholder,
+        [data-bs-theme="light"] #se2026WorkloadTable .tabulator-row { background:#fff !important; color:#0f172a !important; }
+        [data-bs-theme="light"] #se2026WorkloadTable .tabulator-header,
+        [data-bs-theme="light"] #se2026WorkloadTable .tabulator-col { background:#f1f5f9 !important; color:#0f172a !important; }
+        [data-bs-theme="light"] #se2026WorkloadTable .tabulator-row-even { background:#f8fafc !important; }
+        [data-bs-theme="light"] #se2026WorkloadTable .tabulator-cell,
+        [data-bs-theme="light"] #se2026WorkloadTable .tabulator-col-title { color:#0f172a !important; background:transparent !important; }
+        [data-bs-theme="light"] #se2026WorkloadTable .tabulator-footer,
+        [data-bs-theme="light"] #se2026WorkloadTable .tabulator-page,
+        [data-bs-theme="light"] #se2026WorkloadTable .tabulator-page-size { background:#fff !important; color:#0f172a !important; border-color:#cbd5e1 !important; }
+        @media (max-width:767.98px) {
+            #se2026WorkloadTable { width:100%; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+            #se2026WorkloadTable .tabulator { min-width:760px; font-size:12px; }
+            #se2026WorkloadTable .tabulator .tabulator-header .tabulator-col,
+            #se2026WorkloadTable .tabulator .tabulator-header .tabulator-col .tabulator-col-content { padding:6px 8px !important; }
+            #se2026WorkloadTable .tabulator-row .tabulator-cell { padding:7px 8px !important; font-size:12px !important; }
+            #se2026WorkloadTable .tabulator-paginator,
+            #se2026WorkloadTable .tabulator-page,
+            #se2026WorkloadTable .tabulator-page-size { font-size:11px !important; }
+        }
+
         .performer-list .border-bottom {
             transition: background-color .2s ease, padding-left .2s ease;
             border-radius: 8px;
@@ -449,71 +493,98 @@
             color: var(--text-mute) !important;
         }
 
-        /* Tabulator light theme: force readable white surfaces and dark text
-           for both Monitoring Petugas and Keberadaan Keluarga/Usaha tables. */
+        /* Tabulator light theme: shared surfaces for enumerator, detail, business and workload tables. */
         [data-bs-theme="light"] #gridTable .tabulator,
         [data-bs-theme="light"] #gridTableDetail .tabulator,
-        [data-bs-theme="light"] #businessRegionTable .tabulator {
-            background: #ffffff !important;
-            color: #0f172a !important;
-            border-color: #dbe3ee !important;
+        [data-bs-theme="light"] #businessRegionTable .tabulator,
+        [data-bs-theme="light"] #se2026WorkloadTable .tabulator {
+            background:#fff !important; color:#0f172a !important; border-color:#dbe3ee !important;
         }
         [data-bs-theme="light"] #gridTable .tabulator-header,
         [data-bs-theme="light"] #gridTableDetail .tabulator-header,
         [data-bs-theme="light"] #businessRegionTable .tabulator-header,
+        [data-bs-theme="light"] #se2026WorkloadTable .tabulator-header,
         [data-bs-theme="light"] #gridTable .tabulator-col,
         [data-bs-theme="light"] #gridTableDetail .tabulator-col,
-        [data-bs-theme="light"] #businessRegionTable .tabulator-col {
-            background: #eef2f7 !important;
-            color: #0f172a !important;
-            border-color: #dbe3ee !important;
+        [data-bs-theme="light"] #businessRegionTable .tabulator-col,
+        [data-bs-theme="light"] #se2026WorkloadTable .tabulator-col {
+            background:#eef2f7 !important; color:#0f172a !important; border-color:#dbe3ee !important;
         }
         [data-bs-theme="light"] #gridTable .tabulator-tableholder,
         [data-bs-theme="light"] #gridTableDetail .tabulator-tableholder,
-        [data-bs-theme="light"] #businessRegionTable .tabulator-tableholder {
-            background: #ffffff !important;
-        }
+        [data-bs-theme="light"] #businessRegionTable .tabulator-tableholder,
+        [data-bs-theme="light"] #se2026WorkloadTable .tabulator-tableholder { background:#fff !important; }
         [data-bs-theme="light"] #gridTable .tabulator-row,
         [data-bs-theme="light"] #gridTableDetail .tabulator-row,
-        [data-bs-theme="light"] #businessRegionTable .tabulator-row {
-            background: #ffffff !important;
-            color: #0f172a !important;
-            border-color: #e2e8f0 !important;
-        }
+        [data-bs-theme="light"] #businessRegionTable .tabulator-row,
+        [data-bs-theme="light"] #se2026WorkloadTable .tabulator-row { background:#fff !important; color:#0f172a !important; border-color:#e2e8f0 !important; }
         [data-bs-theme="light"] #gridTable .tabulator-row-even,
         [data-bs-theme="light"] #gridTableDetail .tabulator-row-even,
-        [data-bs-theme="light"] #businessRegionTable .tabulator-row-even {
-            background: #f8fafc !important;
-        }
+        [data-bs-theme="light"] #businessRegionTable .tabulator-row-even,
+        [data-bs-theme="light"] #se2026WorkloadTable .tabulator-row-even { background:#f8fafc !important; }
         [data-bs-theme="light"] #gridTable .tabulator-cell,
         [data-bs-theme="light"] #gridTableDetail .tabulator-cell,
         [data-bs-theme="light"] #businessRegionTable .tabulator-cell,
+        [data-bs-theme="light"] #se2026WorkloadTable .tabulator-cell,
         [data-bs-theme="light"] #gridTable .tabulator-col-title,
         [data-bs-theme="light"] #gridTableDetail .tabulator-col-title,
-        [data-bs-theme="light"] #businessRegionTable .tabulator-col-title {
-            color: #0f172a !important;
-            background: transparent !important;
-            border-color: #e2e8f0 !important;
-        }
+        [data-bs-theme="light"] #businessRegionTable .tabulator-col-title,
+        [data-bs-theme="light"] #se2026WorkloadTable .tabulator-col-title { color:#0f172a !important; background:transparent !important; border-color:#e2e8f0 !important; }
         [data-bs-theme="light"] #gridTable .tabulator-footer,
         [data-bs-theme="light"] #gridTableDetail .tabulator-footer,
         [data-bs-theme="light"] #businessRegionTable .tabulator-footer,
+        [data-bs-theme="light"] #se2026WorkloadTable .tabulator-footer,
         [data-bs-theme="light"] #gridTable .tabulator-page,
         [data-bs-theme="light"] #gridTableDetail .tabulator-page,
         [data-bs-theme="light"] #businessRegionTable .tabulator-page,
+        [data-bs-theme="light"] #se2026WorkloadTable .tabulator-page,
         [data-bs-theme="light"] #gridTable .tabulator-page-size,
         [data-bs-theme="light"] #gridTableDetail .tabulator-page-size,
-        [data-bs-theme="light"] #businessRegionTable .tabulator-page-size {
-            background: #ffffff !important;
-            color: #0f172a !important;
-            border-color: #cbd5e1 !important;
+        [data-bs-theme="light"] #businessRegionTable .tabulator-page-size,
+        [data-bs-theme="light"] #se2026WorkloadTable .tabulator-page-size { background:#fff !important; color:#0f172a !important; border-color:#cbd5e1 !important; }
+
+        /* SE2026 workload table: keep the same Tabulator visual language as Data Enumerator. */
+        #se2026WorkloadTable { width:100%; min-width:0; }
+        #se2026WorkloadTable .tabulator {
+            width:100%; border:1px solid var(--border) !important;
+            border-radius:10px; overflow:hidden;
+            background:var(--card-solid) !important;
+            color:var(--text) !important;
         }
-        [data-bs-theme="light"] #gridTable .tabulator-header-filter input,
-        [data-bs-theme="light"] #gridTableDetail .tabulator-header-filter input,
-        [data-bs-theme="light"] #businessRegionTable .tabulator-header-filter input {
-            background: #ffffff !important;
-            color: #0f172a !important;
-            border-color: #cbd5e1 !important;
+        #se2026WorkloadTable .tabulator-header,
+        #se2026WorkloadTable .tabulator .tabulator-header,
+        #se2026WorkloadTable .tabulator .tabulator-header .tabulator-col {
+            background:var(--bg-2) !important; color:var(--text) !important;
+            border-color:var(--border) !important;
+        }
+        #se2026WorkloadTable .tabulator-tableholder { background:var(--card-solid) !important; }
+        #se2026WorkloadTable .tabulator-row { background:transparent !important; color:var(--text) !important; }
+        #se2026WorkloadTable .tabulator-row.tabulator-row-even { background:var(--row-even-bg) !important; }
+        #se2026WorkloadTable .tabulator-row:hover { background:var(--row-hover-bg) !important; }
+        #se2026WorkloadTable .tabulator-cell { background:transparent !important; color:var(--text) !important; border-color:var(--border) !important; }
+        #se2026WorkloadTable .tabulator-footer,
+        #se2026WorkloadTable .tabulator-page,
+        #se2026WorkloadTable .tabulator-page-size { background:var(--card-solid) !important; color:var(--text) !important; border-color:var(--border) !important; }
+        [data-bs-theme="light"] #se2026WorkloadTable .tabulator,
+        [data-bs-theme="light"] #se2026WorkloadTable .tabulator-tableholder,
+        [data-bs-theme="light"] #se2026WorkloadTable .tabulator-row { background:#fff !important; color:#0f172a !important; }
+        [data-bs-theme="light"] #se2026WorkloadTable .tabulator-header,
+        [data-bs-theme="light"] #se2026WorkloadTable .tabulator-col { background:#f1f5f9 !important; color:#0f172a !important; }
+        [data-bs-theme="light"] #se2026WorkloadTable .tabulator-row-even { background:#f8fafc !important; }
+        [data-bs-theme="light"] #se2026WorkloadTable .tabulator-cell,
+        [data-bs-theme="light"] #se2026WorkloadTable .tabulator-col-title { color:#0f172a !important; background:transparent !important; }
+        [data-bs-theme="light"] #se2026WorkloadTable .tabulator-footer,
+        [data-bs-theme="light"] #se2026WorkloadTable .tabulator-page,
+        [data-bs-theme="light"] #se2026WorkloadTable .tabulator-page-size { background:#fff !important; color:#0f172a !important; border-color:#cbd5e1 !important; }
+        @media (max-width:767.98px) {
+            #se2026WorkloadTable { width:100%; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+            #se2026WorkloadTable .tabulator { min-width:760px; font-size:12px; }
+            #se2026WorkloadTable .tabulator .tabulator-header .tabulator-col,
+            #se2026WorkloadTable .tabulator .tabulator-header .tabulator-col .tabulator-col-content { padding:6px 8px !important; }
+            #se2026WorkloadTable .tabulator-row .tabulator-cell { padding:7px 8px !important; font-size:12px !important; }
+            #se2026WorkloadTable .tabulator-paginator,
+            #se2026WorkloadTable .tabulator-page,
+            #se2026WorkloadTable .tabulator-page-size { font-size:11px !important; }
         }
 
         .performer-list .border-bottom {
@@ -1516,7 +1587,7 @@
             <div class="small text-secondary mb-2" id="se2026WorkloadMatchInfo">Memuat data perbandingan...</div>
             <div id="se2026WorkloadChart" style="min-height:420px;width:100%;"></div>
             <div class="mt-3">
-                <div id="se2026WorkloadTable"></div>
+                <div class="se2026-workload-table-wrap"><div id="se2026WorkloadTable"></div></div>
             </div>
         </section>
 

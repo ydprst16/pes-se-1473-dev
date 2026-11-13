@@ -88,8 +88,8 @@ function renderSe2026WorkloadComparison() {
     se2026WorkloadTabulator = new Tabulator(tableEl, {
       data: rows,
       layout: "fitColumns",
-      responsiveLayout: "collapse",
-      height: "520px",
+      responsiveLayout: false,
+      height: "650px",
       movableColumns: true,
       resizableColumns: true,
       pagination: true,
