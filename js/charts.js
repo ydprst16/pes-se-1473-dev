@@ -337,6 +337,7 @@ function refreshCharts() {
 window.onThemeChanged = function () {
   applyChartTheme(); // update global Apex config
   renderCharts(); // re-render semua chart pakai warna baru
+  if (typeof renderSe2026WorkloadComparison === "function") renderSe2026WorkloadComparison();
 };
 
 let chartResizeTimer = null;

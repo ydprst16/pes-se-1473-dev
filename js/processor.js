@@ -397,6 +397,9 @@ function processEnumerator(user) {
       : user.username;
 
   const enumerator = {
+    userId: user.userId || user.user_id || user.id || null,
+    email: user.email || user.username || "",
+    usernameKey: emailKey,
     username: displayName, // Menggunakan nama asli dari mapping
     assignment: safeNumber(user.total),
 

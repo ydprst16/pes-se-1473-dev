@@ -1,0 +1,120 @@
+{
+  "source": "SE2026 Rinanda.xlsx",
+  "sheet": "PES SLS",
+  "name_column": "K",
+  "target_column": "M",
+  "total_target": 6841,
+  "total_sls": 38,
+  "officers": [
+    {
+      "name": "SITI AMINAH",
+      "target": 546,
+      "slsCount": 1
+    },
+    {
+      "name": "RIRI AZURA",
+      "target": 475,
+      "slsCount": 2
+    },
+    {
+      "name": "ADE YULIA",
+      "target": 417,
+      "slsCount": 1
+    },
+    {
+      "name": "FEDRICK IMANUEL SIMANJUNTAK",
+      "target": 414,
+      "slsCount": 1
+    },
+    {
+      "name": "DEVIKA MEILANI",
+      "target": 399,
+      "slsCount": 2
+    },
+    {
+      "name": "PATTA KHAIRIAH",
+      "target": 384,
+      "slsCount": 2
+    },
+    {
+      "name": "LINCE MARDIANA",
+      "target": 360,
+      "slsCount": 2
+    },
+    {
+      "name": "YUNIARTI",
+      "target": 336,
+      "slsCount": 2
+    },
+    {
+      "name": "EKA JULIATI",
+      "target": 325,
+      "slsCount": 1
+    },
+    {
+      "name": "RINI ERAWATI KESUMA",
+      "target": 305,
+      "slsCount": 3
+    },
+    {
+      "name": "DEWI AYU SUSILAWATI",
+      "target": 294,
+      "slsCount": 2
+    },
+    {
+      "name": "FEBRINAWATI MARBUN",
+      "target": 278,
+      "slsCount": 2
+    },
+    {
+      "name": "RIKA NURMANINGSIH",
+      "target": 273,
+      "slsCount": 2
+    },
+    {
+      "name": "CHARLES EFENDI SINAGA",
+      "target": 258,
+      "slsCount": 2
+    },
+    {
+      "name": "NURMALIA HARAHAP",
+      "target": 257,
+      "slsCount": 2
+    },
+    {
+      "name": "SUCI OKTAVIANI",
+      "target": 257,
+      "slsCount": 2
+    },
+    {
+      "name": "NABILLA EKA APSANY",
+      "target": 252,
+      "slsCount": 2
+    },
+    {
+      "name": "PUTRI PUSPITA SARI",
+      "target": 239,
+      "slsCount": 2
+    },
+    {
+      "name": "JULI KARMILA",
+      "target": 205,
+      "slsCount": 1
+    },
+    {
+      "name": "SOPIYAH",
+      "target": 199,
+      "slsCount": 2
+    },
+    {
+      "name": "RISKI KURNIA PUTRI",
+      "target": 187,
+      "slsCount": 1
+    },
+    {
+      "name": "ANGGRENIA MARIA SIHOMBING",
+      "target": 181,
+      "slsCount": 1
+    }
+  ]
+}

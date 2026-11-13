@@ -159,6 +159,15 @@ function aggregateRaw(rawArray) {
 | Memuat snapshot hari sebelumnya (DENGAN KONVERSI EMAIL -> NAMA)
 |--------------------------------------------------------------------------
 */
+function comparisonIdentity(user) {
+  if (!user) return "";
+  const id = String(user.userId || user.user_id || "").trim().toLowerCase();
+  if (id) return `id:${id}`;
+  const email = String(user.email || user.usernameKey || user.username || "")
+    .trim().toLowerCase();
+  return email ? `login:${email}` : "";
+}
+
 async function loadPreviousDay(referenceDate) {
   try {
     const roleParam = comparisonRole();
@@ -189,18 +198,10 @@ async function loadPreviousDay(referenceDate) {
     Comparison.previousSummary = aggregateRaw(payload.data);
 
     payload.data.forEach((user) => {
-      // ---> PERBAIKAN DI SINI: Konversi email historis menjadi nama asli
-      const rawKey = (user.username || "").trim().toLowerCase();
-      if (!rawKey) return;
-
-      const mappedName =
-        typeof USERNAME_MAP !== "undefined" && USERNAME_MAP[rawKey]
-          ? USERNAME_MAP[rawKey]
-          : user.username;
-
-      // Simpan menggunakan kunci nama asli (huruf kecil) agar cocok dengan Dashboard hari ini
-      Comparison.previousMap[mappedName.toLowerCase()] =
-        calcProgressFromRaw(user);
+      // Prioritaskan userId FASIH yang stabil; fallback ke email/username.
+      const key = comparisonIdentity(user);
+      if (!key) return;
+      Comparison.previousMap[key] = calcProgressFromRaw(user);
     });
 
     Comparison.available = true;
@@ -220,10 +221,9 @@ async function loadPreviousDay(referenceDate) {
 function buildComparisonItems() {
   Comparison.items = (Dashboard.enumerators || []).map((e) => {
     const today = calcProgressFromProcessed(e);
-    // Kunci pencarian sekarang harus berupa nama asli huruf kecil (karena e.username sudah diubah jadi nama)
-    const key = (e.username || "").toLowerCase();
-
-    const yesterday = Comparison.previousMap[key];
+    // Cocokkan berdasarkan userId; fallback email/username untuk snapshot lama.
+    const key = comparisonIdentity(e);
+    const yesterday = key ? Comparison.previousMap[key] : undefined;
     const hasYesterday = typeof yesterday === "number";
     const delta = hasYesterday ? Number((today - yesterday).toFixed(2)) : null;
     return {
@@ -262,7 +262,8 @@ function renderComparison() {
   if (sub) {
     const matched = Comparison.items.filter((x) => x.delta !== null).length;
     if (Comparison.available && Comparison.previousDate) {
-      sub.textContent = `Hari ini vs ${Comparison.previousDate} • ${matched} dari ${Comparison.items.length} ${roleLabel} cocok`;
+      const unmatched = Comparison.items.length - matched;
+      sub.textContent = `Hari ini vs ${Comparison.previousDate} • ${matched} cocok, ${unmatched} tanpa pembanding`;
       sub.classList.remove("text-warning");
     } else {
       sub.textContent =

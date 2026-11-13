@@ -165,6 +165,7 @@ async function renderAll() {
   if (typeof renderCharts === "function") renderCharts();
   if (typeof renderTable === "function") renderTable();
   if (typeof renderComparison === "function") renderComparison();
+  if (typeof renderSe2026WorkloadComparison === "function") await renderSe2026WorkloadComparison();
   // Render once more after all dashboard data and role state are settled.
   // This prevents the schedule banner from remaining in its initial loading state.
   const summary = Dashboard && Dashboard.summary ? Dashboard.summary : {};

@@ -1505,6 +1505,24 @@
             <div class="row g-3" id="comparisonCards"></div>
         </div>
 
+        <section id="se2026WorkloadSection" class="chart-card mt-4 mb-4">
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-2">
+                <div>
+                    <div class="chart-title mb-1"><i class="bi bi-bullseye text-primary"></i> Perbandingan Assignment per Petugas PPL/PCL</div>
+                    <div class="small text-secondary">Perbandingan muatan dan jumlah assignment aktual untuk setiap petugas PPL/PCL. Assignment aktual mencakup seluruh status, termasuk OPEN.</div>
+                </div>
+                <span class="badge bg-primary-subtle text-primary border">Pencacah / PPL-PCL</span>
+            </div>
+            <div class="small text-secondary mb-2" id="se2026WorkloadMatchInfo">Memuat data perbandingan...</div>
+            <div id="se2026WorkloadChart" style="min-height:420px;width:100%;"></div>
+            <div class="table-responsive mt-3">
+                <table class="table table-sm align-middle" id="se2026WorkloadTable">
+                    <thead><tr><th>Petugas (Kolom K)</th><th class="text-end">Jumlah SLS</th><th class="text-end">Muatan</th><th class="text-end">Assignment Aktual</th><th class="text-end">Selisih</th><th class="text-end">Pencapaian</th></tr></thead>
+                    <tbody id="se2026WorkloadRows"><tr><td colspan="6" class="text-center text-secondary">Memuat...</td></tr></tbody>
+                </table>
+            </div>
+        </section>
+
         <div class="row mt-4 g-4">
             <div class="col-xl-4 d-flex">
                 <div class="chart-card equal-height w-100">
@@ -1832,6 +1850,7 @@
             <script src="js/table.js"></script>
             <script src="js/comparison.js"></script>
             <script src="js/app.js"></script>
+            <script src="js/se2026_workload.js"></script>
             <script src="js/business/business_app.js"></script>
 
 </body>
