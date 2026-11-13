@@ -29,9 +29,19 @@
     if(skipped)throw new Error(`${file.name}: ${skipped} baris tidak valid. Upload dibatalkan agar data tidak parsial.`);
     return {records:result,totalRows,filename:file.name};
   }
+  function detectFileCategory(file){
+    const name=file.name.toLowerCase().replace(/\.[^.]+$/,'').replace(/[\s-]+/g,'_');
+    if(/usaha[_]?bku|bku/.test(name))return 'usaha_bku';
+    if(/usaha[_]?keluarga|bangunan[_]?usaha/.test(name))return 'usaha_keluarga';
+    if(/(^|_)keluarga($|_)/.test(name))return 'keluarga';
+    return null;
+  }
   async function uploadDaily(){
-    const files={keluarga:$('deploymentFileKeluarga')?.files?.[0],usaha_keluarga:$('deploymentFileUsahaKeluarga')?.files?.[0],usaha_bku:$('deploymentFileUsahaBku')?.files?.[0]};
-    if(Object.values(files).some(f=>!f))throw new Error("Pilih ketiga file Excel sebelum upload.");
+    const selected=Array.from($('deploymentFilesAll')?.files||[]);
+    if(selected.length!==3)throw new Error(`Pilih tepat 3 file Excel sekaligus. Saat ini ${selected.length} file dipilih.`);
+    const files={};
+    selected.forEach(file=>{const category=detectFileCategory(file);if(!category)throw new Error(`Kategori file tidak dikenali: ${file.name}. Nama file harus mengandung keluarga, usaha_keluarga, atau usaha_bku.`);if(files[category])throw new Error(`Ada lebih dari satu file untuk kategori ${statusConfig[category].title}.`);files[category]=file;});
+    if(Object.keys(files).length!==3)throw new Error('File wajib terdiri dari Keluarga, Usaha Keluarga, dan Usaha BKU.');
     const dates=Object.values(files).map(fileDate);if(new Set(dates).size!==1)throw new Error("Tanggal pada nama ketiga file harus sama.");
     const date=dates[0];setMessage("Membaca dan memvalidasi ketiga file Excel...","info");
     const parsed={};for(const [cat,file] of Object.entries(files))parsed[cat]=await parseExcel(file,cat);
@@ -40,7 +50,7 @@
     const form=new FormData();form.append("password",$("deploymentUploadPassword").value);form.append("payload",JSON.stringify(payload));
     const res=await fetch("api/deployment.php?action=upload",{method:"POST",body:form});const out=await res.json();if(!res.ok||out.status!=="ok")throw new Error(out.message||`Upload gagal HTTP ${res.status}`);
     setMessage(`Snapshot ${out.date} berhasil disimpan. ${fmt(out.totalUniqueSsls)} SSLS unik. ${out.latestUpdated?"Data terbaru diperbarui.":`Latest tetap ${out.latestDate||"tidak berubah"} karena snapshot yang diunggah lebih lama.`}`,"success");
-    await refreshHistory(out.date);await loadSnapshot(date);$("deploymentUploadPassword").value="";
+    await refreshHistory(out.date);await loadSnapshot(date);$("deploymentUploadPassword").value="";$("deploymentFilesAll").value="";$("deploymentSelectedFiles").textContent="Upload selesai. Pilih tiga file berikutnya jika ingin memperbarui snapshot.";
   }
   async function fetchPencacah(){const r=await fetch(`api/history.php?action=latest&role=pencacah&_ts=${Date.now()}`,{cache:"no-store"});if(!r.ok)throw new Error(`Gagal mengambil data PPL/PCL (HTTP ${r.status})`);const p=await r.json();return Array.isArray(p.data)?p.data:[];}
   async function buildRows(){
@@ -96,14 +106,14 @@
     const cfg=statusConfig[category], rows=detailRows[category]||[];
     const search=$("deploymentOfficerSearch")?.value?.trim().toLowerCase()||"";
     const columns=[
-      {title:"Nama Petugas",field:"officer",frozen:true,minWidth:190,width:205,headerFilter:false,tooltip:true},
-      {title:"ID Sub-SLS",field:"idsubsls",minWidth:178,width:178,headerHozAlign:"center",hozAlign:"center",headerWordWrap:false,formatter:c=>`<span class="font-monospace">${String(c.getValue()||"")}</span>`},
+      {title:"Nama Petugas",field:"officer",frozen:true,minWidth:210,width:240,variableHeight:true,formatter:"textarea",headerFilter:false,tooltip:true},
+      {title:"ID Sub-SLS",field:"idsubsls",minWidth:190,width:190,headerHozAlign:"center",hozAlign:"center",headerWordWrap:false,formatter:c=>`<span class="font-monospace">${String(c.getValue()||"")}</span>`},
       ...cfg.statuses.map((status,i)=>makeCountColumn(cleanStatusLabel(status),`${category}_${i}`,category)),
       {...makeCountColumn("Total",`${category}_total`,category),minWidth:108,width:116}
     ];
     if(table)table.destroy();
     table=new Tabulator($("deploymentOfficerTable"),{
-      data:rows,columns,layout:"fitData",height:"620px",headerWordWrap:true,
+      data:rows,columns,layout:"fitDataFill",height:"620px",headerWordWrap:true,
       movableColumns:true,resizableColumns:true,responsiveLayout:false,
       pagination:true,paginationSize:15,paginationSizeSelector:[15,25,50],
       placeholder:"Tidak ada data untuk kategori ini.",
@@ -119,18 +129,21 @@
     if(count)count.textContent=`${fmt(rows.length)} baris Sub-SLS`;
   }
   function renderDonutCharts(){
-    const chartTargets={keluarga:"deploymentDonutKeluarga",usaha_keluarga:"deploymentDonutUsahaKeluarga",usaha_bku:"deploymentDonutBku"};
-    Object.entries(chartTargets).forEach(([category,elementId])=>{
+    const chartTargets={keluarga:["deploymentDonutKeluarga","deploymentDonutKeluargaRows"],usaha_keluarga:["deploymentDonutUsahaKeluarga","deploymentDonutUsahaKeluargaRows"],usaha_bku:["deploymentDonutBku","deploymentDonutBkuRows"]};
+    Object.entries(chartTargets).forEach(([category,[elementId,tableId]])=>{
       const cfg=statusConfig[category], rows=detailRows[category]||[];
       const values=cfg.statuses.map((status,i)=>rows.reduce((sum,row)=>sum+Number(row[`${category}_${i}`]||0),0));
       const labels=cfg.statuses.map(cleanStatusLabel), total=values.reduce((a,b)=>a+b,0);
+      const tbody=$(tableId);
+      if(tbody)tbody.innerHTML=values.map((value,i)=>`<tr><td>${labels[i]}</td><td class="text-end">${fmt(value)}</td><td class="text-end">${total?(value/total*100).toLocaleString("id-ID",{minimumFractionDigits:2,maximumFractionDigits:2}):"0,00"}%</td></tr>`).join("");
       if(donutCharts[category]){donutCharts[category].destroy();delete donutCharts[category];}
       const el=$(elementId);if(!el||typeof ApexCharts==="undefined")return;
       if(!total){el.innerHTML='<div class="small text-secondary text-center pt-5">Belum ada data</div>';return;}
       donutCharts[category]=new ApexCharts(el,{
-        chart:{type:"donut",height:150,sparkline:{enabled:false},animations:{enabled:false},toolbar:{show:false}},
-        series:values,labels,legend:{show:true,position:"bottom",fontSize:"9px",horizontalAlign:"center",itemMargin:{horizontal:5,vertical:1},markers:{width:7,height:7}},
-        dataLabels:{enabled:false},stroke:{width:1},plotOptions:{pie:{donut:{size:"67%",labels:{show:true,total:{show:true,label:"Total",fontSize:"10px",formatter:()=>fmt(total)},value:{show:false}}}}},
+        chart:{type:"donut",height:285,animations:{enabled:false},toolbar:{show:false},redrawOnParentResize:true,redrawOnWindowResize:true},
+        series:values,labels,legend:{show:true,position:"bottom",fontSize:"12px",horizontalAlign:"center",itemMargin:{horizontal:8,vertical:3},markers:{width:9,height:9}},
+        dataLabels:{enabled:true,formatter:(_pct,opts)=>fmt(opts.w.config.series[opts.seriesIndex]),style:{fontSize:"11px"}},stroke:{width:1},
+        plotOptions:{pie:{donut:{size:"64%",labels:{show:true,total:{show:true,label:"Total",fontSize:"13px",formatter:()=>fmt(total)},value:{show:false}}}}},
         tooltip:{y:{formatter:v=>fmt(v)}},noData:{text:"Belum ada data"}
       });
       donutCharts[category].render();
@@ -177,6 +190,13 @@
   };
   document.addEventListener("DOMContentLoaded",()=>{
     document.querySelectorAll(".deployment-category-tab").forEach(btn=>btn.addEventListener("click",()=>window.selectDeploymentCategory(btn.dataset.deploymentCategory)));
+    $("deploymentFilesAll")?.addEventListener("change", e => {
+      const files = Array.from(e.target.files || []);
+      const label = $("deploymentSelectedFiles");
+      if (label) label.textContent = files.length
+        ? files.map(f => `${f.name} (${detectFileCategory(f) || "kategori tidak dikenal"})`).join(" · ")
+        : "Belum ada file dipilih.";
+    });
     $("btnUploadDeployment")?.addEventListener("click",async()=>{const btn=$("btnUploadDeployment");btn.disabled=true;try{await uploadDaily();}catch(e){console.error("[Deployment upload]",e);setMessage(e.message,"danger");}finally{btn.disabled=false;}});
     $("deploymentHistorySelect")?.addEventListener("change",async e=>{if(!e.target.value)return;try{await loadSnapshot(e.target.value);}catch(err){setMessage(err.message,"danger");}});
     $("btnExportDeploymentOfficer")?.addEventListener("click",exportExcel);
