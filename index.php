@@ -1578,9 +1578,10 @@
         [data-bs-theme="light"] #deploymentOfficerTable .tabulator-header .tabulator-col.tabulator-frozen{background:#dbeafe!important;color:#0f172a!important}
         [data-bs-theme="light"] #deploymentOfficerTable .tabulator-row,[data-bs-theme="light"] #deploymentOfficerTable .tabulator-cell,[data-bs-theme="light"] #deploymentOfficerTable .tabulator-header,[data-bs-theme="light"] #deploymentOfficerTable .tabulator-col{color:#0f172a!important}
         @media(max-width:700px){.deployment-table-wrap{overflow-x:auto}#deploymentOfficerTable .tabulator{min-width:900px!important}}
-
-
-        .deployment-reconciliation-wrap{max-height:420px;overflow:auto;border:1px solid var(--bs-border-color);border-radius:.65rem}
+#deploymentReconciliationOffcanvas{background:var(--bs-body-bg);color:var(--bs-body-color)}
+        #deploymentReconciliationOffcanvas .offcanvas-header{border-color:var(--bs-border-color)!important}
+        #deploymentReconciliationOffcanvas .form-control{background:var(--bs-form-control-bg);color:var(--bs-body-color);border-color:var(--bs-border-color)}
+        .deployment-reconciliation-wrap{max-height:calc(100vh - 230px);overflow:auto;border:1px solid var(--bs-border-color);border-radius:.65rem}
         .deployment-reconciliation-table{color:var(--bs-body-color);background:var(--bs-body-bg);min-width:760px}
         .deployment-reconciliation-table thead th{position:sticky;top:0;z-index:2;background:var(--bs-tertiary-bg);color:var(--bs-body-color);white-space:nowrap;border-bottom:1px solid var(--bs-border-color)}
         .deployment-reconciliation-table tbody td{background:var(--bs-body-bg);color:var(--bs-body-color);border-color:var(--bs-border-color);vertical-align:middle}
@@ -2049,28 +2050,51 @@
                 <label class="small text-secondary mb-0" for="deploymentHistorySelect">Snapshot:</label>
                 <select class="form-select form-select-sm" id="deploymentHistorySelect" style="width:auto;min-width:150px"><option value="">Memuat riwayat...</option></select>
             </div>
-            <div class="row g-3 mb-3" id="deploymentSummaryCards">
-                <div class="col-12 col-md-4"><div class="kpi-card"><div class="kpi-title">Sub-SLS cocok</div><div class="kpi-value" id="deploymentMatchedSsls">-</div></div></div>
-                <div class="col-12 col-md-4"><div class="kpi-card"><div class="kpi-title">Sub-SLS belum cocok</div><div class="kpi-value" id="deploymentUnmatchedSsls">-</div></div></div>
-                <div class="col-12 col-md-4"><div class="kpi-card"><div class="kpi-title">Petugas PPL/PCL</div><div class="kpi-value" id="deploymentOfficerCount">-</div></div></div>
-            </div>
-            <div class="chart-card mb-3" id="deploymentReconciliationPanel">
-                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">
-                    <div>
-                        <div class="chart-title mb-0">Rekonsiliasi ID Sub-SLS</div>
-                        <div class="small text-secondary">Daftar pencocokan ID antara file Excel Deployment dan regionCode FASIH, termasuk nama petugas terkait.</div>
+            <div class="chart-card mb-3" id="deploymentSummaryPanel">
+                <div class="row g-3 align-items-center">
+                    <div class="col-12 col-md-4">
+                        <div class="kpi-title">Total ID Sub-SLS unik</div>
+                        <div class="kpi-value" id="deploymentTotalUnique">-</div>
                     </div>
-                    <span class="small text-secondary" id="deploymentReconciliationCount">-</span>
+                    <div class="col-6 col-md-3">
+                        <div class="kpi-title">Cocok</div>
+                        <div class="kpi-value text-success" id="deploymentMatchedSsls">-</div>
+                    </div>
+                    <div class="col-6 col-md-2">
+                        <div class="kpi-title">Tidak cocok</div>
+                        <div class="kpi-value text-warning" id="deploymentUnmatchedSsls">-</div>
+                    </div>
+                    <div class="col-12 col-md-3 text-md-end">
+                        <button type="button" class="btn btn-outline-warning btn-sm" data-bs-toggle="offcanvas" data-bs-target="#deploymentReconciliationOffcanvas" aria-controls="deploymentReconciliationOffcanvas">
+                            <i class="bi bi-search me-1"></i>Lihat detail <span class="badge text-bg-warning ms-1" id="deploymentIssueBadge">-</span>
+                        </button>
+                    </div>
                 </div>
-                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">
-                    <input type="search" class="form-control form-control-sm" id="deploymentReconciliationSearch" placeholder="Cari ID Sub-SLS, nama petugas, atau status..." aria-label="Cari rekonsiliasi Sub-SLS" style="max-width:420px">
-                    <div class="small text-secondary">Satu baris untuk setiap ID unik</div>
+                <div class="d-flex justify-content-between align-items-center small text-secondary mt-3 mb-1">
+                    <span>Progress pencocokan ID Sub-SLS</span>
+                    <strong id="deploymentMatchPercent">-</strong>
                 </div>
-                <div class="table-responsive deployment-reconciliation-wrap">
-                    <table class="table table-sm align-middle deployment-reconciliation-table mb-0">
-                        <thead><tr><th style="min-width:180px">ID Sub-SLS</th><th style="min-width:220px">Petugas PPL/PCL</th><th style="min-width:170px">Kategori Excel</th><th style="min-width:190px">Status Pencocokan</th></tr></thead>
-                        <tbody id="deploymentReconciliationBody"><tr><td colspan="4" class="text-center text-secondary py-4">Memuat rekonsiliasi...</td></tr></tbody>
-                    </table>
+                <div class="progress" role="progressbar" aria-label="Progress pencocokan Sub-SLS" aria-valuemin="0" aria-valuemax="100" style="height:9px">
+                    <div class="progress-bar bg-success" id="deploymentMatchProgress" style="width:0%"></div>
+                </div>
+            </div>
+            <div class="offcanvas offcanvas-end" tabindex="-1" id="deploymentReconciliationOffcanvas" aria-labelledby="deploymentReconciliationTitle" style="--bs-offcanvas-width:min(760px, 94vw)">
+                <div class="offcanvas-header border-bottom">
+                    <div>
+                        <h5 class="offcanvas-title" id="deploymentReconciliationTitle">Detail Rekonsiliasi Sub-SLS</h5>
+                        <div class="small text-secondary" id="deploymentReconciliationCount">-</div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Tutup"></button>
+                </div>
+                <div class="offcanvas-body">
+                    <div class="small text-secondary mb-3">Daftar ID Sub-SLS yang tidak cocok antara file Excel Deployment dan regionCode FASIH, beserta petugas terkait.</div>
+                    <input type="search" class="form-control form-control-sm mb-3" id="deploymentReconciliationSearch" placeholder="Cari ID Sub-SLS, nama petugas, atau status..." aria-label="Cari rekonsiliasi Sub-SLS">
+                    <div class="table-responsive deployment-reconciliation-wrap">
+                        <table class="table table-sm align-middle deployment-reconciliation-table mb-0">
+                            <thead><tr><th style="min-width:180px">ID Sub-SLS</th><th style="min-width:220px">Petugas PPL/PCL</th><th style="min-width:170px">Kategori Excel</th><th style="min-width:190px">Status Pencocokan</th></tr></thead>
+                            <tbody id="deploymentReconciliationBody"><tr><td colspan="4" class="text-center text-secondary py-4">Memuat rekonsiliasi...</td></tr></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
             <div class="row g-3 mb-3" id="deploymentDonutCharts">

@@ -180,10 +180,10 @@
     const count=$("deploymentReconciliationCount");
     if(!body)return;
     const q=String($("deploymentReconciliationSearch")?.value||"").trim().toLowerCase();
-    const filtered=reconciliationRows.filter(row=>
+    const filtered=reconciliationRows.filter(row=>row.status!=="Cocok").filter(row=>
       row.idsubsls.includes(q)||row.officerLabel.toLowerCase().includes(q)||row.status.toLowerCase().includes(q)
     );
-    if(count)count.textContent=`${fmt(filtered.length)} dari ${fmt(reconciliationRows.length)} ID`;
+    if(count)count.textContent=`${fmt(filtered.length)} ID perlu diperiksa`;
     if(!filtered.length){
       body.innerHTML='<tr><td colspan="4" class="text-center text-secondary py-4">Tidak ada ID Sub-SLS yang sesuai pencarian.</td></tr>';
       return;
@@ -205,10 +205,18 @@
     const info=$("deploymentUpdatedInfo");
     if(info)info.textContent="Memuat data PPL/PCL dan mencocokkan Sub-SLS...";
     const result=await buildRows();
-    $("deploymentMatchedSsls").textContent=fmt(result.matched);
-    $("deploymentUnmatchedSsls").textContent=fmt(result.unmatched);
-    $("deploymentOfficerCount").textContent=fmt(result.officerCount);
-    if(info)info.textContent=`Snapshot ${source.importDate} · ${fmt(result.uniqueMatched)} ID Sub-SLS unik cocok.`;
+    const totalUnique=reconciliationRows.length;
+    const uniqueMatched=reconciliationRows.filter(row=>row.status==="Cocok").length;
+    const uniqueUnmatched=totalUnique-uniqueMatched;
+    const matchPercent=totalUnique?Math.round(uniqueMatched/totalUnique*100):0;
+    $("deploymentTotalUnique").textContent=fmt(totalUnique);
+    $("deploymentMatchedSsls").textContent=fmt(uniqueMatched);
+    $("deploymentUnmatchedSsls").textContent=fmt(uniqueUnmatched);
+    $("deploymentIssueBadge").textContent=fmt(uniqueUnmatched);
+    $("deploymentMatchPercent").textContent=`${matchPercent}%`;
+    $("deploymentMatchProgress").style.width=`${matchPercent}%`;
+    $("deploymentMatchProgress").setAttribute("aria-valuenow",String(matchPercent));
+    if(info)info.textContent=`Snapshot ${source.importDate} · ${fmt(uniqueMatched)} dari ${fmt(totalUnique)} ID Sub-SLS unik cocok.`;
     renderReconciliation();renderDonutCharts();renderCategory(activeCategory);loaded=true;
   }
   async function loadSnapshot(date){const url=date?`api/deployment.php?action=get&date=${encodeURIComponent(date)}`:`api/deployment.php?action=latest&_ts=${Date.now()}`;const r=await fetch(url,{cache:"no-store"});if(!r.ok)throw new Error("Snapshot deployment belum tersedia. Upload tiga file Excel untuk memulai.");source=await r.json();loaded=false;await render();}
