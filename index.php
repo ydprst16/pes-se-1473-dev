@@ -1478,17 +1478,14 @@
             .chart-title { font-size: 13px; }
         }
     
-        #se2026DeployTabs .nav-link { color:var(--bs-body-color); border:1px solid var(--border); background:var(--card-solid); }
-        #se2026DeployTabs .nav-link.active { color:#fff; background:#2563eb; border-color:#2563eb; }
-        .se2026-deployment-table-wrap { overflow-x:auto; }
-        #se2026DeploymentTable { min-width:1500px; }
-        #se2026DeploymentTable .tabulator { background:var(--card-solid); color:var(--bs-body-color); border-color:var(--border); }
-        #se2026DeploymentTable .tabulator-header, #se2026DeploymentTable .tabulator-col { background:var(--card-solid); color:var(--bs-body-color); border-color:var(--border); }
-        #se2026DeploymentTable .tabulator-row { background:var(--card-solid); color:var(--bs-body-color); border-color:var(--border); }
-        #se2026DeploymentTable .tabulator-row:nth-child(even) { background:rgba(127,127,127,.07); }
-        #se2026DeploymentTable .tabulator-cell { border-color:var(--border); }
-        [data-bs-theme="light"] #se2026DeploymentTable .tabulator-row { background:#fff; color:#1f2937; }
-        [data-bs-theme="light"] #se2026DeploymentTable .tabulator-row:nth-child(even) { background:#f8fafc; }
+        #deploymentOfficerTable { min-width:1500px; }
+        #deploymentOfficerTable .tabulator { background:var(--card-solid); color:var(--bs-body-color); border-color:var(--border); }
+        #deploymentOfficerTable .tabulator-header, #deploymentOfficerTable .tabulator-col { background:var(--card-solid); color:var(--bs-body-color); border-color:var(--border); }
+        #deploymentOfficerTable .tabulator-row { background:var(--card-solid); color:var(--bs-body-color); border-color:var(--border); }
+        #deploymentOfficerTable .tabulator-row:nth-child(even) { background:rgba(127,127,127,.07); }
+        #deploymentOfficerTable .tabulator-cell { border-color:var(--border); }
+        [data-bs-theme="light"] #deploymentOfficerTable .tabulator-row { background:#fff; color:#1f2937; }
+        [data-bs-theme="light"] #deploymentOfficerTable .tabulator-row:nth-child(even) { background:#f8fafc; }
 </style>
 
 </head>
@@ -1539,6 +1536,9 @@
             </button>
             <button class="module-tab" id="menuBusinessPresence" type="button" role="tab" aria-selected="false" aria-controls="businessPresenceModule">
                 <i class="bi bi-people-fill"></i><span>Keberadaan Keluarga/Usaha</span>
+            </button>
+            <button class="module-tab" id="menuDeployment" type="button" role="tab" aria-selected="false" aria-controls="deploymentModule">
+                <i class="bi bi-diagram-3-fill"></i><span>Deployment SE2026</span>
             </button>
         </nav>
         <section id="monitoringModule">
@@ -1617,36 +1617,12 @@
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
                 <div class="chart-title mb-0"><i class="bi bi-bullseye text-primary"></i> Perbandingan terhadap Assignment SE2026</div>
             </div>
-            <ul class="nav nav-pills gap-2 mb-3" id="se2026DeployTabs">
-                <li class="nav-item"><button class="nav-link active" type="button" data-se2026-view="workload">Perbandingan Assignment</button></li>
-                <li class="nav-item"><button class="nav-link" type="button" data-se2026-view="deployment">Deployment per Petugas</button></li>
-            </ul>
-            <div id="se2026WorkloadView">
-                <div class="d-flex justify-content-end mb-2">
-                    <button type="button" class="btn btn-success btn-sm" id="btnExportSe2026Workload"><i class="bi bi-file-earmark-excel me-1"></i> Export Excel</button>
-                </div>
-                <div class="row g-3 align-items-stretch">
-                    <div class="col-12 col-xl-6">
-                        <div class="h-100 p-2 rounded-3" style="background:var(--card-solid);border:1px solid var(--border);">
-                            <div class="small fw-semibold mb-2 text-secondary">Grafik Muatan dan Assignment</div>
-                            <div id="se2026WorkloadChart" style="min-height:520px;width:100%;"></div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-xl-6">
-                        <div class="h-100 p-2 rounded-3" style="background:var(--card-solid);border:1px solid var(--border);">
-                            <div class="small fw-semibold mb-2 text-secondary">Rincian per Petugas</div>
-                            <div class="se2026-workload-table-wrap"><div id="se2026WorkloadTable"></div></div>
-                        </div>
-                    </div>
-                </div>
+            <div class="d-flex justify-content-end mb-2">
+                <button type="button" class="btn btn-success btn-sm" id="btnExportSe2026Workload"><i class="bi bi-file-earmark-excel me-1"></i> Export Excel</button>
             </div>
-            <div id="se2026DeploymentView" class="d-none">
-                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">
-                    <div class="small text-secondary" id="se2026DeploymentInfo">Memuat rekap deployment berdasarkan Sub-SLS...</div>
-                    <button type="button" class="btn btn-success btn-sm" id="btnExportSe2026Deployment"><i class="bi bi-file-earmark-excel me-1"></i> Export Excel</button>
-                </div>
-                <div class="small text-secondary mb-2">Data tiga file historis dicocokkan berdasarkan SSLS/ID Sub-SLS milik setiap petugas pada data FASIH. Angka merupakan jumlah assignment per status.</div>
-                <div class="table-responsive se2026-deployment-table-wrap"><div id="se2026DeploymentTable"></div></div>
+            <div class="row g-3 align-items-stretch">
+                <div class="col-12 col-xl-6"><div class="h-100 p-2 rounded-3" style="background:var(--card-solid);border:1px solid var(--border);"><div class="small fw-semibold mb-2 text-secondary">Grafik Muatan dan Assignment</div><div id="se2026WorkloadChart" style="min-height:520px;width:100%;"></div></div></div>
+                <div class="col-12 col-xl-6"><div class="h-100 p-2 rounded-3" style="background:var(--card-solid);border:1px solid var(--border);"><div class="small fw-semibold mb-2 text-secondary">Rincian per Petugas</div><div class="se2026-workload-table-wrap"><div id="se2026WorkloadTable"></div></div></div></div>
             </div>
         </section>
 
@@ -1952,6 +1928,31 @@
 
             </div>
 
+        <section id="deploymentModule" class="d-none">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+                <div>
+                    <h3 class="mb-1"><i class="bi bi-diagram-3-fill text-primary me-2"></i>Deployment SE2026 per Petugas</h3>
+                    <div class="text-secondary small">Rekap jumlah assignment Keluarga, Usaha Keluarga, dan Usaha BKU berdasarkan status untuk setiap PPL/PCL.</div>
+                </div>
+                <button class="btn btn-success btn-sm" id="btnExportDeploymentOfficer"><i class="bi bi-file-earmark-excel me-1"></i>Export Excel</button>
+            </div>
+            <div class="row g-3 mb-3" id="deploymentSummaryCards">
+                <div class="col-12 col-md-4"><div class="kpi-card"><div class="kpi-title">Sub-SLS cocok</div><div class="kpi-value" id="deploymentMatchedSsls">-</div></div></div>
+                <div class="col-12 col-md-4"><div class="kpi-card"><div class="kpi-title">Sub-SLS belum cocok</div><div class="kpi-value" id="deploymentUnmatchedSsls">-</div></div></div>
+                <div class="col-12 col-md-4"><div class="kpi-card"><div class="kpi-title">Petugas PPL/PCL</div><div class="kpi-value" id="deploymentOfficerCount">-</div></div></div>
+            </div>
+            <div class="chart-card">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">
+                    <div class="chart-title mb-0">Rincian Deployment per Petugas</div>
+                    <div class="small text-secondary" id="deploymentUpdatedInfo">Memuat data...</div>
+                </div>
+                <div class="small text-secondary mb-3">Pencocokan: SSLS pada tiga file sumber → ID Sub-SLS/regionCode → petugas PPL/PCL dari data FASIH. Nilai merupakan jumlah assignment per status.</div>
+                <div class="table-responsive">
+                    <div id="deploymentOfficerTable"></div>
+                </div>
+            </div>
+        </section>
+
             <script>
                 (() => {
                     const header = document.querySelector('.header');
@@ -1978,8 +1979,9 @@
             <script src="js/comparison.js"></script>
             <script src="js/app.js"></script>
             <script src="js/se2026_workload.js"></script>
-            <script src="js/se2026_deployment.js"></script>
+            <script src="js/se2026_deployment_officers.js"></script>
             <script src="js/business/business_app.js"></script>
+            <script src="js/deployment_officers.js"></script>
 
 </body>
 

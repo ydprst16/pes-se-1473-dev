@@ -33,15 +33,18 @@
 
   function switchModule(which) {
     const monitoring = which === 'monitoring';
+    const business = which === 'business';
+    const deployment = which === 'deployment';
     $('monitoringModule').classList.toggle('d-none', !monitoring);
-    $('businessPresenceModule').classList.toggle('d-none', monitoring);
-    $('menuMonitoring').classList.toggle('active', monitoring);
-    $('menuBusinessPresence').classList.toggle('active', !monitoring);
-    $('menuMonitoring').setAttribute('aria-selected', monitoring ? 'true' : 'false');
-    $('menuBusinessPresence').setAttribute('aria-selected', monitoring ? 'false' : 'true');
-    $('menuMonitoring').tabIndex = monitoring ? 0 : -1;
-    $('menuBusinessPresence').tabIndex = monitoring ? -1 : 0;
-    if (!monitoring && !currentPayload) { loadLatest(); loadHistory(); }
+    $('businessPresenceModule').classList.toggle('d-none', !business);
+    $('deploymentModule')?.classList.toggle('d-none', !deployment);
+    [['menuMonitoring',monitoring],['menuBusinessPresence',business],['menuDeployment',deployment]].forEach(([id,active])=>{
+      const el=$(id); if(!el) return;
+      el.classList.toggle('active',active);
+      el.setAttribute('aria-selected',active?'true':'false');
+      el.tabIndex=active?0:-1;
+    });
+    if (business && !currentPayload) { loadLatest(); loadHistory(); }
   }
 
   function normalizeHeader(row) {
@@ -337,7 +340,7 @@
   function exportRegion(){if(regionTable)regionTable.download('xlsx',`rekap_keberadaan_keluarga_usaha_${currentPayload?.importDate||'latest'}.xlsx`,{sheetName:'Rekap Keluarga Usaha'});}
 
   document.addEventListener('DOMContentLoaded',()=>{
-    $('menuMonitoring')?.addEventListener('click',()=>switchModule('monitoring'));$('menuBusinessPresence')?.addEventListener('click',()=>switchModule('business'));
+    $('menuMonitoring')?.addEventListener('click',()=>switchModule('monitoring'));$('menuBusinessPresence')?.addEventListener('click',()=>switchModule('business'));$('menuDeployment')?.addEventListener('click',()=>switchModule('deployment'));
     $('btnOpenBusinessUpload')?.addEventListener('click',()=>{$('businessImportDate').value=new Date().toLocaleDateString('en-CA',{timeZone:'Asia/Jakarta'});bootstrap.Modal.getOrCreateInstance($('businessUploadModal')).show();});
     $('businessExcelFile')?.addEventListener('change',handleFileChange);$('btnBusinessImport')?.addEventListener('click',uploadExcel);
     $('btnBusinessRefresh')?.addEventListener('click',async()=>{await loadLatest();await loadHistory();});$('businessHistorySelect')?.addEventListener('change',e=>loadDate(e.target.value));
