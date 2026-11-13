@@ -34,17 +34,28 @@
   function switchModule(which) {
     const monitoring = which === 'monitoring';
     const business = which === 'business';
-    const deployment = which === 'deployment';
+    const deployment = String(which).startsWith('deployment');
     $('monitoringModule').classList.toggle('d-none', !monitoring);
     $('businessPresenceModule').classList.toggle('d-none', !business);
     $('deploymentModule')?.classList.toggle('d-none', !deployment);
-    [['menuMonitoring',monitoring],['menuBusinessPresence',business],['menuDeployment',deployment]].forEach(([id,active])=>{
+    const tabs = [
+      ['menuMonitoring', monitoring],
+      ['menuBusinessPresence', business],
+      ['menuDeploymentKeluarga', which === 'deployment-keluarga'],
+      ['menuDeploymentUsahaKeluarga', which === 'deployment-usaha_keluarga'],
+      ['menuDeploymentBku', which === 'deployment-usaha_bku']
+    ];
+    tabs.forEach(([id,active])=>{
       const el=$(id); if(!el) return;
       el.classList.toggle('active',active);
       el.setAttribute('aria-selected',active?'true':'false');
       el.tabIndex=active?0:-1;
     });
     if (business && !currentPayload) { loadLatest(); loadHistory(); }
+    if (deployment) {
+      const category = String(which).replace('deployment-','');
+      if (typeof window.selectDeploymentCategory === 'function') window.selectDeploymentCategory(category);
+    }
   }
 
   function normalizeHeader(row) {
@@ -340,7 +351,7 @@
   function exportRegion(){if(regionTable)regionTable.download('xlsx',`rekap_keberadaan_keluarga_usaha_${currentPayload?.importDate||'latest'}.xlsx`,{sheetName:'Rekap Keluarga Usaha'});}
 
   document.addEventListener('DOMContentLoaded',()=>{
-    $('menuMonitoring')?.addEventListener('click',()=>switchModule('monitoring'));$('menuBusinessPresence')?.addEventListener('click',()=>switchModule('business'));$('menuDeployment')?.addEventListener('click',()=>switchModule('deployment'));
+    $('menuMonitoring')?.addEventListener('click',()=>switchModule('monitoring'));$('menuBusinessPresence')?.addEventListener('click',()=>switchModule('business'));$('menuDeploymentKeluarga')?.addEventListener('click',()=>switchModule('deployment-keluarga'));$('menuDeploymentUsahaKeluarga')?.addEventListener('click',()=>switchModule('deployment-usaha_keluarga'));$('menuDeploymentBku')?.addEventListener('click',()=>switchModule('deployment-usaha_bku'));
     $('btnOpenBusinessUpload')?.addEventListener('click',()=>{$('businessImportDate').value=new Date().toLocaleDateString('en-CA',{timeZone:'Asia/Jakarta'});bootstrap.Modal.getOrCreateInstance($('businessUploadModal')).show();});
     $('businessExcelFile')?.addEventListener('change',handleFileChange);$('btnBusinessImport')?.addEventListener('click',uploadExcel);
     $('btnBusinessRefresh')?.addEventListener('click',async()=>{await loadLatest();await loadHistory();});$('businessHistorySelect')?.addEventListener('change',e=>loadDate(e.target.value));

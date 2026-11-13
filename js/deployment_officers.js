@@ -130,12 +130,28 @@
   async function loadSnapshot(date){const url=date?`api/deployment.php?action=get&date=${encodeURIComponent(date)}`:`api/deployment.php?action=latest&_ts=${Date.now()}`;const r=await fetch(url,{cache:"no-store"});if(!r.ok)throw new Error("Snapshot deployment belum tersedia. Upload tiga file Excel untuk memulai.");source=await r.json();loaded=false;await render();}
   async function refreshHistory(selected){const r=await fetch(`api/deployment.php?action=list&_ts=${Date.now()}`,{cache:"no-store"});if(!r.ok)throw new Error("Gagal memuat riwayat snapshot.");const p=await r.json();const sel=$("deploymentHistorySelect");sel.innerHTML="";if(!p.items?.length){sel.add(new Option("Belum ada snapshot",""));return;}p.items.forEach(x=>sel.add(new Option(x.date,x.date)));sel.value=selected||p.items[0].date;}
   function exportExcel(){if(!rowsForExport.length){alert("Data deployment per petugas belum tersedia untuk diekspor.");return;}const out=rowsForExport.map(row=>{const o={"Petugas PPL/PCL":row.officer,"Muatan SE2026":row.target,"Jumlah Sub-SLS":row.subSlsCount,"Sub-SLS Cocok":row.matchedSubSls,"Sub-SLS Tidak Cocok":row.unmatchedSubSls};Object.entries(statusConfig).forEach(([cat,cfg])=>{cfg.statuses.forEach((st,i)=>o[`${cfg.title} - ${st}`]=row[`${cat}_${i}`]);o[`${cfg.title} - Total`]=row[`${cat}_total`];});return o;});const ws=XLSX.utils.json_to_sheet(out);ws["!cols"]=Object.keys(out[0]).map(k=>({wch:Math.min(48,Math.max(14,k.length+3))}));const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,"Deployment per Petugas");const d=source?.importDate||new Date().toISOString().slice(0,10);XLSX.writeFile(wb,`deployment_per_petugas_${d.replace(/-/g,"")}.xlsx`);}
+  window.selectDeploymentCategory = async function(category){
+    if(!statusConfig[category])category="keluarga";
+    activeCategory=category;
+    try{
+      if(!loaded){
+        const select=$("deploymentHistorySelect");
+        if(!select?.options?.length || select.options[0]?.value==="") await refreshHistory();
+        const chosen=$("deploymentHistorySelect")?.value;
+        await loadSnapshot(chosen||null);
+      } else {
+        renderCategory(category);
+      }
+    }catch(e){
+      console.error("[Deployment category]",e);
+      if($("deploymentUpdatedInfo"))$("deploymentUpdatedInfo").textContent=e.message;
+      setMessage(e.message,"warning");
+    }
+  };
   document.addEventListener("DOMContentLoaded",()=>{
     $("btnUploadDeployment")?.addEventListener("click",async()=>{const btn=$("btnUploadDeployment");btn.disabled=true;try{await uploadDaily();}catch(e){console.error("[Deployment upload]",e);setMessage(e.message,"danger");}finally{btn.disabled=false;}});
     $("deploymentHistorySelect")?.addEventListener("change",async e=>{if(!e.target.value)return;try{await loadSnapshot(e.target.value);}catch(err){setMessage(err.message,"danger");}});
-    $("menuDeployment")?.addEventListener("click",async()=>{if(loaded)return;try{if(!$("deploymentHistorySelect")?.options?.length||$("deploymentHistorySelect").options[0]?.value==="")await refreshHistory();const chosen=$("deploymentHistorySelect")?.value;await loadSnapshot(chosen||null);}catch(e){console.error("[Deployment SE2026]",e);if($("deploymentUpdatedInfo"))$("deploymentUpdatedInfo").textContent=e.message;setMessage(e.message,"warning");}});
     $("btnExportDeploymentOfficer")?.addEventListener("click",exportExcel);
-    $("deploymentCategoryTabs")?.addEventListener("click",e=>{const btn=e.target.closest("[data-category]");if(btn)renderCategory(btn.dataset.category);});
     $("deploymentOfficerSearch")?.addEventListener("input",e=>applySearch(e.target.value));
     refreshHistory().catch(e=>{console.warn("[Deployment history]",e);const sel=$("deploymentHistorySelect");if(sel)sel.innerHTML='<option value="">Riwayat belum tersedia</option>';});
   });

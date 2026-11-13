@@ -1584,8 +1584,14 @@
             <button class="module-tab" id="menuBusinessPresence" type="button" role="tab" aria-selected="false" aria-controls="businessPresenceModule">
                 <i class="bi bi-people-fill"></i><span>Keberadaan Keluarga/Usaha</span>
             </button>
-            <button class="module-tab" id="menuDeployment" type="button" role="tab" aria-selected="false" aria-controls="deploymentModule">
-                <i class="bi bi-diagram-3-fill"></i><span>Deployment SE2026</span>
+            <button class="module-tab" id="menuDeploymentKeluarga" type="button" role="tab" aria-selected="false" aria-controls="deploymentModule" data-deployment-category="keluarga">
+                <i class="bi bi-people-fill"></i><span>Keluarga</span>
+            </button>
+            <button class="module-tab" id="menuDeploymentUsahaKeluarga" type="button" role="tab" aria-selected="false" aria-controls="deploymentModule" data-deployment-category="usaha_keluarga">
+                <i class="bi bi-house-check-fill"></i><span>Usaha Keluarga</span>
+            </button>
+            <button class="module-tab" id="menuDeploymentBku" type="button" role="tab" aria-selected="false" aria-controls="deploymentModule" data-deployment-category="usaha_bku">
+                <i class="bi bi-shop"></i><span>Usaha BKU</span>
             </button>
         </nav>
         <section id="monitoringModule">
@@ -1978,7 +1984,7 @@
         <section id="deploymentModule" class="d-none">
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
                 <div>
-                    <h3 class="mb-1"><i class="bi bi-diagram-3-fill text-primary me-2"></i>Deployment SE2026 per Petugas</h3>
+                    <h3 class="mb-1"><i class="bi bi-diagram-3-fill text-primary me-2"></i>Rekapitulasi per Petugas</h3>
                     <div class="text-secondary small">Rekap jumlah assignment Keluarga, Usaha Keluarga, dan Usaha BKU berdasarkan status untuk setiap PPL/PCL.</div>
                 </div>
                 <button class="btn btn-success btn-sm" id="btnExportDeploymentOfficer"><i class="bi bi-file-earmark-excel me-1"></i>Export Excel</button>
@@ -2011,11 +2017,6 @@
                     <div class="small text-secondary" id="deploymentUpdatedInfo">Memuat data...</div>
                 </div>
                 <div class="small text-secondary mb-3">Pencocokan: SSLS pada file sumber → ID Sub-SLS/regionCode → petugas PPL/PCL dari data FASIH. Gunakan pencarian untuk menemukan nama petugas atau ID Sub-SLS.</div>
-                <div class="deployment-category-tabs" id="deploymentCategoryTabs" role="tablist" aria-label="Kategori deployment">
-                    <button type="button" class="btn btn-outline-primary active" data-category="keluarga" role="tab" aria-selected="true"><i class="bi bi-people-fill me-1"></i>Keluarga</button>
-                    <button type="button" class="btn btn-outline-secondary" data-category="usaha_keluarga" role="tab" aria-selected="false"><i class="bi bi-house-check-fill me-1"></i>Usaha Keluarga</button>
-                    <button type="button" class="btn btn-outline-secondary" data-category="usaha_bku" role="tab" aria-selected="false"><i class="bi bi-shop me-1"></i>Usaha BKU</button>
-                </div>
                 <div class="deployment-table-toolbar">
                     <input type="search" class="form-control form-control-sm deployment-table-search" id="deploymentOfficerSearch" placeholder="Cari nama petugas atau ID Sub-SLS..." aria-label="Cari nama petugas atau ID Sub-SLS">
                     <div class="small text-secondary" id="deploymentTableCount">-</div>
