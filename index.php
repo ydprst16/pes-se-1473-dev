@@ -1936,6 +1936,21 @@
                 </div>
                 <button class="btn btn-success btn-sm" id="btnExportDeploymentOfficer"><i class="bi bi-file-earmark-excel me-1"></i>Export Excel</button>
             </div>
+            <div class="chart-card mb-3">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+                    <div><div class="chart-title mb-1">Upload Data Deployment Harian</div><div class="small text-secondary">Pilih ketiga file Excel untuk tanggal yang sama. Snapshot tanggal sebelumnya tetap tersimpan.</div></div>
+                    <span class="badge bg-primary-subtle text-primary">3 file wajib</span>
+                </div>
+                <div class="row g-3 align-items-end">
+                    <div class="col-12 col-md-4"><label class="form-label small fw-semibold" for="deploymentFileKeluarga">1. Keluarga</label><input class="form-control form-control-sm" type="file" id="deploymentFileKeluarga" accept=".xlsx,.xls"></div>
+                    <div class="col-12 col-md-4"><label class="form-label small fw-semibold" for="deploymentFileUsahaKeluarga">2. Usaha Keluarga</label><input class="form-control form-control-sm" type="file" id="deploymentFileUsahaKeluarga" accept=".xlsx,.xls"></div>
+                    <div class="col-12 col-md-4"><label class="form-label small fw-semibold" for="deploymentFileUsahaBku">3. Usaha BKU</label><input class="form-control form-control-sm" type="file" id="deploymentFileUsahaBku" accept=".xlsx,.xls"></div>
+                    <div class="col-12 col-md-5"><label class="form-label small fw-semibold" for="deploymentUploadPassword">Password upload</label><input class="form-control form-control-sm" type="password" id="deploymentUploadPassword" autocomplete="current-password" placeholder="Masukkan password upload"></div>
+                    <div class="col-12 col-md-3"><button class="btn btn-primary btn-sm w-100" id="btnUploadDeployment"><i class="bi bi-cloud-arrow-up me-1"></i>Upload & Simpan Snapshot</button></div>
+                    <div class="col-12 col-md-4"><label class="form-label small fw-semibold" for="deploymentHistorySelect">Riwayat snapshot</label><select class="form-select form-select-sm" id="deploymentHistorySelect"><option value="">Memuat riwayat...</option></select></div>
+                </div>
+                <div id="deploymentUploadMessage" class="small mt-3" role="status">Belum ada upload pada sesi ini.</div>
+            </div>
             <div class="row g-3 mb-3" id="deploymentSummaryCards">
                 <div class="col-12 col-md-4"><div class="kpi-card"><div class="kpi-title">Sub-SLS cocok</div><div class="kpi-value" id="deploymentMatchedSsls">-</div></div></div>
                 <div class="col-12 col-md-4"><div class="kpi-card"><div class="kpi-title">Sub-SLS belum cocok</div><div class="kpi-value" id="deploymentUnmatchedSsls">-</div></div></div>
