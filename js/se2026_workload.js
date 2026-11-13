@@ -49,12 +49,16 @@ function renderSe2026WorkloadComparison() {
   const section = document.getElementById("se2026WorkloadSection");
   if (!section) return;
   if (typeof currentRole !== "undefined" && currentRole !== "pencacah") {
+    se2026WorkloadRows = [];
     section.classList.add("d-none");
     if (se2026WorkloadChart) { se2026WorkloadChart.destroy(); se2026WorkloadChart = null; }
     return;
   }
   section.classList.remove("d-none");
-  if (!se2026WorkloadTargets || typeof Dashboard === "undefined") return;
+  if (!se2026WorkloadTargets || typeof Dashboard === "undefined") {
+    se2026WorkloadRows = [];
+    return;
+  }
 
   const normalize = se2026NormalizeName;
   const actualByName = new Map();
@@ -71,6 +75,9 @@ function renderSe2026WorkloadComparison() {
     const gap = actual - target;
     return { name: se2026DisplayName(officer.name), target, actual, gap, achievement: target > 0 ? actual / target * 100 : 0, matched: actualByName.has(key) };
   }).sort((a,b) => a.gap - b.gap);
+
+  // Keep the complete, unpaginated comparison dataset available for Excel export.
+  se2026WorkloadRows = rows.map(row => ({ ...row }));
 
   const tableEl = document.getElementById("se2026WorkloadTable");
   if (tableEl && typeof Tabulator !== "undefined") {
