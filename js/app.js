@@ -978,19 +978,17 @@ async function handleUploadAll() {
       <div><i class="bi bi-x-circle-fill text-danger"></i> Gagal: <b>${fail.length}</b></div>
       ${skipped.length ? `<div><i class="bi bi-exclamation-triangle-fill text-warning"></i> Invalid (skip): <b>${skipped.length}</b></div>` : ""}
     </div>`;
-  Swal.fire({
-    icon: fail.length && !done.length ? "error" : (fail.length ? "warning" : "success"),
-    title: fail.length && !done.length ? "Semua upload gagal"
-          : fail.length ? "Upload sebagian sukses"
-          : "Upload berhasil",
-    html,
-    confirmButtonText: "OK",
-  }).then(() => {
-    if (done.length && !fail.length && !skipped.length) {
-      const modalEl = document.getElementById("uploadModal");
-      const modal = bootstrap.Modal.getInstance(modalEl);
-      if (modal) modal.hide();
-      resetUploadModal();
-    }
-  });
+  if (done.length && !fail.length && !skipped.length) {
+    const modalEl = document.getElementById("uploadModal");
+    const modal = bootstrap.Modal.getInstance(modalEl);
+    if (modal) modal.hide();
+    resetUploadModal();
+    Swal.fire({toast:true,position:"top-end",icon:"success",title:"Upload JSON berhasil",html,showConfirmButton:false,timer:2800,timerProgressBar:true});
+  } else {
+    Swal.fire({
+      icon: fail.length && !done.length ? "error" : "warning",
+      title: fail.length && !done.length ? "Semua upload gagal" : "Upload sebagian sukses",
+      html, confirmButtonText:"OK"
+    });
+  }
 }

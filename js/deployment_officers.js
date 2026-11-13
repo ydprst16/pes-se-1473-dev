@@ -50,7 +50,11 @@
     const form=new FormData();form.append("password",$("uploadPassword").value);form.append("payload",JSON.stringify(payload));
     const res=await fetch("api/deployment.php?action=upload",{method:"POST",body:form});const out=await res.json();if(!res.ok||out.status!=="ok")throw new Error(out.message||`Upload gagal HTTP ${res.status}`);
     setMessage(`Snapshot ${out.date} berhasil disimpan. ${fmt(out.totalUniqueSsls)} SSLS unik. ${out.latestUpdated?"Data terbaru diperbarui.":`Latest tetap ${out.latestDate||"tidak berubah"} karena snapshot yang diunggah lebih lama.`}`,"success");
-    await refreshHistory(out.date);await loadSnapshot(date);$("uploadPassword").value="";$("deploymentFilesAll").value="";$("deploymentSelectedFiles").textContent="Upload selesai. Pilih tiga file berikutnya jika ingin memperbarui snapshot.";
+    await refreshHistory(out.date);await loadSnapshot(date);
+    $("uploadPassword").value="";$("deploymentFilesAll").value="";
+    $("deploymentSelectedFiles").textContent="Belum ada file Excel deployment dipilih.";
+    const modalEl=$("uploadModal");const modal=window.bootstrap?.Modal?.getInstance(modalEl);if(modal)modal.hide();
+    if(window.Swal)Swal.fire({toast:true,position:"top-end",icon:"success",title:"Upload Excel Deployment berhasil",text:`Snapshot ${out.date} tersimpan`,showConfirmButton:false,timer:2800,timerProgressBar:true});
   }
   async function fetchPencacah(){const r=await fetch(`api/history.php?action=latest&role=pencacah&_ts=${Date.now()}`,{cache:"no-store"});if(!r.ok)throw new Error(`Gagal mengambil data PPL/PCL (HTTP ${r.status})`);const p=await r.json();return Array.isArray(p.data)?p.data:[];}
   async function buildRows(){

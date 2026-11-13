@@ -1859,6 +1859,15 @@
                             </div>
 
                             <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="uploadPassword" class="form-label small text-secondary mb-1"><i class="bi bi-shield-lock"></i> Password Upload</label>
+                                    <div class="pw-input-wrap">
+                                        <input type="password" id="uploadPassword" class="form-control" placeholder="Masukkan password upload" autocomplete="current-password" data-testid="upload-password">
+                                        <button type="button" class="pw-input-toggle" id="btnTogglePw" data-testid="upload-toggle-pw"><i class="bi bi-eye"></i></button>
+                                    </div>
+                                    <small class="text-secondary d-block mt-2"><i class="bi bi-info-circle"></i> Masukkan password terlebih dahulu, lalu pilih jenis data yang akan diunggah. Upload JSON dan Excel dapat dilakukan secara terpisah.</small>
+                                </div>
+
                                 <div id="dropZone" class="drop-zone" data-testid="upload-dropzone">
                                     <i class="bi bi-cloud-upload drop-zone-icon"></i>
                                     <div class="drop-zone-title">Upload JSON FASIH</div>
@@ -1877,6 +1886,7 @@
                                 </div>
 
                                 <div id="fileList" class="file-list mt-3" data-testid="upload-file-list"></div>
+                                <div class="d-flex justify-content-end mt-3"><button id="btnUpload" class="btn btn-primary" data-testid="upload-submit"><i class="bi bi-cloud-arrow-up"></i> Upload JSON Terpilih</button></div>
 
                                 <div class="border rounded-3 p-3 mt-4" style="border-color:var(--border)!important;background:var(--card-solid)">
                                     <div class="d-flex align-items-start justify-content-between flex-wrap gap-2 mb-2">
@@ -1892,28 +1902,9 @@
                                     <div id="deploymentUploadMessage" class="small mt-2" role="status">Belum ada upload deployment pada sesi ini.</div>
                                 </div>
 
-                                <div class="mt-3">
-                                    <label for="uploadPassword" class="form-label small text-secondary mb-1">
-                                        <i class="bi bi-shield-lock"></i> Password Upload
-                                    </label>
-                                    <div class="pw-input-wrap">
-                                        <input type="password" id="uploadPassword" class="form-control"
-                                            placeholder="Masukkan password upload" autocomplete="current-password"
-                                            data-testid="upload-password">
-                                        <button type="button" class="pw-input-toggle" id="btnTogglePw"
-                                            data-testid="upload-toggle-pw">
-                                            <i class="bi bi-eye"></i>
-                                        </button>
-                                    </div>
-                                </div>
 
-                                <div class="mt-3">
-                                    <small class="text-secondary d-block">
-                                        <i class="bi bi-info-circle"></i>
-                                        Role &amp; tanggal dideteksi otomatis dari isi &amp; nama file. Tanggal <b>hari
-                                            ini</b> menjadi data live + snapshot; tanggal lampau hanya snapshot.
-                                    </small>
-                                </div>
+
+                                <div class="small text-secondary mt-2"><i class="bi bi-info-circle"></i> Role dan tanggal JSON dideteksi otomatis dari isi file. Tanggal hari ini menjadi data live + snapshot; tanggal lampau hanya snapshot.</div>
                             </div>
 
                             <div class="modal-footer">
@@ -1923,9 +1914,6 @@
                                 </a>
                                 <button class="btn btn-secondary" data-bs-dismiss="modal"
                                     data-testid="upload-cancel">Batal</button>
-                                <button id="btnUpload" class="btn btn-primary" data-testid="upload-submit">
-                                    <i class="bi bi-cloud-arrow-up"></i> Upload Semua
-                                </button>
                             </div>
                         </div>
                     </div>
