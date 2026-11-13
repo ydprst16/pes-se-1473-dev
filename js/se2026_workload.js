@@ -97,11 +97,11 @@ function renderSe2026WorkloadComparison() {
       paginationSizeSelector: [15, 25, 50],
       placeholder: "Tidak ada data perbandingan",
       columns: [
-        { title: "Petugas", field: "name", minWidth: 160, widthGrow: 2, headerFilter: "input" },
-        { title: "Muatan SE2026", field: "target", hozAlign: "right", headerHozAlign: "center", minWidth: 115, formatter: cell => se2026Number(cell.getValue()) },
-        { title: "Assignment PES 2026", field: "actual", hozAlign: "right", headerHozAlign: "center", minWidth: 145, formatter: cell => se2026Number(cell.getValue()) },
-        { title: "Selisih", field: "gap", hozAlign: "right", headerHozAlign: "center", minWidth: 100, formatter: cell => { const v=Number(cell.getValue())||0; return `<span class="fw-semibold ${v>=0?"text-success":"text-danger"}">${v>0?"+":""}${se2026Number(v)}</span>`; } },
-        { title: "Pencapaian", field: "achievement", hozAlign: "right", headerHozAlign: "center", minWidth: 110, formatter: cell => `${(Number(cell.getValue())||0).toFixed(1).replace(".",",")}%` },
+        { title: "Petugas", field: "name", minWidth: 145, widthGrow: 2, headerFilter: "input" },
+        { title: "Muatan SE2026", field: "target", hozAlign: "right", headerHozAlign: "center", minWidth: 105, widthGrow: 1, formatter: cell => se2026Number(cell.getValue()) },
+        { title: "Assignment PES 2026", field: "actual", hozAlign: "right", headerHozAlign: "center", minWidth: 125, widthGrow: 1, formatter: cell => se2026Number(cell.getValue()) },
+        { title: "Selisih", field: "gap", hozAlign: "right", headerHozAlign: "center", minWidth: 90, widthGrow: 1, formatter: cell => { const v=Number(cell.getValue())||0; return `<span class="fw-semibold ${v>=0?"text-success":"text-danger"}">${v>0?"+":""}${se2026Number(v)}</span>`; } },
+        { title: "Pencapaian", field: "achievement", hozAlign: "right", headerHozAlign: "center", minWidth: 100, widthGrow: 1, formatter: cell => `${(Number(cell.getValue())||0).toFixed(1).replace(".",",")}%` },
       ],
     });
   }
