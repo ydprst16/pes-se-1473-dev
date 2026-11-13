@@ -499,6 +499,39 @@
         [data-bs-theme="light"] #gridTable .tabulator-col,
         [data-bs-theme="light"] #gridTableDetail .tabulator-col,
         [data-bs-theme="light"] #businessRegionTable .tabulator-col,
+        /* Workload indicators: soft contrast in dark and light themes. */
+        #se2026WorkloadTable .se2026-achievement-pill,
+        #se2026WorkloadTable .se2026-daily-pill {
+            display:inline-flex; align-items:center; justify-content:center;
+            min-width:64px; padding:3px 9px; border-radius:999px;
+            font-size:12px; font-weight:700; line-height:1.45;
+            font-variant-numeric:tabular-nums; white-space:nowrap;
+            border:1px solid transparent;
+        }
+        #se2026WorkloadTable .se2026-achievement-low {
+            color:#fca5a5; background:rgba(239,68,68,.13); border-color:rgba(248,113,113,.22);
+        }
+        #se2026WorkloadTable .se2026-achievement-progress {
+            color:#fcd34d; background:rgba(245,158,11,.13); border-color:rgba(251,191,36,.22);
+        }
+        #se2026WorkloadTable .se2026-achievement-complete {
+            color:#86efac; background:rgba(34,197,94,.13); border-color:rgba(74,222,128,.22);
+        }
+        #se2026WorkloadTable .se2026-daily-pill {
+            color:#93c5fd; background:rgba(59,130,246,.12); border-color:rgba(96,165,250,.20);
+        }
+        [data-bs-theme="light"] #se2026WorkloadTable .se2026-achievement-low {
+            color:#b91c1c; background:#fef2f2; border-color:#fecaca;
+        }
+        [data-bs-theme="light"] #se2026WorkloadTable .se2026-achievement-progress {
+            color:#92400e; background:#fffbeb; border-color:#fde68a;
+        }
+        [data-bs-theme="light"] #se2026WorkloadTable .se2026-achievement-complete {
+            color:#166534; background:#f0fdf4; border-color:#bbf7d0;
+        }
+        [data-bs-theme="light"] #se2026WorkloadTable .se2026-daily-pill {
+            color:#1d4ed8; background:#eff6ff; border-color:#bfdbfe;
+        }
         [data-bs-theme="light"] #se2026WorkloadTable .tabulator-col {
             background:#eef2f7 !important; color:#0f172a !important; border-color:#dbe3ee !important;
         }

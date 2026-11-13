@@ -88,7 +88,7 @@ function renderSe2026WorkloadComparison() {
     const gap = actual - target;
     const dailyTarget = se2026DailyTarget(target, actual, remainingDays);
     return { name: se2026DisplayName(officer.name), target, actual, gap, dailyTarget, remainingDays, achievement: target > 0 ? actual / target * 100 : 0, matched: actualByName.has(key) };
-  }).sort((a,b) => a.gap - b.gap);
+  }).sort((a,b) => a.gap - b.gap || a.achievement - b.achievement || a.name.localeCompare(b.name, "id"));
 
   // Keep the complete, unpaginated comparison dataset available for Excel export.
   se2026WorkloadRows = rows.map(row => ({ ...row }));
@@ -105,16 +105,27 @@ function renderSe2026WorkloadComparison() {
       resizableColumns: true,
       pagination: true,
       paginationSize: 15,
+      initialSort: [{ column: "gap", dir: "asc" }, { column: "achievement", dir: "asc" }],
+      sortMode: "local",
       paginationSizeSelector: [15, 25, 50],
       placeholder: "Tidak ada data perbandingan",
       columns: [
         { title: "Petugas", field: "name", minWidth: 145, widthGrow: 2, headerFilter: "input" },
         { title: "Muatan SE2026", field: "target", hozAlign: "right", headerHozAlign: "center", minWidth: 105, widthGrow: 1, formatter: cell => se2026Number(cell.getValue()) },
         { title: "Assignment PES 2026", field: "actual", hozAlign: "right", headerHozAlign: "center", minWidth: 125, widthGrow: 1, formatter: cell => se2026Number(cell.getValue()) },
-        { title: "Selisih", field: "gap", hozAlign: "right", headerHozAlign: "center", minWidth: 90, widthGrow: 1, formatter: cell => { const v=Number(cell.getValue())||0; return `<span class="fw-semibold ${v>=0?"text-success":"text-danger"}">${v>0?"+":""}${se2026Number(v)}</span>`; } },
-        { title: "Target Pendataan Harian", field: "dailyTarget", hozAlign: "right", headerHozAlign: "center", minWidth: 145, widthGrow: 1, formatter: cell => cell.getValue() == null ? "—" : se2026Number(cell.getValue()) },
-        { title: "Pencapaian", field: "achievement", hozAlign: "right", headerHozAlign: "center", minWidth: 100, widthGrow: 1, formatter: cell => `${(Number(cell.getValue())||0).toFixed(1).replace(".",",")}%` },
+        { title: "Selisih", field: "gap", sorter: "number", hozAlign: "right", headerHozAlign: "center", minWidth: 90, widthGrow: 1, formatter: cell => { const v=Number(cell.getValue())||0; return `<span class="fw-semibold ${v>=0?"text-success":"text-danger"}">${v>0?"+":""}${se2026Number(v)}</span>`; } },
+        { title: "Target Pendataan Harian", field: "dailyTarget", hozAlign: "right", headerHozAlign: "center", minWidth: 145, widthGrow: 1, formatter: cell => cell.getValue() == null ? "—" : `<span class="se2026-daily-pill">${se2026Number(cell.getValue())}</span>` },
+        { title: "Pencapaian", field: "achievement", sorter: "number", hozAlign: "right", headerHozAlign: "center", minWidth: 100, widthGrow: 1, formatter: cell => { const v=Number(cell.getValue())||0; const level=v>=100?"complete":v>=50?"progress":"low"; return `<span class="se2026-achievement-pill se2026-achievement-${level}">${v.toFixed(1).replace(".",",")}%</span>`; } },
       ],
+      tableBuilt: function () {
+        // Force numeric priority order after Tabulator has initialized.
+        // Most negative gap first; for ties, lowest achievement first.
+        this.setSort([
+          { column: "gap", dir: "asc" },
+          { column: "achievement", dir: "asc" },
+          { column: "name", dir: "asc" }
+        ]);
+      }
     });
   }
 
@@ -152,7 +163,9 @@ function exportSe2026WorkloadExcel() {
     alert("Library Excel belum tersedia. Silakan muat ulang halaman.");
     return;
   }
-  const exportRows = se2026WorkloadRows.map(row => ({
+  const exportRows = [...se2026WorkloadRows]
+    .sort((a, b) => a.gap - b.gap || a.achievement - b.achievement || a.name.localeCompare(b.name, "id"))
+    .map(row => ({
     "Petugas": row.name,
     "Muatan SE2026": row.target,
     "Assignment PES 2026": row.actual,
