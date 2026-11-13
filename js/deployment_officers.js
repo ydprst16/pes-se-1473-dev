@@ -79,6 +79,19 @@
     return {rows:aggregate,matched,unmatched,officerCount:officers.length,uniqueMatched:assigned.size};
   }
   const cleanStatusLabel=status=>String(status).replace(/^\s*\d+\.\s*/,"");
+  function makeCountColumn(title,field,category){
+    const accent=category==="keluarga"?"#3b82f6":category==="usaha_keluarga"?"#0d9488":"#d97706";
+    return {
+      title,field,hozAlign:"right",headerHozAlign:"center",
+      minWidth:112,width:132,headerWordWrap:true,
+      headerCssClass:`deployment-col-header deployment-col-${category}`,
+      formatter:cell=>fmt(cell.getValue()),
+      bottomCalc:"sum",bottomCalcFormatter:cell=>fmt(cell.getValue()),
+      cssClass:"deployment-count-cell",
+      tooltip:cell=>`${title}: ${fmt(cell.getValue())}`,
+      headerTooltip:title
+    };
+  }
   function renderCategory(category){
     activeCategory=category;
     const cfg=statusConfig[category], rows=detailRows[category]||[];
@@ -101,13 +114,6 @@
     if(search)applySearch(search);
     const count=$("deploymentTableCount");
     if(count)count.textContent=`${fmt(rows.length)} baris Sub-SLS`;
-    document.querySelectorAll("#deploymentCategoryTabs [data-category]").forEach(btn=>{
-      const active=btn.dataset.category===category;
-      btn.classList.toggle("active",active);
-      btn.classList.toggle("btn-outline-primary",category==="keluarga"&&!active);
-      btn.classList.toggle("btn-outline-secondary",!active&&category!=="keluarga");
-      btn.setAttribute("aria-selected",String(active));
-    });
   }
   function applySearch(value){
     if(!table)return;

@@ -1497,12 +1497,6 @@
         .deployment-upload-footer { display:flex; flex-wrap:wrap; gap:10px; align-items:end; margin-top:12px; }
         .deployment-password { flex:0 1 220px; max-width:220px; } .deployment-history { flex:0 1 190px; max-width:190px; } .deployment-upload-button { min-height:34px; white-space:nowrap; padding-inline:13px; }
         .deployment-upload-message { margin-top:12px; padding:8px 10px; border-radius:8px; background:rgba(127,127,127,.07); font-size:11px; }
-        .deployment-category-tabs { display:flex; gap:7px; flex-wrap:wrap; margin:0 0 12px; border-bottom:1px solid var(--border); padding-bottom:10px; }
-        .deployment-category-tabs .btn { border-radius:8px; font-size:12px; padding:7px 13px; }
-        .deployment-category-tabs .btn.active { color:#fff; }
-        .deployment-category-tabs [data-category="keluarga"].active { background:#3b82f6; border-color:#3b82f6; }
-        .deployment-category-tabs [data-category="usaha_keluarga"].active { background:#0d9488; border-color:#0d9488; }
-        .deployment-category-tabs [data-category="usaha_bku"].active { background:#d97706; border-color:#d97706; }
         .deployment-table-toolbar { display:flex; gap:10px; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:10px; }
         .deployment-table-search { width:min(100%,320px); }
         #deploymentOfficerTable { min-width:0; width:100%; }
@@ -1514,6 +1508,11 @@
         #deploymentOfficerTable .tabulator-header .tabulator-col:not(.tabulator-col-group) .tabulator-col-content { min-height:88px; display:flex; align-items:center; justify-content:center; padding:7px 5px; }
         #deploymentOfficerTable .tabulator-col-group .tabulator-col-content { min-height:34px; }
         #deploymentOfficerTable .tabulator-col-group .tabulator-col-title { font-size:11px; font-weight:800; letter-spacing:.01em; }
+        #deploymentOfficerTable .deployment-col-header { font-weight:700; }
+        #deploymentOfficerTable .deployment-col-header.deployment-col-keluarga { border-top:3px solid #3b82f6; }
+        #deploymentOfficerTable .deployment-col-header.deployment-col-usaha_keluarga { border-top:3px solid #0d9488; }
+        #deploymentOfficerTable .deployment-col-header.deployment-col-usaha_bku { border-top:3px solid #d97706; }
+        #deploymentOfficerTable .deployment-count-cell { font-variant-numeric:tabular-nums; font-weight:600; }
         #deploymentOfficerTable .deployment-col-keluarga { background:rgba(59,130,246,.075) !important; }
         #deploymentOfficerTable .deployment-col-usaha_keluarga { background:rgba(13,148,136,.075) !important; }
         #deploymentOfficerTable .deployment-col-usaha_bku { background:rgba(217,119,6,.085) !important; }
