@@ -6,6 +6,7 @@
 let se2026WorkloadTargets = null;
 let se2026WorkloadChart = null;
 let se2026WorkloadLoadPromise = null;
+let se2026WorkloadTabulator = null;
 
 function se2026NormalizeName(value) {
   return String(value || "")
@@ -14,6 +15,9 @@ function se2026NormalizeName(value) {
 }
 function se2026Number(value) {
   return new Intl.NumberFormat("id-ID").format(Number(value) || 0);
+}
+function se2026DisplayName(value) {
+  return String(value || "").toLocaleLowerCase("id-ID").replace(/(^|\s)(\p{L})/gu, (_, space, letter) => space + letter.toLocaleUpperCase("id-ID"));
 }
 function se2026Escape(value) {
   return String(value ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -64,7 +68,7 @@ function renderSe2026WorkloadComparison() {
     const actual = actualByName.get(key) || 0;
     const target = Number(officer.target) || 0;
     const gap = actual - target;
-    return { name: officer.name, target, actual, gap, achievement: target > 0 ? actual / target * 100 : 0, slsCount: Number(officer.slsCount) || 0, matched: actualByName.has(key) };
+    return { name: se2026DisplayName(officer.name), target, actual, gap, achievement: target > 0 ? actual / target * 100 : 0, matched: actualByName.has(key) };
   }).sort((a,b) => a.gap - b.gap);
 
   const matchedCount = rows.filter(r=>r.matched).length;
@@ -78,14 +82,28 @@ function renderSe2026WorkloadComparison() {
       (unmatchedActual.length?` ${unmatchedActual.length} nama aktual tidak ada di daftar target kolom K.`:"");
   }
 
-  const tbody=document.getElementById("se2026WorkloadRows");
-  if(tbody){
-    tbody.innerHTML=rows.map(r=>{
-      const gapClass=r.gap>=0?"text-success":"text-danger";
-      const gapText=(r.gap>0?"+":"")+se2026Number(r.gap);
-      const matchMark=r.matched?"":" <span class=\"badge bg-warning-subtle text-warning\">Nama belum cocok</span>";
-      return `<tr><td class="fw-semibold">${se2026Escape(r.name)}${matchMark}</td><td class="text-end">${se2026Number(r.slsCount)}</td><td class="text-end">${se2026Number(r.target)}</td><td class="text-end">${se2026Number(r.actual)}</td><td class="text-end fw-semibold ${gapClass}">${gapText}</td><td class="text-end">${r.achievement.toFixed(1).replace(".",",")}%</td></tr>`;
-    }).join("");
+  const tableEl = document.getElementById("se2026WorkloadTable");
+  if (tableEl && typeof Tabulator !== "undefined") {
+    if (se2026WorkloadTabulator) se2026WorkloadTabulator.destroy();
+    se2026WorkloadTabulator = new Tabulator(tableEl, {
+      data: rows,
+      layout: "fitColumns",
+      responsiveLayout: "collapse",
+      height: "520px",
+      movableColumns: true,
+      resizableColumns: true,
+      pagination: true,
+      paginationSize: 15,
+      paginationSizeSelector: [15, 25, 50],
+      placeholder: "Tidak ada data perbandingan",
+      columns: [
+        { title: "Petugas", field: "name", minWidth: 160, widthGrow: 2, headerFilter: "input" },
+        { title: "Muatan SE2026", field: "target", hozAlign: "right", headerHozAlign: "center", minWidth: 115, formatter: cell => se2026Number(cell.getValue()) },
+        { title: "Assignment PES 2026", field: "actual", hozAlign: "right", headerHozAlign: "center", minWidth: 145, formatter: cell => se2026Number(cell.getValue()) },
+        { title: "Selisih", field: "gap", hozAlign: "right", headerHozAlign: "center", minWidth: 100, formatter: cell => { const v=Number(cell.getValue())||0; return `<span class="fw-semibold ${v>=0?"text-success":"text-danger"}">${v>0?"+":""}${se2026Number(v)}</span>`; } },
+        { title: "Pencapaian", field: "achievement", hozAlign: "right", headerHozAlign: "center", minWidth: 110, formatter: cell => `${(Number(cell.getValue())||0).toFixed(1).replace(".",",")}%` },
+      ],
+    });
   }
 
   const el=document.getElementById("se2026WorkloadChart");
@@ -95,7 +113,7 @@ function renderSe2026WorkloadComparison() {
   const chartRows=[...rows].sort((a,b)=>a.target-b.target);
   se2026WorkloadChart=new ApexCharts(el,{
     chart:{type:"bar",height:Math.max(420,chartRows.length* thirtyFive()),toolbar:{show:false},background:"transparent",foreColor:colors.text,fontFamily:"Inter, sans-serif",animations:{enabled:false}},
-    series:[{name:"Muatan per petugas",data:chartRows.map(r=>r.target)},{name:"Assignment aktual",data:chartRows.map(r=>r.actual)}],
+    series:[{name:"Muatan SE2026",data:chartRows.map(r=>r.target)},{name:"Assignment PES 2026",data:chartRows.map(r=>r.actual)}],
     colors:[colors.target,colors.actual],
     plotOptions:{bar:{horizontal:true,barHeight:"62%",borderRadius:3}},
     dataLabels:{enabled:false},

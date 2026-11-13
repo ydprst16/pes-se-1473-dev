@@ -1515,11 +1515,8 @@
             </div>
             <div class="small text-secondary mb-2" id="se2026WorkloadMatchInfo">Memuat data perbandingan...</div>
             <div id="se2026WorkloadChart" style="min-height:420px;width:100%;"></div>
-            <div class="table-responsive mt-3">
-                <table class="table table-sm align-middle" id="se2026WorkloadTable">
-                    <thead><tr><th>Petugas (Kolom K)</th><th class="text-end">Jumlah SLS</th><th class="text-end">Muatan</th><th class="text-end">Assignment Aktual</th><th class="text-end">Selisih</th><th class="text-end">Pencapaian</th></tr></thead>
-                    <tbody id="se2026WorkloadRows"><tr><td colspan="6" class="text-center text-secondary">Memuat...</td></tr></tbody>
-                </table>
+            <div class="mt-3">
+                <div id="se2026WorkloadTable"></div>
             </div>
         </section>
 

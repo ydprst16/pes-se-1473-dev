@@ -237,4 +237,5 @@ const USERNAME_MAP = {
   "hendriansyahputra50@gmail.com": "Hendriansyah Putra",
   "lauraviorenza16@gmail.com": "Laura Viorenza",
   "arinasabrinaa114@gmail.com": "Arina Sabila",
+  "khairiahpatta@gmail.com": "Patta Khairiah",
 };
