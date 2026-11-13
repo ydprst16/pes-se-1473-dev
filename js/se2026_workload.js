@@ -49,7 +49,7 @@ function renderSe2026WorkloadComparison() {
     return;
   }
   section.classList.remove("d-none");
-  if (!se2026WorkloadTargets || !window.Dashboard) return;
+  if (!se2026WorkloadTargets || typeof Dashboard === "undefined") return;
 
   const normalize = se2026NormalizeName;
   const actualByName = new Map();
