@@ -7,6 +7,7 @@ let se2026WorkloadTargets = null;
 let se2026WorkloadChart = null;
 let se2026WorkloadLoadPromise = null;
 let se2026WorkloadTabulator = null;
+let se2026WorkloadRows = [];
 
 function se2026NormalizeName(value) {
   return String(value || "")
@@ -71,17 +72,6 @@ function renderSe2026WorkloadComparison() {
     return { name: se2026DisplayName(officer.name), target, actual, gap, achievement: target > 0 ? actual / target * 100 : 0, matched: actualByName.has(key) };
   }).sort((a,b) => a.gap - b.gap);
 
-  const matchedCount = rows.filter(r=>r.matched).length;
-  const unmatchedTarget = rows.filter(r=>!r.matched).map(r=>r.name);
-  const targetKeys = new Set(se2026WorkloadTargets.officers.map(o=>normalize(o.name)));
-  const unmatchedActual = [...actualByName.keys()].filter(k=>!targetKeys.has(k));
-
-  const info=document.getElementById("se2026WorkloadMatchInfo");
-  if(info){
-    info.textContent=`${matchedCount} dari ${rows.length} nama target cocok dengan data Pencacah. ${unmatchedTarget.length} nama target belum ditemukan${unmatchedTarget.length?": "+unmatchedTarget.join(", "):"."}`+
-      (unmatchedActual.length?` ${unmatchedActual.length} nama aktual tidak ada di daftar target kolom K.`:"");
-  }
-
   const tableEl = document.getElementById("se2026WorkloadTable");
   if (tableEl && typeof Tabulator !== "undefined") {
     if (se2026WorkloadTabulator) se2026WorkloadTabulator.destroy();
@@ -112,7 +102,7 @@ function renderSe2026WorkloadComparison() {
   const colors=se2026ThemeColors();
   const chartRows=[...rows].sort((a,b)=>a.target-b.target);
   se2026WorkloadChart=new ApexCharts(el,{
-    chart:{type:"bar",height:Math.max(420,chartRows.length* thirtyFive()),toolbar:{show:false},background:"transparent",foreColor:colors.text,fontFamily:"Inter, sans-serif",animations:{enabled:false}},
+    chart:{type:"bar",height:Math.max(520,chartRows.length* thirtyFive()),toolbar:{show:false},background:"transparent",foreColor:colors.text,fontFamily:"Inter, sans-serif",animations:{enabled:false}},
     series:[{name:"Muatan SE2026",data:chartRows.map(r=>r.target)},{name:"Assignment PES 2026",data:chartRows.map(r=>r.actual)}],
     colors:[colors.target,colors.actual],
     plotOptions:{bar:{horizontal:true,barHeight:"62%",borderRadius:3}},
@@ -131,6 +121,36 @@ async function refreshSe2026WorkloadComparison(){
   try{await loadSe2026WorkloadTargets();renderSe2026WorkloadComparison();}
   catch(err){console.error("[SE2026 workload]",err);const info=document.getElementById("se2026WorkloadMatchInfo");if(info)info.textContent="Gagal memuat data muatan petugas: "+err.message;}
 }
+function exportSe2026WorkloadExcel() {
+  if (!se2026WorkloadRows.length) {
+    alert("Data perbandingan belum tersedia untuk diekspor.");
+    return;
+  }
+  if (!window.XLSX) {
+    alert("Library Excel belum tersedia. Silakan muat ulang halaman.");
+    return;
+  }
+  const exportRows = se2026WorkloadRows.map(row => ({
+    "Petugas": row.name,
+    "Muatan SE2026": row.target,
+    "Assignment PES 2026": row.actual,
+    "Selisih": row.gap,
+    "Pencapaian (%)": Number(row.achievement.toFixed(1))
+  }));
+  const worksheet = XLSX.utils.json_to_sheet(exportRows);
+  worksheet["!cols"] = [{wch:30},{wch:18},{wch:22},{wch:14},{wch:18}];
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Perbandingan Petugas");
+  const now = new Date();
+  const pad = value => String(value).padStart(2, "0");
+  const filename = `perbandingan_assignment_ppl_pcl_${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}.xlsx`;
+  XLSX.writeFile(workbook, filename);
+}
+window.exportSe2026WorkloadExcel = exportSe2026WorkloadExcel;
 window.renderSe2026WorkloadComparison=renderSe2026WorkloadComparison;
 window.refreshSe2026WorkloadComparison=refreshSe2026WorkloadComparison;
-document.addEventListener("DOMContentLoaded",()=>{refreshSe2026WorkloadComparison();});
+document.addEventListener("DOMContentLoaded",()=>{
+  const exportButton = document.getElementById("btnExportSe2026Workload");
+  if (exportButton) exportButton.addEventListener("click", exportSe2026WorkloadExcel);
+  refreshSe2026WorkloadComparison();
+});

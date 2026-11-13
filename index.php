@@ -268,6 +268,39 @@
         /* Workload comparison deliberately uses the shared Tabulator theme below,
            identical to Data Enumerator (#gridTable), including light/dark surfaces. */
 
+        /* Workload comparison: balanced two-panel layout with calmer dark surfaces. */
+        #se2026WorkloadSection .se2026-workload-table-wrap { width:100%; min-width:0; }
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator {
+            border:1px solid var(--border) !important;
+            border-radius:8px !important;
+            background:#172033 !important;
+            color:#e5eaf3 !important;
+            font-size:12px;
+        }
+        [data-bs-theme="dark"] #se2026WorkloadSection #se2026WorkloadTable .tabulator-header,
+        [data-bs-theme="dark"] #se2026WorkloadSection #se2026WorkloadTable .tabulator-col {
+            background:#202c40 !important; color:#e8edf5 !important; border-color:#354258 !important;
+        }
+        [data-bs-theme="dark"] #se2026WorkloadSection #se2026WorkloadTable .tabulator-tableholder { background:#172033 !important; }
+        [data-bs-theme="dark"] #se2026WorkloadSection #se2026WorkloadTable .tabulator-row { background:#1b2638 !important; color:#e5eaf3 !important; border-color:#303d52 !important; }
+        [data-bs-theme="dark"] #se2026WorkloadSection #se2026WorkloadTable .tabulator-row-even { background:#202c40 !important; }
+        [data-bs-theme="dark"] #se2026WorkloadSection #se2026WorkloadTable .tabulator-row:hover { background:#29384f !important; }
+        [data-bs-theme="dark"] #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell { color:#e5eaf3 !important; border-color:#354258 !important; }
+        [data-bs-theme="dark"] #se2026WorkloadSection #se2026WorkloadTable .tabulator-footer,
+        [data-bs-theme="dark"] #se2026WorkloadSection #se2026WorkloadTable .tabulator-page,
+        [data-bs-theme="dark"] #se2026WorkloadSection #se2026WorkloadTable .tabulator-page-size { background:#172033 !important; color:#dbe4f0 !important; border-color:#354258 !important; }
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator-row { min-height:34px; }
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell { padding:7px 8px; }
+        @media (max-width:1199.98px) {
+            #se2026WorkloadSection #se2026WorkloadChart { min-height:480px !important; }
+        }
+        @media (max-width:767.98px) {
+            #se2026WorkloadSection #se2026WorkloadChart { min-height:560px !important; }
+            #se2026WorkloadSection #se2026WorkloadTable .tabulator { min-width:0 !important; font-size:11px !important; }
+            #se2026WorkloadSection #se2026WorkloadTable .tabulator .tabulator-header .tabulator-col { min-width:0 !important; }
+            #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell { padding:6px 5px !important; font-size:11px !important; }
+        }
+
         .performer-list .border-bottom {
             transition: background-color .2s ease, padding-left .2s ease;
             border-radius: 8px;
@@ -1536,17 +1569,23 @@
         </div>
 
         <section id="se2026WorkloadSection" class="chart-card mt-4 mb-4">
-            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-2">
-                <div>
-                    <div class="chart-title mb-1"><i class="bi bi-bullseye text-primary"></i> Perbandingan Assignment per Petugas PPL/PCL</div>
-                    <div class="small text-secondary">Perbandingan muatan dan jumlah assignment aktual untuk setiap petugas PPL/PCL. Assignment aktual mencakup seluruh status, termasuk OPEN.</div>
-                </div>
-                <span class="badge bg-primary-subtle text-primary border">Pencacah / PPL-PCL</span>
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+                <div class="chart-title mb-0"><i class="bi bi-bullseye text-primary"></i> Perbandingan Assignment per Petugas PPL/PCL</div>
+                <button type="button" class="btn btn-success btn-sm" id="btnExportSe2026Workload"><i class="bi bi-file-earmark-excel me-1"></i> Export Excel</button>
             </div>
-            <div class="small text-secondary mb-2" id="se2026WorkloadMatchInfo">Memuat data perbandingan...</div>
-            <div id="se2026WorkloadChart" style="min-height:420px;width:100%;"></div>
-            <div class="mt-3">
-                <div class="se2026-workload-table-wrap"><div id="se2026WorkloadTable"></div></div>
+            <div class="row g-3 align-items-stretch">
+                <div class="col-12 col-xl-6">
+                    <div class="h-100 p-2 rounded-3" style="background:var(--card-solid);border:1px solid var(--border);">
+                        <div class="small fw-semibold mb-2 text-secondary">Grafik Muatan dan Assignment</div>
+                        <div id="se2026WorkloadChart" style="min-height:520px;width:100%;"></div>
+                    </div>
+                </div>
+                <div class="col-12 col-xl-6">
+                    <div class="h-100 p-2 rounded-3" style="background:var(--card-solid);border:1px solid var(--border);">
+                        <div class="small fw-semibold mb-2 text-secondary">Rincian per Petugas</div>
+                        <div class="se2026-workload-table-wrap"><div id="se2026WorkloadTable"></div></div>
+                    </div>
+                </div>
             </div>
         </section>
 
