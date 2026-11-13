@@ -1478,14 +1478,53 @@
             .chart-title { font-size: 13px; }
         }
     
-        #deploymentOfficerTable { min-width:1500px; }
-        #deploymentOfficerTable .tabulator { background:var(--card-solid); color:var(--bs-body-color); border-color:var(--border); }
-        #deploymentOfficerTable .tabulator-header, #deploymentOfficerTable .tabulator-col { background:var(--card-solid); color:var(--bs-body-color); border-color:var(--border); }
+        /* Deployment upload: compact, balanced dashboard form */
+        .deployment-upload-card { background:var(--card-solid); border:1px solid var(--border); border-radius:14px; padding:18px; box-shadow:0 3px 14px rgba(15,23,42,.045); }
+        .deployment-upload-heading { display:flex; align-items:flex-start; justify-content:space-between; gap:14px; margin-bottom:15px; }
+        .deployment-required { flex:0 0 auto; border:1px solid rgba(59,130,246,.22); background:rgba(59,130,246,.09); color:#3b82f6; border-radius:999px; padding:5px 10px; font-size:11px; font-weight:700; }
+        .deployment-file-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+        .deployment-file-item { min-width:0; padding:12px; border:1px solid var(--border); border-radius:11px; background:rgba(127,127,127,.035); }
+        .deployment-file-item.family { border-top:3px solid #3b82f6; }
+        .deployment-file-item.family-business { border-top:3px solid #0d9488; }
+        .deployment-file-item.bku { border-top:3px solid #d97706; }
+        .deployment-file-label { display:flex; align-items:center; gap:9px; margin-bottom:10px; min-width:0; }
+        .deployment-file-label > span:nth-child(2) { display:flex; flex-direction:column; min-width:0; line-height:1.3; }
+        .deployment-file-label strong { font-size:12px; }
+        .deployment-file-label small { color:var(--bs-secondary-color); font-size:10px; }
+        .deployment-file-icon { width:30px; height:30px; display:grid; place-items:center; border-radius:9px; background:rgba(127,127,127,.12); font-size:14px; }
+        .deployment-step { margin-left:auto; color:var(--bs-secondary-color); font-size:10px; font-weight:700; }
+        .deployment-file-item input { width:100%; min-width:0; font-size:11px; }
+        .deployment-upload-footer { display:grid; grid-template-columns:minmax(190px,1fr) auto minmax(190px,1fr); gap:12px; align-items:end; margin-top:14px; }
+        .deployment-upload-button { min-height:34px; white-space:nowrap; padding-inline:16px; }
+        .deployment-upload-message { margin-top:12px; padding:8px 10px; border-radius:8px; background:rgba(127,127,127,.07); font-size:11px; }
+        #deploymentOfficerTable { min-width:0; width:100%; }
+        #deploymentOfficerTable .tabulator { width:100%; background:var(--card-solid); color:var(--bs-body-color); border:1px solid var(--border); border-radius:10px; font-size:11px; }
+        #deploymentOfficerTable .tabulator-tableholder { overflow-x:auto; }
+        #deploymentOfficerTable .tabulator-header { background:var(--card-solid); color:var(--bs-body-color); border-color:var(--border); }
+        #deploymentOfficerTable .tabulator-col { background:var(--card-solid); border-color:var(--border); }
+        #deploymentOfficerTable .tabulator-col-title { white-space:normal !important; overflow-wrap:anywhere; word-break:normal; line-height:1.25; text-align:center; }
+        #deploymentOfficerTable .tabulator-header .tabulator-col:not(.tabulator-col-group) .tabulator-col-content { min-height:88px; display:flex; align-items:center; justify-content:center; padding:7px 5px; }
+        #deploymentOfficerTable .tabulator-col-group .tabulator-col-content { min-height:34px; }
+        #deploymentOfficerTable .tabulator-col-group .tabulator-col-title { font-size:11px; font-weight:800; letter-spacing:.01em; }
+        #deploymentOfficerTable .deployment-col-keluarga { background:rgba(59,130,246,.075) !important; }
+        #deploymentOfficerTable .deployment-col-usaha_keluarga { background:rgba(13,148,136,.075) !important; }
+        #deploymentOfficerTable .deployment-col-usaha_bku { background:rgba(217,119,6,.085) !important; }
+        #deploymentOfficerTable .deployment-group-keluarga { border-top:3px solid #3b82f6; }
+        #deploymentOfficerTable .deployment-group-usaha_keluarga { border-top:3px solid #0d9488; }
+        #deploymentOfficerTable .deployment-group-usaha_bku { border-top:3px solid #d97706; }
         #deploymentOfficerTable .tabulator-row { background:var(--card-solid); color:var(--bs-body-color); border-color:var(--border); }
         #deploymentOfficerTable .tabulator-row:nth-child(even) { background:rgba(127,127,127,.07); }
-        #deploymentOfficerTable .tabulator-cell { border-color:var(--border); }
+        #deploymentOfficerTable .tabulator-cell { border-color:var(--border); padding:7px 8px; }
+        #deploymentOfficerTable .tabulator-col[tabulator-field^="keluarga_"] { background:rgba(59,130,246,.075); }
+        #deploymentOfficerTable .tabulator-col[tabulator-field^="usaha_keluarga_"] { background:rgba(13,148,136,.075); }
+        #deploymentOfficerTable .tabulator-col[tabulator-field^="usaha_bku_"] { background:rgba(217,119,6,.085); }
+        #deploymentOfficerTable .tabulator-col-group:nth-of-type(1) { border-top:3px solid #3b82f6; }
+        #deploymentOfficerTable .tabulator-col-group:nth-of-type(2) { border-top:3px solid #0d9488; }
+        #deploymentOfficerTable .tabulator-col-group:nth-of-type(3) { border-top:3px solid #d97706; }
         [data-bs-theme="light"] #deploymentOfficerTable .tabulator-row { background:#fff; color:#1f2937; }
         [data-bs-theme="light"] #deploymentOfficerTable .tabulator-row:nth-child(even) { background:#f8fafc; }
+        @media (max-width: 900px) { .deployment-upload-footer { grid-template-columns:1fr 1fr; } .deployment-upload-button { grid-column:1/-1; grid-row:2; } }
+        @media (max-width: 650px) { .deployment-upload-card { padding:13px; } .deployment-file-grid { grid-template-columns:1fr; gap:8px; } .deployment-file-item { padding:10px; } .deployment-file-label { margin-bottom:7px; } .deployment-upload-footer { grid-template-columns:1fr; } .deployment-upload-button { grid-column:auto; grid-row:auto; width:100%; } .deployment-upload-heading { align-items:flex-start; } }
 </style>
 
 </head>
@@ -1936,20 +1975,22 @@
                 </div>
                 <button class="btn btn-success btn-sm" id="btnExportDeploymentOfficer"><i class="bi bi-file-earmark-excel me-1"></i>Export Excel</button>
             </div>
-            <div class="chart-card mb-3">
-                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-                    <div><div class="chart-title mb-1">Upload Data Deployment Harian</div><div class="small text-secondary">Pilih ketiga file Excel untuk tanggal yang sama. Snapshot tanggal sebelumnya tetap tersimpan.</div></div>
-                    <span class="badge bg-primary-subtle text-primary">3 file wajib</span>
+            <div class="deployment-upload-card mb-3">
+                <div class="deployment-upload-heading">
+                    <div><div class="chart-title mb-1">Upload Data Deployment Harian</div><div class="small text-secondary">Unggah tiga sumber Excel untuk tanggal yang sama. Setiap unggahan disimpan sebagai snapshot tersendiri.</div></div>
+                    <span class="deployment-required"><i class="bi bi-files me-1"></i>3 file wajib</span>
                 </div>
-                <div class="row g-3 align-items-end">
-                    <div class="col-12 col-md-4"><label class="form-label small fw-semibold" for="deploymentFileKeluarga">1. Keluarga</label><input class="form-control form-control-sm" type="file" id="deploymentFileKeluarga" accept=".xlsx,.xls"></div>
-                    <div class="col-12 col-md-4"><label class="form-label small fw-semibold" for="deploymentFileUsahaKeluarga">2. Usaha Keluarga</label><input class="form-control form-control-sm" type="file" id="deploymentFileUsahaKeluarga" accept=".xlsx,.xls"></div>
-                    <div class="col-12 col-md-4"><label class="form-label small fw-semibold" for="deploymentFileUsahaBku">3. Usaha BKU</label><input class="form-control form-control-sm" type="file" id="deploymentFileUsahaBku" accept=".xlsx,.xls"></div>
-                    <div class="col-12 col-md-5"><label class="form-label small fw-semibold" for="deploymentUploadPassword">Password upload</label><input class="form-control form-control-sm" type="password" id="deploymentUploadPassword" autocomplete="current-password" placeholder="Masukkan password upload"></div>
-                    <div class="col-12 col-md-3"><button class="btn btn-primary btn-sm w-100" id="btnUploadDeployment"><i class="bi bi-cloud-arrow-up me-1"></i>Upload & Simpan Snapshot</button></div>
-                    <div class="col-12 col-md-4"><label class="form-label small fw-semibold" for="deploymentHistorySelect">Riwayat snapshot</label><select class="form-select form-select-sm" id="deploymentHistorySelect"><option value="">Memuat riwayat...</option></select></div>
+                <div class="deployment-file-grid">
+                    <div class="deployment-file-item family"><div class="deployment-file-label"><span class="deployment-file-icon"><i class="bi bi-people-fill"></i></span><span><strong>Keluarga</strong><small>Data keberadaan keluarga</small></span><span class="deployment-step">01</span></div><input class="form-control form-control-sm" type="file" id="deploymentFileKeluarga" accept=".xlsx,.xls"></div>
+                    <div class="deployment-file-item family-business"><div class="deployment-file-label"><span class="deployment-file-icon"><i class="bi bi-house-check-fill"></i></span><span><strong>Usaha Keluarga</strong><small>Bangunan usaha/lainnya</small></span><span class="deployment-step">02</span></div><input class="form-control form-control-sm" type="file" id="deploymentFileUsahaKeluarga" accept=".xlsx,.xls"></div>
+                    <div class="deployment-file-item bku"><div class="deployment-file-label"><span class="deployment-file-icon"><i class="bi bi-shop"></i></span><span><strong>Usaha BKU</strong><small>Data keberadaan usaha</small></span><span class="deployment-step">03</span></div><input class="form-control form-control-sm" type="file" id="deploymentFileUsahaBku" accept=".xlsx,.xls"></div>
                 </div>
-                <div id="deploymentUploadMessage" class="small mt-3" role="status">Belum ada upload pada sesi ini.</div>
+                <div class="deployment-upload-footer">
+                    <div class="deployment-password"><label class="form-label small fw-semibold mb-1" for="deploymentUploadPassword">Password upload</label><input class="form-control form-control-sm" type="password" id="deploymentUploadPassword" autocomplete="current-password" placeholder="Masukkan password upload"></div>
+                    <button class="btn btn-primary btn-sm deployment-upload-button" id="btnUploadDeployment"><i class="bi bi-cloud-arrow-up me-1"></i>Upload & Simpan Snapshot</button>
+                    <div class="deployment-history"><label class="form-label small fw-semibold mb-1" for="deploymentHistorySelect">Riwayat snapshot</label><select class="form-select form-select-sm" id="deploymentHistorySelect"><option value="">Memuat riwayat...</option></select></div>
+                </div>
+                <div id="deploymentUploadMessage" class="deployment-upload-message" role="status">Belum ada upload pada sesi ini.</div>
             </div>
             <div class="row g-3 mb-3" id="deploymentSummaryCards">
                 <div class="col-12 col-md-4"><div class="kpi-card"><div class="kpi-title">Sub-SLS cocok</div><div class="kpi-value" id="deploymentMatchedSsls">-</div></div></div>
