@@ -10,6 +10,9 @@ let se2026WorkloadTabulator = null;
 let se2026WorkloadRows = [];
 let se2026RealizationByName = new Map();
 let se2026RealizationSourceDate = null;
+let se2026RealizationSnapshot = null;
+let se2026SnapshotHistory = [];
+let se2026SelectedSnapshotDate = null;
 
 function se2026NormalizeName(value) {
   return String(value || "")
@@ -59,14 +62,48 @@ function se2026ThemeColors() {
     target: "#3b82f6", actual: "#16a34a"
   };
 }
-async function loadSe2026PesRealization() {
+async function loadSe2026SnapshotHistory(preferredDate = null) {
+  const response = await fetch(`api/deployment.php?action=list&_ts=${Date.now()}`, { cache: "no-store" });
+  if (!response.ok) throw new Error("Gagal memuat riwayat snapshot Deployment SE2026.");
+  const payload = await response.json();
+  if (payload.status === "error") throw new Error(payload.message || "Gagal memuat riwayat snapshot.");
+  se2026SnapshotHistory = Array.isArray(payload.items) ? payload.items : [];
+  const select = document.getElementById("se2026WorkloadHistorySelect");
+  if (select) {
+    select.innerHTML = "";
+    if (!se2026SnapshotHistory.length) {
+      select.add(new Option("Belum ada riwayat snapshot", ""));
+      select.disabled = true;
+    } else {
+      select.disabled = false;
+      se2026SnapshotHistory.forEach(item => {
+        const date = String(item.date || "");
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return;
+        const [year, month, day] = date.split("-");
+        select.add(new Option(`${day}/${month}/${year}`, date));
+      });
+      const selected = se2026SnapshotHistory.some(item => item.date === preferredDate)
+        ? preferredDate
+        : (se2026SnapshotHistory[0]?.date || "");
+      select.value = selected;
+    }
+  }
+  se2026SelectedSnapshotDate = select?.value || preferredDate || se2026SnapshotHistory[0]?.date || null;
+  return se2026SelectedSnapshotDate;
+}
+
+async function loadSe2026PesRealization(date = null) {
+  const snapshotUrl = date
+    ? `api/deployment.php?action=get&date=${encodeURIComponent(date)}&_ts=${Date.now()}`
+    : `api/deployment.php?action=latest&_ts=${Date.now()}`;
   const [snapshotResponse, officersResponse] = await Promise.all([
-    fetch(`api/deployment.php?action=latest&_ts=${Date.now()}`, { cache: "no-store" }),
+    fetch(snapshotUrl, { cache: "no-store" }),
     fetch(`api/history.php?action=latest&role=pencacah&_ts=${Date.now()}`, { cache: "no-store" })
   ]);
   if (!snapshotResponse.ok) throw new Error("Snapshot Deployment SE2026 belum tersedia. Upload tiga file Excel terlebih dahulu.");
   if (!officersResponse.ok) throw new Error("Data PPL/PCL FASIH tidak dapat dimuat untuk menghitung realisasi.");
   const [snapshot, officerPayload] = await Promise.all([snapshotResponse.json(), officersResponse.json()]);
+  if (snapshot.status === "error") throw new Error(snapshot.message || "Snapshot Deployment gagal dibaca.");
   const officers = Array.isArray(officerPayload.data) ? officerPayload.data : [];
   const ssls = snapshot.ssls || {};
   const foundNewStatuses = ["1. Ditemukan", "2. Baru"];
@@ -86,8 +123,29 @@ async function loadSe2026PesRealization() {
     result.set(key, (result.get(key) || 0) + total);
   });
   se2026RealizationByName = result;
-  se2026RealizationSourceDate = snapshot.importDate || null;
+  se2026RealizationSnapshot = snapshot;
+  se2026RealizationSourceDate = snapshot.importDate || date || null;
+  se2026SelectedSnapshotDate = se2026RealizationSourceDate;
 }
+
+function updateSe2026SnapshotInfo() {
+  const info = document.getElementById("se2026WorkloadMatchInfo");
+  if (!info) return;
+  if (!se2026RealizationSnapshot) { info.textContent = "Sumber realisasi belum tersedia."; return; }
+  const snapshot = se2026RealizationSnapshot;
+  const categories = [
+    ["keluarga", "Keluarga"],
+    ["usaha_keluarga", "Usaha Keluarga"],
+    ["usaha_bku", "Usaha BKU"]
+  ];
+  const sourceNames = categories.map(([key, label]) => {
+    const filename = snapshot.sources?.[key]?.filename;
+    return `${label}: ${filename || "nama file tidak tersedia"}`;
+  });
+  const uploadedAt = snapshot.uploadedAt ? new Date(snapshot.uploadedAt).toLocaleString("id-ID", { dateStyle: "medium", timeStyle: "short" }) : "waktu upload tidak tersedia";
+  info.innerHTML = `<div class="d-flex flex-column gap-1"><div><strong>Snapshot ${se2026Escape(snapshot.importDate || "-")}</strong> · Diunggah: ${se2026Escape(uploadedAt)}</div><div class="text-secondary">Sumber realisasi hanya status Ditemukan + Baru dari tiga file:</div><div class="d-flex flex-wrap gap-2">${sourceNames.map(name => `<span class="badge text-bg-light border">${se2026Escape(name)}</span>`).join("")}</div></div>`;
+}
+
 
 function renderSe2026WorkloadComparison() {
   const section = document.getElementById("se2026WorkloadSection");
@@ -202,16 +260,24 @@ function renderSe2026WorkloadComparison() {
   se2026WorkloadChart.render();
 }
 function thirtyFive(){return window.matchMedia("(max-width: 768px)").matches?38:30;}
-async function refreshSe2026WorkloadComparison(){
+async function refreshSe2026WorkloadComparison(date = null){
+  const select = document.getElementById("se2026WorkloadHistorySelect");
+  const requestedDate = date || select?.value || null;
   try{
     await loadSe2026WorkloadTargets();
-    await loadSe2026PesRealization();
+    const selectedDate = await loadSe2026SnapshotHistory(requestedDate);
+    await loadSe2026PesRealization(selectedDate);
+    if (select && selectedDate) select.value = selectedDate;
     renderSe2026WorkloadComparison();
-    const info=document.getElementById("se2026WorkloadMatchInfo");
-    if(info)info.textContent=se2026RealizationSourceDate?`Realisasi dihitung dari status Ditemukan + Baru pada tiga file Deployment (snapshot ${se2026RealizationSourceDate}).`:"Sumber realisasi belum tersedia.";
+    updateSe2026SnapshotInfo();
   }
-  catch(err){console.error("[SE2026 workload]",err);const info=document.getElementById("se2026WorkloadMatchInfo");if(info)info.textContent="Gagal memuat realisasi PES SE2026: "+err.message;}
+  catch(err){
+    console.error("[SE2026 workload]",err);
+    const info=document.getElementById("se2026WorkloadMatchInfo");
+    if(info)info.textContent="Gagal memuat realisasi PES SE2026: "+err.message;
+  }
 }
+
 function exportSe2026WorkloadExcel() {
   if (!se2026WorkloadRows.length) {
     alert("Data perbandingan belum tersedia untuk diekspor.");
@@ -239,7 +305,8 @@ function exportSe2026WorkloadExcel() {
   XLSX.utils.book_append_sheet(workbook, worksheet, "Perbandingan Petugas");
   const now = new Date();
   const pad = value => String(value).padStart(2, "0");
-  const filename = `target_realisasi_pes_se2026_ppl_pcl_${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}.xlsx`;
+  const exportDate = se2026RealizationSourceDate || `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}`;
+  const filename = `target_realisasi_pes_se2026_${exportDate.replace(/-/g, "")}.xlsx`;
   XLSX.writeFile(workbook, filename);
 }
 window.exportSe2026WorkloadExcel = exportSe2026WorkloadExcel;
@@ -250,6 +317,14 @@ document.addEventListener("DOMContentLoaded",()=>{
   if (exportButton && !exportButton.dataset.bound) {
     exportButton.addEventListener("click", exportSe2026WorkloadExcel);
     exportButton.dataset.bound = "1";
+  }
+  const historySelect = document.getElementById("se2026WorkloadHistorySelect");
+  if (historySelect && !historySelect.dataset.bound) {
+    historySelect.addEventListener("change", event => {
+      const selectedDate = event.target.value;
+      if (selectedDate) refreshSe2026WorkloadComparison(selectedDate);
+    });
+    historySelect.dataset.bound = "1";
   }
   refreshSe2026WorkloadComparison();
 });

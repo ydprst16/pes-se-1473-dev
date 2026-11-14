@@ -2005,7 +2005,13 @@
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
                 <div class="chart-title mb-0"><i class="bi bi-bullseye text-primary"></i> Perbandingan Muatan dan Realisasi PES SE2026</div>
             </div>
-            <div class="small text-secondary mb-2" id="se2026WorkloadMatchInfo">Mengambil data realisasi dari snapshot Deployment SE2026...</div>
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+                <div class="small text-secondary" id="se2026WorkloadMatchInfo">Mengambil data realisasi dari snapshot Deployment SE2026...</div>
+                <div class="d-flex align-items-center gap-2">
+                    <label for="se2026WorkloadHistorySelect" class="small text-secondary text-nowrap mb-0">Riwayat snapshot</label>
+                    <select class="form-select form-select-sm" id="se2026WorkloadHistorySelect" style="min-width:170px;max-width:220px" aria-label="Pilih riwayat snapshot Deployment"><option value="">Memuat riwayat...</option></select>
+                </div>
+            </div>
             <div class="d-flex flex-column gap-3">
                 <div class="p-2 rounded-3" style="background:var(--card-solid);border:1px solid var(--border);">
                     <div class="small fw-semibold mb-2 text-secondary">Grafik Muatan dan Realisasi</div>
