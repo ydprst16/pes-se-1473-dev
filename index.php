@@ -2742,6 +2742,87 @@
             color:#172033 !important;
         }
 
+
+
+        /* v76: fix real touch scrolling by using Tabulator's tableholder like Deployment SE2026. */
+        #targetRealizationModule,
+        #se2026WorkloadSection,
+        #se2026WorkloadSection .se2026-workload-table-wrap,
+        #se2026WorkloadSection .deployment-table-wrap,
+        #se2026WorkloadSection #se2026WorkloadTable {
+            min-width:0 !important;
+            max-width:100% !important;
+        }
+        #se2026WorkloadSection .se2026-workload-table-wrap,
+        #se2026WorkloadSection .deployment-table-wrap {
+            display:block !important;
+            width:100% !important;
+            overflow-x:auto !important;
+            overflow-y:hidden !important;
+            -webkit-overflow-scrolling:touch !important;
+            overscroll-behavior-x:contain !important;
+            touch-action:pan-x pan-y !important;
+        }
+        #se2026WorkloadSection #se2026WorkloadTable {
+            display:block !important;
+            width:100% !important;
+            min-width:100% !important;
+            overflow:visible !important;
+        }
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator {
+            width:100% !important;
+            min-width:1040px !important;
+            max-width:none !important;
+            overflow:hidden !important;
+            touch-action:pan-x pan-y !important;
+        }
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator-tableholder {
+            display:block !important;
+            width:100% !important;
+            max-width:100% !important;
+            overflow-x:auto !important;
+            overflow-y:auto !important;
+            -webkit-overflow-scrolling:touch !important;
+            overscroll-behavior-x:contain !important;
+            touch-action:pan-x pan-y !important;
+        }
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator-table {
+            min-width:1040px !important;
+            width:1040px !important;
+        }
+        @media(max-width:700px) {
+            #se2026WorkloadSection .se2026-workload-table-wrap,
+            #se2026WorkloadSection .deployment-table-wrap {
+                width:100% !important;
+                max-width:100% !important;
+                overflow-x:auto !important;
+                overflow-y:hidden !important;
+            }
+            #se2026WorkloadSection #se2026WorkloadTable,
+            #se2026WorkloadSection #se2026WorkloadTable .tabulator,
+            #se2026WorkloadSection #se2026WorkloadTable .tabulator-table,
+            #se2026WorkloadSection #se2026WorkloadTable .tabulator-tableholder {
+                min-width:1040px !important;
+            }
+            #se2026WorkloadSection #se2026WorkloadTable .tabulator-tableholder {
+                width:100% !important;
+                overflow-x:auto !important;
+                overflow-y:auto !important;
+            }
+        }
+
+        /* Daily target is a planning indicator: teal distinguishes it from achievement status colors. */
+        #se2026WorkloadSection #se2026WorkloadTable .se2026-daily-pill {
+            color:#5eead4 !important;
+            background:rgba(13,148,136,.16) !important;
+            border-color:rgba(45,212,191,.34) !important;
+        }
+        [data-bs-theme="light"] #se2026WorkloadSection #se2026WorkloadTable .se2026-daily-pill {
+            color:#0f766e !important;
+            background:#f0fdfa !important;
+            border-color:#99f6e4 !important;
+        }
+
 </style>
             <div class="row g-3 mb-4">
                 <div class="col-12 col-xl-4"><div class="bp-breakdown-card"><div class="bp-breakdown-head"><div class="bp-breakdown-icon"><i class="bi bi-people-fill"></i></div><div><div class="chart-title mb-0">Keberadaan Keluarga</div><div class="bp-breakdown-subtitle">Satu hitungan per UUID · <code>ada_keluarga_label</code></div></div></div><div id="businessFamilyChart" style="min-height:245px"></div><div class="table-responsive"><table class="table bp-breakdown-table"><thead><tr><th>Status</th><th class="text-end">Jumlah</th><th class="text-end">% Assignment</th></tr></thead><tbody id="businessFamilyRows"></tbody></table></div></div></div>
