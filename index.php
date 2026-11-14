@@ -1675,7 +1675,7 @@
         [data-bs-theme="light"] #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col.tabulator-frozen .tabulator-col-title{color:#0f172a!important}
         #se2026WorkloadSection #se2026WorkloadTable .tabulator-footer,#se2026WorkloadSection #se2026WorkloadTable .tabulator-paginator,#se2026WorkloadSection #se2026WorkloadTable .tabulator-page,#se2026WorkloadSection #se2026WorkloadTable .tabulator-page-size{background:var(--bs-tertiary-bg)!important;color:var(--bs-body-color)!important;border-color:var(--bs-border-color)!important}
         #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell[tabulator-field="name"],
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col[tabulator-field="name"]{max-width:190px!important}
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col[tabulator-field="name"]{max-width:220px!important}
         #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell[tabulator-field="name"]{white-space:normal!important;overflow-wrap:anywhere!important;line-height:1.3}
         @media(max-width:767.98px){
           #se2026WorkloadSection .se2026-workload-table-wrap{width:calc(100vw - 56px)!important;max-width:calc(100vw - 56px)!important}
