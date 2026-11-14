@@ -2176,24 +2176,19 @@
         [data-bs-theme="light"] #se2026WorkloadTable .tabulator-header .tabulator-col.tabulator-frozen{background:#dbeafe!important;color:#0f172a!important}
         @media(max-width:700px){.se2026-workload-table-wrap{width:100%;max-width:100%;overflow-x:auto!important;touch-action:pan-x pan-y}#se2026WorkloadTable .tabulator{width:100%!important;min-width:980px!important;font-size:11px!important}#se2026WorkloadTable .tabulator-tableholder{overflow-x:auto!important}#se2026WorkloadTable .tabulator-cell{padding:7px 8px!important;font-size:11px!important}}
 
-        /* v68: make the workload table scroll as a single wide surface on touch screens.
-           The wrapper, not Tabulator's inner holder, owns horizontal scrolling. */
-        #se2026WorkloadSection,
-        #se2026WorkloadSection .card,
-        #se2026WorkloadSection .card-body,
-        #se2026WorkloadSection .se2026-workload-table-wrap {
-            min-width:0 !important;
-            max-width:100% !important;
-        }
+        /* v72: keep Tabulator pagination inside the table and preserve a stable wide layout. */
         #se2026WorkloadSection .se2026-workload-table-wrap {
             display:block !important;
             width:100% !important;
+            max-width:100% !important;
+            min-width:0 !important;
             overflow-x:auto !important;
-            overflow-y:hidden !important;
-            -webkit-overflow-scrolling:touch !important;
+            overflow-y:visible !important;
+            -webkit-overflow-scrolling:touch;
             overscroll-behavior-x:contain;
             touch-action:pan-x pan-y;
             position:relative;
+            padding-bottom:8px;
         }
         #se2026WorkloadSection #se2026WorkloadTable {
             display:block !important;
@@ -2203,36 +2198,63 @@
             overflow:visible !important;
         }
         #se2026WorkloadSection #se2026WorkloadTable .tabulator {
-            display:inline-block !important;
-            vertical-align:top;
-            width:max-content !important;
-            min-width:1120px !important;
+            display:block !important;
+            width:100% !important;
+            min-width:1320px !important;
             max-width:none !important;
+            height:620px !important;
         }
         #se2026WorkloadSection #se2026WorkloadTable .tabulator-tableholder {
-            width:auto !important;
-            overflow:visible !important;
+            width:100% !important;
             max-width:none !important;
+            overflow:auto !important;
         }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-table {
-            width:max-content !important;
-            min-width:100% !important;
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator-footer {
+            display:flex !important;
+            align-items:center;
+            justify-content:space-between;
+            flex-wrap:wrap;
+            gap:6px;
+            min-height:44px;
+            height:auto !important;
+            overflow:visible !important;
+            position:relative !important;
+            clear:both;
+            padding:6px 10px;
+            z-index:2;
+        }
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator-paginator {
+            display:flex !important;
+            align-items:center;
+            justify-content:flex-end;
+            flex-wrap:wrap;
+            gap:4px;
+            max-width:100%;
+            overflow:visible !important;
+            white-space:normal !important;
+        }
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator-page {
+            flex:0 0 auto;
+            min-width:34px;
         }
         @media (max-width:767.98px) {
             #se2026WorkloadSection .se2026-workload-table-wrap {
-                width:calc(100vw - 56px) !important;
-                max-width:calc(100vw - 56px) !important;
-                margin-right:0 !important;
-                padding-bottom:6px;
+                width:100% !important;
+                max-width:100% !important;
+                overflow-x:auto !important;
+                overflow-y:visible !important;
             }
             #se2026WorkloadSection #se2026WorkloadTable .tabulator {
-                min-width:1120px !important;
+                width:1320px !important;
+                min-width:1320px !important;
                 font-size:11px !important;
+            }
+            #se2026WorkloadSection #se2026WorkloadTable .tabulator-tableholder {
+                overflow:visible !important;
             }
             #se2026WorkloadSection #se2026WorkloadTable .tabulator-col,
             #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell {
-                min-width:unset;
-                white-space:nowrap;
+                white-space:normal;
             }
         }
 </style>
