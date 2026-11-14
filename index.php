@@ -2026,7 +2026,7 @@
                         <input type="search" class="form-control form-control-sm deployment-table-search" id="se2026WorkloadSearch" placeholder="Cari nama petugas..." aria-label="Cari nama petugas">
                         <div class="small text-secondary" id="se2026WorkloadTableCount">-</div>
                     </div>
-                    <div class="se2026-workload-table-wrap"><div id="se2026WorkloadTable"></div></div>
+                    <div class="deployment-table-wrap se2026-workload-table-wrap"><div id="se2026WorkloadTable"></div></div>
                 </div>
             </div>
         </section>
@@ -2119,6 +2119,27 @@
         .schedule-progress-fill{height:100%;border-radius:99px;background:var(--sp-accent);transition:width .35s ease}
         .schedule-progress-foot{font-size:.76rem;color:var(--bs-secondary-color);margin-top:9px}
         @media(max-width:575.98px){.schedule-progress-alert{padding:13px 14px}.schedule-progress-head{align-items:flex-start;flex-direction:column;gap:8px}.schedule-progress-grid{gap:7px}.schedule-progress-value{font-size:1.12rem}.schedule-progress-label{font-size:.69rem}}
+
+        /* Shared Deployment-style table treatment for Target & Realisasi.
+           The outer wrapper owns horizontal touch scrolling on narrow screens. */
+        .se2026-workload-table-wrap{display:block;width:100%;max-width:100%;min-width:0;overflow-x:auto!important;overflow-y:hidden;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y;border-radius:10px}
+        #se2026WorkloadTable{display:block;width:100%;max-width:100%;min-width:0;overflow:visible}
+        #se2026WorkloadTable .tabulator{width:100%!important;min-width:100%!important;max-width:none!important;background:var(--bs-body-bg)!important;color:var(--bs-body-color)!important;border:1px solid var(--bs-border-color)!important;border-radius:10px!important;font-size:12px}
+        #se2026WorkloadTable .tabulator-header,#se2026WorkloadTable .tabulator-header .tabulator-col,#se2026WorkloadTable .tabulator-header .tabulator-col .tabulator-col-content{background:var(--bs-tertiary-bg)!important;color:var(--bs-body-color)!important;border-color:var(--bs-border-color)!important}
+        #se2026WorkloadTable .tabulator-col-title{white-space:normal!important;overflow-wrap:anywhere;line-height:1.25;text-align:center}
+        #se2026WorkloadTable .tabulator-header .tabulator-col .tabulator-col-content{min-height:76px;display:flex;align-items:center;justify-content:center;padding:7px 6px}
+        #se2026WorkloadTable .tabulator-tableholder{width:100%;background:var(--bs-body-bg)!important;overflow-x:auto!important;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch}
+        #se2026WorkloadTable .tabulator-row{min-height:36px;background:var(--bs-body-bg)!important;color:var(--bs-body-color)!important;border-color:var(--bs-border-color)!important}
+        #se2026WorkloadTable .tabulator-row:nth-child(even){background:var(--bs-secondary-bg)!important}
+        #se2026WorkloadTable .tabulator-row:hover{background:var(--bs-tertiary-bg)!important}
+        #se2026WorkloadTable .tabulator-cell{padding:7px 8px!important;background:transparent!important;color:var(--bs-body-color)!important;border-color:var(--bs-border-color)!important;line-height:1.35}
+        #se2026WorkloadTable .tabulator-cell.tabulator-frozen{z-index:12!important;background:#172033!important;color:#f8fafc!important;opacity:1!important;box-shadow:2px 0 5px rgba(0,0,0,.16)}
+        #se2026WorkloadTable .tabulator-header .tabulator-col.tabulator-frozen{z-index:14!important;background:#263449!important;color:#fff!important;opacity:1!important}
+        #se2026WorkloadTable .tabulator-footer,#se2026WorkloadTable .tabulator-paginator,#se2026WorkloadTable .tabulator-page,#se2026WorkloadTable .tabulator-page-size{background:var(--bs-tertiary-bg)!important;color:var(--bs-body-color)!important;border-color:var(--bs-border-color)!important}
+        [data-bs-theme="light"] #se2026WorkloadTable .tabulator-cell.tabulator-frozen{background:#f1f5f9!important;color:#0f172a!important}
+        [data-bs-theme="light"] #se2026WorkloadTable .tabulator-row:nth-child(even) .tabulator-cell.tabulator-frozen{background:#e2eaf4!important;color:#0f172a!important}
+        [data-bs-theme="light"] #se2026WorkloadTable .tabulator-header .tabulator-col.tabulator-frozen{background:#dbeafe!important;color:#0f172a!important}
+        @media(max-width:700px){.se2026-workload-table-wrap{width:100%;max-width:100%;overflow-x:auto!important;touch-action:pan-x pan-y}#se2026WorkloadTable .tabulator{width:100%!important;min-width:980px!important;font-size:11px!important}#se2026WorkloadTable .tabulator-tableholder{overflow-x:auto!important}#se2026WorkloadTable .tabulator-cell{padding:7px 8px!important;font-size:11px!important}}
 </style>
             <div class="row g-3 mb-4">
                 <div class="col-12 col-xl-4"><div class="bp-breakdown-card"><div class="bp-breakdown-head"><div class="bp-breakdown-icon"><i class="bi bi-people-fill"></i></div><div><div class="chart-title mb-0">Keberadaan Keluarga</div><div class="bp-breakdown-subtitle">Satu hitungan per UUID · <code>ada_keluarga_label</code></div></div></div><div id="businessFamilyChart" style="min-height:245px"></div><div class="table-responsive"><table class="table bp-breakdown-table"><thead><tr><th>Status</th><th class="text-end">Jumlah</th><th class="text-end">% Assignment</th></tr></thead><tbody id="businessFamilyRows"></tbody></table></div></div></div>
