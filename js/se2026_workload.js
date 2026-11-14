@@ -26,10 +26,10 @@ function se2026RemainingDays(now = new Date()) {
   const deadline = new Date(2026, 10, 30);
   return Math.max(0, Math.ceil((deadline - today) / 86400000));
 }
-function se2026DailyTarget(target, actual, remainingDays = se2026RemainingDays()) {
+function se2026DailyTarget(gap, remainingDays = se2026RemainingDays()) {
   if (remainingDays <= 0) return null;
-  const remainingWork = Math.max(0, (Number(target) || 0) - (Number(actual) || 0));
-  return Math.ceil(remainingWork / remainingDays);
+  // Gap = realisasi - muatan. Only a negative gap represents remaining workload.
+  return Math.ceil(Math.max(0, -(Number(gap) || 0)) / remainingDays);
 }
 function se2026DisplayName(value) {
   return String(value || "").toLocaleLowerCase("id-ID").replace(/(^|\s)(\p{L})/gu, (_, space, letter) => space + letter.toLocaleUpperCase("id-ID"));
@@ -118,8 +118,8 @@ function renderSe2026WorkloadComparison() {
     const assignment = actualByName.get(key) || 0;
     const realization = se2026RealizationByName.get(key) || 0;
     const target = Number(officer.target) || 0;
-    const gap = target - realization;
-    const dailyTarget = se2026DailyTarget(target, realization, remainingDays);
+    const gap = realization - target;
+    const dailyTarget = se2026DailyTarget(gap, remainingDays);
     return { name: se2026DisplayName(officer.name), target, assignment, realization, actual: realization, gap, dailyTarget, remainingDays, achievement: target > 0 ? realization / target * 100 : 0, matched: actualByName.has(key), realizationMatched: se2026RealizationByName.has(key) };
   }).sort((a,b) => b.gap - a.gap || a.achievement - b.achievement || a.name.localeCompare(b.name, "id"));
 
@@ -133,29 +133,30 @@ function renderSe2026WorkloadComparison() {
       data: rows,
       layout: "fitColumns",
       responsiveLayout: false,
-      height: "650px",
+      height: "620px",
+      headerWordWrap: true,
       movableColumns: true,
       resizableColumns: true,
       pagination: true,
       paginationSize: 15,
-      initialSort: [{ column: "gap", dir: "desc" }, { column: "achievement", dir: "asc" }],
+      initialSort: [{ column: "gap", dir: "asc" }, { column: "achievement", dir: "asc" }],
       sortMode: "local",
       paginationSizeSelector: [15, 25, 50],
       placeholder: "Tidak ada data perbandingan",
       columns: [
-        { title: "Petugas", field: "name", minWidth: 145, widthGrow: 2, headerFilter: "input" },
+        { title: "Nama Petugas", field: "name", frozen: true, minWidth: 190, width: 250, widthGrow: 2, headerFilter: "input", variableHeight: true, formatter: "textarea" },
         { title: "Muatan SE2026", field: "target", hozAlign: "right", headerHozAlign: "center", minWidth: 105, widthGrow: 1, formatter: cell => se2026Number(cell.getValue()) },
         { title: "Assignment PES 2026", field: "assignment", hozAlign: "right", headerHozAlign: "center", minWidth: 125, widthGrow: 1, formatter: cell => se2026Number(cell.getValue()) },
         { title: "Realisasi PES SE2026", field: "realization", hozAlign: "right", headerHozAlign: "center", minWidth: 135, widthGrow: 1, formatter: cell => se2026Number(cell.getValue()) },
-        { title: "Selisih", field: "gap", sorter: "number", hozAlign: "right", headerHozAlign: "center", minWidth: 90, widthGrow: 1, formatter: cell => { const v=Number(cell.getValue())||0; const color=v>0?"text-warning":v<0?"text-success":"text-secondary"; return `<span class="fw-semibold ${color}">${v>0?"+":""}${se2026Number(v)}</span>`; } },
+        { title: "Selisih (Realisasi − Muatan)", field: "gap", sorter: "number", hozAlign: "right", headerHozAlign: "center", minWidth: 155, widthGrow: 1, formatter: cell => { const v=Number(cell.getValue())||0; const color=v<0?"text-danger":v>0?"text-success":"text-secondary"; return `<span class="fw-semibold ${color}">${v>0?"+":""}${se2026Number(v)}</span>`; } },
         { title: "Target Pendataan Harian", field: "dailyTarget", hozAlign: "right", headerHozAlign: "center", minWidth: 145, widthGrow: 1, formatter: cell => cell.getValue() == null ? "—" : `<span class="se2026-daily-pill">${se2026Number(cell.getValue())}</span>` },
         { title: "Pencapaian", field: "achievement", sorter: "number", hozAlign: "right", headerHozAlign: "center", minWidth: 100, widthGrow: 1, formatter: cell => { const v=Number(cell.getValue())||0; const level=v>=100?"complete":v>=50?"progress":"low"; return `<span class="se2026-achievement-pill se2026-achievement-${level}">${v.toFixed(1).replace(".",",")}%</span>`; } },
       ],
       tableBuilt: function () {
         // Force numeric priority order after Tabulator has initialized.
-        // Highest remaining workload first; for ties, lowest achievement first.
+        // Largest deficit (most negative gap) first; for ties, lowest achievement first.
         this.setSort([
-          { column: "gap", dir: "desc" },
+          { column: "gap", dir: "asc" },
           { column: "achievement", dir: "asc" },
           { column: "name", dir: "asc" }
         ]);
@@ -204,13 +205,13 @@ function exportSe2026WorkloadExcel() {
     return;
   }
   const exportRows = [...se2026WorkloadRows]
-    .sort((a, b) => b.gap - a.gap || a.achievement - b.achievement || a.name.localeCompare(b.name, "id"))
+    .sort((a, b) => a.gap - b.gap || a.achievement - b.achievement || a.name.localeCompare(b.name, "id"))
     .map(row => ({
     "Petugas": row.name,
     "Muatan SE2026": row.target,
     "Assignment PES 2026": row.assignment,
     "Realisasi PES SE2026": row.realization,
-    "Selisih (Muatan - Realisasi)": row.gap,
+    "Selisih (Realisasi - Muatan)": row.gap,
     "Target Pendataan Harian": row.dailyTarget,
     "Sisa Hari Pendataan": row.remainingDays,
     "Pencapaian (%)": Number(row.achievement.toFixed(1))

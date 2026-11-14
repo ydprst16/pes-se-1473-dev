@@ -301,6 +301,25 @@
             #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell { padding:6px 5px !important; font-size:11px !important; }
         }
 
+        /* Target & Realisasi table follows the Deployment SE2026 table proportions and surfaces. */
+        #se2026WorkloadTable { width:100%; min-width:0; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+        #se2026WorkloadTable .tabulator { width:max-content; min-width:100%; border:1px solid var(--border)!important; border-radius:10px!important; overflow:hidden; background:var(--card-solid)!important; color:var(--bs-body-color)!important; font-size:12px; }
+        #se2026WorkloadTable .tabulator-tableholder { overflow-x:auto!important; overscroll-behavior-x:contain; background:var(--card-solid)!important; }
+        #se2026WorkloadTable .tabulator-header, #se2026WorkloadTable .tabulator-col { background:var(--card-solid)!important; color:var(--bs-body-color)!important; border-color:var(--border)!important; }
+        #se2026WorkloadTable .tabulator-col-title { white-space:normal!important; overflow-wrap:anywhere; line-height:1.25; text-align:center; }
+        #se2026WorkloadTable .tabulator-header .tabulator-col .tabulator-col-content { min-height:62px; display:flex; align-items:center; justify-content:center; padding:7px 6px; }
+        #se2026WorkloadTable .tabulator-row { min-height:38px; background:var(--card-solid)!important; color:var(--bs-body-color)!important; border-color:var(--border)!important; }
+        #se2026WorkloadTable .tabulator-row:nth-child(even) { background:rgba(127,127,127,.07)!important; }
+        #se2026WorkloadTable .tabulator-cell { padding:8px 9px!important; border-color:var(--border)!important; background:transparent!important; color:var(--bs-body-color)!important; }
+        #se2026WorkloadTable .tabulator-cell.tabulator-frozen { z-index:12!important; background:#243247!important; color:#f8fafc!important; box-shadow:2px 0 5px rgba(0,0,0,.16); }
+        #se2026WorkloadTable .tabulator-header .tabulator-col.tabulator-frozen { z-index:14!important; background:#263449!important; color:#fff!important; }
+        [data-bs-theme="light"] #se2026WorkloadTable .tabulator-row { background:#fff!important; color:#1f2937!important; }
+        [data-bs-theme="light"] #se2026WorkloadTable .tabulator-row:nth-child(even) { background:#f8fafc!important; }
+        [data-bs-theme="light"] #se2026WorkloadTable .tabulator-cell.tabulator-frozen { background:#e8eef7!important; color:#0f172a!important; }
+        [data-bs-theme="light"] #se2026WorkloadTable .tabulator-header .tabulator-col.tabulator-frozen { background:#d7e2f0!important; color:#0f172a!important; }
+        #se2026WorkloadTable .tabulator-footer, #se2026WorkloadTable .tabulator-page, #se2026WorkloadTable .tabulator-page-size { background:var(--card-solid)!important; color:var(--bs-body-color)!important; border-color:var(--border)!important; }
+        @media(max-width:767.98px){ #se2026WorkloadTable .tabulator{min-width:900px;font-size:11px;} #se2026WorkloadTable .tabulator-cell{padding:7px 8px!important;font-size:11px!important;} }
+
         .performer-list .border-bottom {
             transition: background-color .2s ease, padding-left .2s ease;
             border-radius: 8px;
@@ -1990,9 +2009,18 @@
             <div class="d-flex justify-content-end mb-2">
                 <button type="button" class="btn btn-success btn-sm" id="btnExportSe2026Workload"><i class="bi bi-file-earmark-excel me-1"></i> Export Excel</button>
             </div>
-            <div class="row g-3 align-items-stretch">
-                <div class="col-12 col-xl-6"><div class="h-100 p-2 rounded-3" style="background:var(--card-solid);border:1px solid var(--border);"><div class="small fw-semibold mb-2 text-secondary">Grafik Muatan dan Realisasi</div><div id="se2026WorkloadChart" style="min-height:520px;width:100%;"></div></div></div>
-                <div class="col-12 col-xl-6"><div class="h-100 p-2 rounded-3" style="background:var(--card-solid);border:1px solid var(--border);"><div class="small fw-semibold mb-2 text-secondary">Rincian per Petugas</div><div class="se2026-workload-table-wrap"><div id="se2026WorkloadTable"></div></div></div></div>
+            <div class="d-flex flex-column gap-3">
+                <div class="p-2 rounded-3" style="background:var(--card-solid);border:1px solid var(--border);">
+                    <div class="small fw-semibold mb-2 text-secondary">Grafik Muatan dan Realisasi</div>
+                    <div id="se2026WorkloadChart" style="min-height:520px;width:100%;"></div>
+                </div>
+                <div class="p-2 rounded-3" style="background:var(--card-solid);border:1px solid var(--border);">
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">
+                        <div class="small fw-semibold text-secondary">Rincian Target dan Realisasi per Petugas</div>
+                        <div class="small text-secondary">Tabel detail · dapat diurutkan dan difilter</div>
+                    </div>
+                    <div class="se2026-workload-table-wrap"><div id="se2026WorkloadTable"></div></div>
+                </div>
             </div>
         </section>
         </section>
