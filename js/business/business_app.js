@@ -49,6 +49,12 @@
     });
     if (business && !currentPayload) { loadLatest(); loadHistory(); }
     if (deployment && typeof window.selectDeploymentCategory === 'function') window.selectDeploymentCategory();
+    if (targetRealization) {
+      requestAnimationFrame(() => {
+        if (typeof window.refreshSe2026WorkloadComparison === 'function') window.refreshSe2026WorkloadComparison();
+        window.dispatchEvent(new Event('resize'));
+      });
+    }
   }
 
   function normalizeHeader(row) {
@@ -344,7 +350,13 @@
   function exportRegion(){if(regionTable)regionTable.download('xlsx',`rekap_keberadaan_keluarga_usaha_${currentPayload?.importDate||'latest'}.xlsx`,{sheetName:'Rekap Keluarga Usaha'});}
 
   document.addEventListener('DOMContentLoaded',()=>{
-    $('menuMonitoring')?.addEventListener('click',()=>switchModule('monitoring'));$('menuTargetRealization')?.addEventListener('click',()=>switchModule('target-realization'));$('menuBusinessPresence')?.addEventListener('click',()=>switchModule('business'));$('menuDeployment')?.addEventListener('click',()=>switchModule('deployment'));
+    document.querySelector('.module-navigation')?.addEventListener('click',event=>{
+      const tab=event.target.closest('.module-tab');
+      if(!tab)return;
+      const routes={menuMonitoring:'monitoring',menuTargetRealization:'target-realization',menuBusinessPresence:'business',menuDeployment:'deployment'};
+      const route=routes[tab.id];
+      if(route)switchModule(route);
+    });
     $('btnOpenBusinessUpload')?.addEventListener('click',()=>{$('businessImportDate').value=new Date().toLocaleDateString('en-CA',{timeZone:'Asia/Jakarta'});bootstrap.Modal.getOrCreateInstance($('businessUploadModal')).show();});
     $('businessExcelFile')?.addEventListener('change',handleFileChange);$('btnBusinessImport')?.addEventListener('click',uploadExcel);
     $('btnBusinessRefresh')?.addEventListener('click',async()=>{await loadLatest();await loadHistory();});$('businessHistorySelect')?.addEventListener('change',e=>loadDate(e.target.value));
