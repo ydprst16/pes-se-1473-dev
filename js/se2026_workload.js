@@ -144,10 +144,10 @@ function renderSe2026WorkloadComparison() {
       paginationSizeSelector: [15, 25, 50],
       placeholder: "Tidak ada data perbandingan",
       columns: [
-        { title: "Nama Petugas", field: "name", frozen: true, minWidth: 190, width: 250, widthGrow: 2, headerFilter: "input", variableHeight: true, formatter: "textarea" },
+        { title: "Nama Petugas", field: "name", frozen: true, minWidth: 220, width: 280, widthGrow: 2, headerFilter: false, variableHeight: true, formatter: "textarea", tooltip: true },
         { title: "Muatan SE2026", field: "target", hozAlign: "right", headerHozAlign: "center", minWidth: 105, widthGrow: 1, formatter: cell => se2026Number(cell.getValue()) },
         { title: "Assignment PES 2026", field: "assignment", hozAlign: "right", headerHozAlign: "center", minWidth: 125, widthGrow: 1, formatter: cell => se2026Number(cell.getValue()) },
-        { title: "Realisasi PES SE2026", field: "realization", hozAlign: "right", headerHozAlign: "center", minWidth: 135, widthGrow: 1, formatter: cell => se2026Number(cell.getValue()) },
+        { title: "Realisasi PES SE2026 (Ditemukan & Baru)", field: "realization", hozAlign: "right", headerHozAlign: "center", minWidth: 190, widthGrow: 1, formatter: cell => se2026Number(cell.getValue()) },
         { title: "Selisih (Realisasi − Muatan)", field: "gap", sorter: "number", hozAlign: "right", headerHozAlign: "center", minWidth: 155, widthGrow: 1, formatter: cell => { const v=Number(cell.getValue())||0; const color=v<0?"text-danger":v>0?"text-success":"text-secondary"; return `<span class="fw-semibold ${color}">${v>0?"+":""}${se2026Number(v)}</span>`; } },
         { title: "Target Pendataan Harian", field: "dailyTarget", hozAlign: "right", headerHozAlign: "center", minWidth: 145, widthGrow: 1, formatter: cell => cell.getValue() == null ? "—" : `<span class="se2026-daily-pill">${se2026Number(cell.getValue())}</span>` },
         { title: "Pencapaian", field: "achievement", sorter: "number", hozAlign: "right", headerHozAlign: "center", minWidth: 100, widthGrow: 1, formatter: cell => { const v=Number(cell.getValue())||0; const level=v>=100?"complete":v>=50?"progress":"low"; return `<span class="se2026-achievement-pill se2026-achievement-${level}">${v.toFixed(1).replace(".",",")}%</span>`; } },
@@ -161,6 +161,23 @@ function renderSe2026WorkloadComparison() {
           { column: "name", dir: "asc" }
         ]);
       }
+    });
+    const searchInput = document.getElementById("se2026WorkloadSearch");
+    const applySearch = value => {
+      const query = String(value || "").trim().toLocaleLowerCase("id-ID");
+      if (!query) se2026WorkloadTabulator.clearFilter(true);
+      else se2026WorkloadTabulator.setFilter(row => String(row.name || "").toLocaleLowerCase("id-ID").includes(query));
+      const count = document.getElementById("se2026WorkloadTableCount");
+      if (count) count.textContent = `${se2026Number(se2026WorkloadTabulator.getDataCount("active"))} baris petugas`;
+    };
+    if (searchInput && !searchInput.dataset.bound) {
+      searchInput.addEventListener("input", event => applySearch(event.target.value));
+      searchInput.dataset.bound = "1";
+    }
+    applySearch(searchInput?.value || "");
+    se2026WorkloadTabulator.on("dataFiltered", (_filters, data) => {
+      const count = document.getElementById("se2026WorkloadTableCount");
+      if (count) count.textContent = `${se2026Number(data.length)} baris petugas`;
     });
   }
 
@@ -210,7 +227,7 @@ function exportSe2026WorkloadExcel() {
     "Petugas": row.name,
     "Muatan SE2026": row.target,
     "Assignment PES 2026": row.assignment,
-    "Realisasi PES SE2026": row.realization,
+    "Realisasi PES SE2026 (Ditemukan & Baru)": row.realization,
     "Selisih (Realisasi - Muatan)": row.gap,
     "Target Pendataan Harian": row.dailyTarget,
     "Sisa Hari Pendataan": row.remainingDays,
@@ -230,6 +247,9 @@ window.renderSe2026WorkloadComparison=renderSe2026WorkloadComparison;
 window.refreshSe2026WorkloadComparison=refreshSe2026WorkloadComparison;
 document.addEventListener("DOMContentLoaded",()=>{
   const exportButton = document.getElementById("btnExportSe2026Workload");
-  if (exportButton) exportButton.addEventListener("click", exportSe2026WorkloadExcel);
+  if (exportButton && !exportButton.dataset.bound) {
+    exportButton.addEventListener("click", exportSe2026WorkloadExcel);
+    exportButton.dataset.bound = "1";
+  }
   refreshSe2026WorkloadComparison();
 });

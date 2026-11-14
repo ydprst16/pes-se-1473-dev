@@ -2006,9 +2006,6 @@
                 <div class="chart-title mb-0"><i class="bi bi-bullseye text-primary"></i> Perbandingan Muatan dan Realisasi PES SE2026</div>
             </div>
             <div class="small text-secondary mb-2" id="se2026WorkloadMatchInfo">Mengambil data realisasi dari snapshot Deployment SE2026...</div>
-            <div class="d-flex justify-content-end mb-2">
-                <button type="button" class="btn btn-success btn-sm" id="btnExportSe2026Workload"><i class="bi bi-file-earmark-excel me-1"></i> Export Excel</button>
-            </div>
             <div class="d-flex flex-column gap-3">
                 <div class="p-2 rounded-3" style="background:var(--card-solid);border:1px solid var(--border);">
                     <div class="small fw-semibold mb-2 text-secondary">Grafik Muatan dan Realisasi</div>
@@ -2017,7 +2014,11 @@
                 <div class="p-2 rounded-3" style="background:var(--card-solid);border:1px solid var(--border);">
                     <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">
                         <div class="small fw-semibold text-secondary">Rincian Target dan Realisasi per Petugas</div>
-                        <div class="small text-secondary">Tabel detail · dapat diurutkan dan difilter</div>
+                        <button type="button" class="btn btn-success btn-sm" id="btnExportSe2026Workload"><i class="bi bi-file-earmark-excel me-1"></i> Export Excel</button>
+                    </div>
+                    <div class="deployment-table-toolbar">
+                        <input type="search" class="form-control form-control-sm deployment-table-search" id="se2026WorkloadSearch" placeholder="Cari nama petugas..." aria-label="Cari nama petugas">
+                        <div class="small text-secondary" id="se2026WorkloadTableCount">-</div>
                     </div>
                     <div class="se2026-workload-table-wrap"><div id="se2026WorkloadTable"></div></div>
                 </div>
