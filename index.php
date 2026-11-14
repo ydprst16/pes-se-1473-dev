@@ -3135,6 +3135,56 @@
             }
         }
 
+
+
+        /* v79: enforce genuinely transparent Target & Realisasi Tabulator surfaces.
+           This final override intentionally covers legacy :nth-child(even) rules as well. */
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator,
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator-header,
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator-headers,
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator-tableholder,
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator-table,
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator-footer,
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator-paginator,
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col,
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col .tabulator-col-content,
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator-row,
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator-row.tabulator-row-even,
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator-row.tabulator-row-odd,
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator-row:nth-child(odd),
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator-row:nth-child(even),
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell,
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator-row .tabulator-cell,
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell.tabulator-frozen,
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col.tabulator-frozen {
+            background:transparent !important;
+            background-color:transparent !important;
+            background-image:none !important;
+            color:var(--text) !important;
+        }
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator-row:hover,
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator-row:hover .tabulator-cell {
+            background:var(--row-hover-bg) !important;
+            background-color:var(--row-hover-bg) !important;
+        }
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator-header,
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col,
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell,
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator-footer,
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator-page,
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator-page-size {
+            border-color:var(--border) !important;
+        }
+        html[data-bs-theme="dark"] #se2026WorkloadSection #se2026WorkloadTable .tabulator-row,
+        html[data-bs-theme="dark"] #se2026WorkloadSection #se2026WorkloadTable .tabulator-row:nth-child(odd),
+        html[data-bs-theme="dark"] #se2026WorkloadSection #se2026WorkloadTable .tabulator-row:nth-child(even),
+        html[data-bs-theme="light"] #se2026WorkloadSection #se2026WorkloadTable .tabulator-row,
+        html[data-bs-theme="light"] #se2026WorkloadSection #se2026WorkloadTable .tabulator-row:nth-child(odd),
+        html[data-bs-theme="light"] #se2026WorkloadSection #se2026WorkloadTable .tabulator-row:nth-child(even) {
+            background:transparent !important;
+            background-color:transparent !important;
+            background-image:none !important;
+        }
 </style>
             <div class="row g-3 mb-4">
                 <div class="col-12 col-xl-4"><div class="bp-breakdown-card"><div class="bp-breakdown-head"><div class="bp-breakdown-icon"><i class="bi bi-people-fill"></i></div><div><div class="chart-title mb-0">Keberadaan Keluarga</div><div class="bp-breakdown-subtitle">Satu hitungan per UUID · <code>ada_keluarga_label</code></div></div></div><div id="businessFamilyChart" style="min-height:245px"></div><div class="table-responsive"><table class="table bp-breakdown-table"><thead><tr><th>Status</th><th class="text-end">Jumlah</th><th class="text-end">% Assignment</th></tr></thead><tbody id="businessFamilyRows"></tbody></table></div></div></div>
