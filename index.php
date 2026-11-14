@@ -2128,7 +2128,7 @@
         </div>
     </header>
 
-    <div class="container-dashboard">
+    <div class="module-navigation-shell">
         <nav class="module-navigation" role="tablist" aria-label="Navigasi modul">
             <button class="module-tab active" id="menuMonitoring" type="button" role="tab" aria-selected="true" aria-controls="monitoringModule">
                 <i class="bi bi-speedometer2"></i><span>Monitoring Progress</span>
@@ -2143,6 +2143,8 @@
                 <i class="bi bi-bullseye"></i><span>Target dan Realisasi</span>
             </button>
         </nav>
+    </div>
+    <div class="container-dashboard">
         <section id="monitoringModule">
 
         <div class="mb-4 d-flex justify-content-center">
@@ -3187,33 +3189,37 @@
         }
 
 
-        /* v80: Target & Realisasi uses the same truly transparent Tabulator surface as Deployment. */
+        /* v81: Target & Realisasi scroll exactly like Deployment: the Tabulator tableholder owns X/Y scrolling. */
+        #targetRealizationModule,
+        #targetRealizationModule #se2026WorkloadSection,
+        #targetRealizationModule #se2026WorkloadSection .d-flex,
+        #targetRealizationModule #se2026WorkloadSection .se2026-workload-table-panel,
+        #targetRealizationModule #se2026WorkloadSection .se2026-workload-table-wrap {
+            min-width:0 !important;
+            max-width:100% !important;
+        }
         #targetRealizationModule #se2026WorkloadSection .se2026-workload-table-wrap {
             display:block !important;
             width:100% !important;
-            max-width:100% !important;
-            min-width:0 !important;
-            overflow-x:auto !important;
-            overflow-y:hidden !important;
-            -webkit-overflow-scrolling:touch !important;
-            overscroll-behavior-x:contain !important;
-            touch-action:pan-x pan-y !important;
-            scrollbar-width:thin;
+            overflow:visible !important;
             position:relative !important;
+            touch-action:auto !important;
         }
         #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable {
             display:block !important;
             width:100% !important;
-            min-width:1120px !important;
-            max-width:none !important;
+            min-width:0 !important;
+            max-width:100% !important;
+            overflow:visible !important;
         }
         #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator {
             width:100% !important;
-            min-width:1120px !important;
-            max-width:none !important;
+            min-width:0 !important;
+            max-width:100% !important;
             border:0 !important;
             border-radius:0 !important;
             box-shadow:none !important;
+            overflow:hidden !important;
             background:transparent !important;
             background-color:transparent !important;
             color:var(--text) !important;
@@ -3227,6 +3233,11 @@
             border:0 !important;
             border-bottom:1px solid var(--border) !important;
         }
+        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-headers,
+        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-tableholder .tabulator-table {
+            min-width:1040px !important;
+            width:max-content !important;
+        }
         #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col,
         #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col .tabulator-col-content,
         #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col-title,
@@ -3239,12 +3250,16 @@
             border-color:var(--border) !important;
         }
         #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-tableholder {
+            display:block !important;
             width:100% !important;
-            max-width:none !important;
-            overflow-x:hidden !important;
+            max-width:100% !important;
+            overflow-x:auto !important;
             overflow-y:auto !important;
             -webkit-overflow-scrolling:touch !important;
+            overscroll-behavior-x:contain !important;
             overscroll-behavior-y:contain !important;
+            touch-action:pan-x pan-y !important;
+            scrollbar-width:thin;
             background:transparent !important;
             background-color:transparent !important;
         }
@@ -3309,16 +3324,8 @@
             border-color:var(--primary) !important;
         }
         @media(max-width:767.98px) {
-            #targetRealizationModule #se2026WorkloadSection .se2026-workload-table-wrap {
-                width:100% !important;
-                max-width:100% !important;
-                margin:0 !important;
-            }
-            #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable,
             #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator {
-                width:100% !important;
-                min-width:1120px !important;
-                max-width:none !important;
+                font-size:11px !important;
             }
             #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell {
                 padding:7px 8px !important;
@@ -3333,23 +3340,43 @@
             box-shadow:none !important;
         }
 
-        /* v80: keep the four module tabs pinned below the application header while the page scrolls. */
-        .container-dashboard {
-            overflow:visible !important;
-        }
-        .module-navigation {
+        /* v81: keep module navigation sticky outside the dashboard's scroll/overflow context. */
+        .module-navigation-shell {
             position:-webkit-sticky !important;
             position:sticky !important;
             top:var(--app-header-height, 76px) !important;
             z-index:1001 !important;
             width:100%;
+            padding:0 clamp(16px,2vw,26px);
+            margin:0 0 1.5rem;
             background:var(--card-solid) !important;
             border-bottom:1px solid var(--border) !important;
             box-shadow:0 8px 16px rgba(0,0,0,.10) !important;
             isolation:isolate;
         }
+        .module-navigation-shell .module-navigation {
+            position:relative !important;
+            top:auto !important;
+            z-index:auto !important;
+            width:100%;
+            margin:0 !important;
+            background:transparent !important;
+            border:0 !important;
+            box-shadow:none !important;
+            overflow-x:auto !important;
+            overflow-y:hidden !important;
+            -webkit-overflow-scrolling:touch;
+            overscroll-behavior-x:contain;
+            scrollbar-width:thin;
+        }
         .header {
             z-index:1002 !important;
+        }
+        @media(max-width:575.98px) {
+            .module-navigation-shell {
+                padding-inline:12px;
+                margin-bottom:1.1rem;
+            }
         }
 
 </style>
