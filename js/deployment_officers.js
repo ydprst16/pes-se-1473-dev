@@ -128,15 +128,15 @@
     const cfg=statusConfig[category], rows=detailRows[category]||[];
     const search=$("deploymentOfficerSearch")?.value?.trim().toLowerCase()||"";
     const columns=[
-      {title:"Nama Petugas",field:"officer",frozen:true,minWidth:220,width:280,widthGrow:2,variableHeight:true,formatter:"textarea",headerFilter:false,tooltip:true},
-      {title:"ID Sub-SLS",field:"idsubsls",minWidth:190,width:220,widthGrow:1,headerHozAlign:"center",hozAlign:"center",headerWordWrap:false,formatter:c=>`<span class="font-monospace">${String(c.getValue()||"")}</span>`},
+      {title:"Nama Petugas",field:"officer",minWidth:170,width:220,widthGrow:2,variableHeight:true,formatter:"textarea",headerFilter:false,tooltip:true,headerHozAlign:"left",hozAlign:"left"},
+      {title:"ID Sub-SLS",field:"idsubsls",minWidth:180,width:190,widthGrow:1,headerHozAlign:"left",hozAlign:"left",headerWordWrap:false,formatter:c=>`<span class="font-monospace">${String(c.getValue()||"")}</span>`},
       ...cfg.statuses.map((status,i)=>makeCountColumn(cleanStatusLabel(status),`${category}_${i}`,category)),
       {...makeCountColumn("Total",`${category}_total`,category),minWidth:110,widthGrow:1}
     ];
     if(table)table.destroy();
     table=new Tabulator($("deploymentOfficerTable"),{
       data:rows,columns,layout:"fitColumns",height:"620px",headerWordWrap:true,
-      movableColumns:true,resizableColumns:true,responsiveLayout:false,
+      movableColumns:false,resizableColumns:true,responsiveLayout:false,
       pagination:true,paginationSize:15,paginationSizeSelector:[15,25,50],
       placeholder:"Tidak ada data untuk kategori ini.",
       initialSort:[{column:"officer",dir:"asc"}]

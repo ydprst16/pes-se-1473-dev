@@ -1898,6 +1898,81 @@
             }
         }
 
+
+        /* v76: one horizontal scroll surface; no frozen columns so header and body move together. */
+        #deploymentModule .deployment-table-wrap {
+            width:100% !important;
+            max-width:100% !important;
+            min-width:0 !important;
+            overflow:visible !important;
+            overscroll-behavior-x:contain !important;
+        }
+        #deploymentModule #deploymentOfficerTable {
+            display:block !important;
+            width:100% !important;
+            max-width:100% !important;
+            min-width:0 !important;
+        }
+        #deploymentModule #deploymentOfficerTable .tabulator {
+            width:100% !important;
+            min-width:0 !important;
+            max-width:100% !important;
+            overflow:hidden !important;
+        }
+        #deploymentModule #deploymentOfficerTable .tabulator-header {
+            width:100% !important;
+            overflow:hidden !important;
+        }
+        #deploymentModule #deploymentOfficerTable .tabulator-tableholder {
+            width:100% !important;
+            max-width:100% !important;
+            overflow-x:auto !important;
+            overflow-y:auto !important;
+            -webkit-overflow-scrolling:touch !important;
+            overscroll-behavior-x:contain !important;
+            touch-action:pan-x pan-y !important;
+            scrollbar-width:thin;
+        }
+        #deploymentModule #deploymentOfficerTable .tabulator-cell[tabulator-field="idsubsls"] {
+            text-align:left !important;
+            white-space:nowrap !important;
+            font-family:ui-monospace,SFMono-Regular,Menlo,monospace !important;
+            letter-spacing:.01em;
+        }
+        #deploymentModule #deploymentOfficerTable .tabulator-header .tabulator-col[tabulator-field="idsubsls"] .tabulator-col-content {
+            justify-content:flex-start !important;
+        }
+        #deploymentModule #deploymentOfficerTable .tabulator-header .tabulator-col[tabulator-field="idsubsls"] .tabulator-col-title {
+            text-align:left !important;
+        }
+        #deploymentModule #deploymentOfficerTable .tabulator-cell.tabulator-frozen,
+        #deploymentModule #deploymentOfficerTable .tabulator-header .tabulator-col.tabulator-frozen {
+            position:static !important;
+            left:auto !important;
+            box-shadow:none !important;
+        }
+        @media(max-width:767.98px) {
+            #deploymentModule #deploymentOfficerTable .tabulator {
+                width:100% !important;
+                min-width:0 !important;
+                max-width:100% !important;
+                font-size:11px !important;
+            }
+            #deploymentModule #deploymentOfficerTable .tabulator-cell {
+                padding:7px 8px !important;
+                font-size:11px !important;
+            }
+            #deploymentModule #deploymentOfficerTable .tabulator-cell[tabulator-field="officer"],
+            #deploymentModule #deploymentOfficerTable .tabulator-header .tabulator-col[tabulator-field="officer"] {
+                min-width:145px !important;
+                max-width:170px !important;
+            }
+            #deploymentModule #deploymentOfficerTable .tabulator-cell[tabulator-field="idsubsls"],
+            #deploymentModule #deploymentOfficerTable .tabulator-header .tabulator-col[tabulator-field="idsubsls"] {
+                min-width:180px !important;
+            }
+        }
+
 </style>
 
 </head>
