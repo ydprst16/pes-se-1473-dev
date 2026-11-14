@@ -40,7 +40,7 @@
     $('targetRealizationModule')?.classList.toggle('d-none', !targetRealization);
     $('businessPresenceModule').classList.toggle('d-none', !business);
     $('deploymentModule')?.classList.toggle('d-none', !deployment);
-    const tabs = [['menuMonitoring',monitoring],['menuTargetRealization',targetRealization],['menuBusinessPresence',business],['menuDeployment',deployment]];
+    const tabs = [['menuMonitoring',monitoring],['menuBusinessPresence',business],['menuDeployment',deployment],['menuTargetRealization',targetRealization]];
     tabs.forEach(([id,active])=>{
       const el=$(id); if(!el) return;
       el.classList.toggle('active',active);
