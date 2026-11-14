@@ -1587,7 +1587,39 @@
         .deployment-reconciliation-table tbody td{background:var(--bs-body-bg);color:var(--bs-body-color);border-color:var(--bs-border-color);vertical-align:middle}
         .deployment-reconciliation-table tbody tr:nth-child(even) td{background:var(--bs-secondary-bg)}
         .deployment-reconciliation-table tbody tr:hover td{background:var(--bs-tertiary-bg)}
-\n</style>
+\n
+        /* Consistent dashboard gutters and prevent accidental page-level horizontal overflow. */
+        *,*::before,*::after{box-sizing:border-box}
+        html,body{max-width:100%;overflow-x:clip}
+        .container-dashboard{
+            width:100%;
+            max-width:100%;
+            min-width:0;
+            padding:clamp(16px,2vw,26px);
+            overflow-x:clip;
+        }
+        .container-dashboard>section,
+        .container-dashboard>nav,
+        .container-dashboard>.row,
+        .container-dashboard .chart-card,
+        .container-dashboard .cmp-section{
+            min-width:0;
+            max-width:100%;
+        }
+        .container-dashboard section{min-width:0}
+        .container-dashboard .row{--bs-gutter-x:1.25rem}
+        #deploymentModule{padding-inline:clamp(2px,.35vw,6px)}
+        #deploymentModule>div:first-child{padding-inline:2px}
+        #deploymentModule .chart-card,
+        #deploymentModule .bp-breakdown-card{min-width:0}
+        @media(max-width:767.98px){
+            .container-dashboard{padding:12px;overflow-x:clip}
+            .container-dashboard .row{--bs-gutter-x:.9rem}
+            #deploymentModule{padding-inline:0}
+            #deploymentModule>div:first-child{padding-inline:0}
+        }
+
+</style>
 
 </head>
 
