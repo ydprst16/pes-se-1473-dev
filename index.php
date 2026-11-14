@@ -2140,6 +2140,66 @@
         [data-bs-theme="light"] #se2026WorkloadTable .tabulator-row:nth-child(even) .tabulator-cell.tabulator-frozen{background:#e2eaf4!important;color:#0f172a!important}
         [data-bs-theme="light"] #se2026WorkloadTable .tabulator-header .tabulator-col.tabulator-frozen{background:#dbeafe!important;color:#0f172a!important}
         @media(max-width:700px){.se2026-workload-table-wrap{width:100%;max-width:100%;overflow-x:auto!important;touch-action:pan-x pan-y}#se2026WorkloadTable .tabulator{width:100%!important;min-width:980px!important;font-size:11px!important}#se2026WorkloadTable .tabulator-tableholder{overflow-x:auto!important}#se2026WorkloadTable .tabulator-cell{padding:7px 8px!important;font-size:11px!important}}
+
+        /* v68: make the workload table scroll as a single wide surface on touch screens.
+           The wrapper, not Tabulator's inner holder, owns horizontal scrolling. */
+        #se2026WorkloadSection,
+        #se2026WorkloadSection .card,
+        #se2026WorkloadSection .card-body,
+        #se2026WorkloadSection .se2026-workload-table-wrap {
+            min-width:0 !important;
+            max-width:100% !important;
+        }
+        #se2026WorkloadSection .se2026-workload-table-wrap {
+            display:block !important;
+            width:100% !important;
+            overflow-x:auto !important;
+            overflow-y:hidden !important;
+            -webkit-overflow-scrolling:touch !important;
+            overscroll-behavior-x:contain;
+            touch-action:pan-x pan-y;
+            position:relative;
+        }
+        #se2026WorkloadSection #se2026WorkloadTable {
+            display:block !important;
+            width:100% !important;
+            min-width:0 !important;
+            max-width:none !important;
+            overflow:visible !important;
+        }
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator {
+            display:inline-block !important;
+            vertical-align:top;
+            width:max-content !important;
+            min-width:1120px !important;
+            max-width:none !important;
+        }
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator-tableholder {
+            width:auto !important;
+            overflow:visible !important;
+            max-width:none !important;
+        }
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator-table {
+            width:max-content !important;
+            min-width:100% !important;
+        }
+        @media (max-width:767.98px) {
+            #se2026WorkloadSection .se2026-workload-table-wrap {
+                width:calc(100vw - 56px) !important;
+                max-width:calc(100vw - 56px) !important;
+                margin-right:0 !important;
+                padding-bottom:6px;
+            }
+            #se2026WorkloadSection #se2026WorkloadTable .tabulator {
+                min-width:1120px !important;
+                font-size:11px !important;
+            }
+            #se2026WorkloadSection #se2026WorkloadTable .tabulator-col,
+            #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell {
+                min-width:unset;
+                white-space:nowrap;
+            }
+        }
 </style>
             <div class="row g-3 mb-4">
                 <div class="col-12 col-xl-4"><div class="bp-breakdown-card"><div class="bp-breakdown-head"><div class="bp-breakdown-icon"><i class="bi bi-people-fill"></i></div><div><div class="chart-title mb-0">Keberadaan Keluarga</div><div class="bp-breakdown-subtitle">Satu hitungan per UUID · <code>ada_keluarga_label</code></div></div></div><div id="businessFamilyChart" style="min-height:245px"></div><div class="table-responsive"><table class="table bp-breakdown-table"><thead><tr><th>Status</th><th class="text-end">Jumlah</th><th class="text-end">% Assignment</th></tr></thead><tbody id="businessFamilyRows"></tbody></table></div></div></div>
