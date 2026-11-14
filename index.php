@@ -2453,7 +2453,7 @@
                     <div class="small fw-semibold mb-2 text-secondary">Grafik Muatan dan Realisasi</div>
                     <div id="se2026WorkloadChart" style="min-height:520px;width:100%;"></div>
                 </div>
-                <div class="p-2 rounded-3" style="background:var(--card-solid);border:1px solid var(--border);">
+                <div class="p-2 rounded-3 se2026-workload-table-panel" style="background:var(--card-solid);border:1px solid var(--border);">
                     <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">
                         <div class="small fw-semibold text-secondary">Rincian Target dan Realisasi per Petugas</div>
                         <button type="button" class="btn btn-success btn-sm" id="btnExportSe2026Workload"><i class="bi bi-file-earmark-excel me-1"></i> Export Excel</button>
@@ -3185,6 +3185,173 @@
             background-color:transparent !important;
             background-image:none !important;
         }
+
+
+        /* v80: Target & Realisasi uses the same truly transparent Tabulator surface as Deployment. */
+        #targetRealizationModule #se2026WorkloadSection .se2026-workload-table-wrap {
+            display:block !important;
+            width:100% !important;
+            max-width:100% !important;
+            min-width:0 !important;
+            overflow-x:auto !important;
+            overflow-y:hidden !important;
+            -webkit-overflow-scrolling:touch !important;
+            overscroll-behavior-x:contain !important;
+            touch-action:pan-x pan-y !important;
+            scrollbar-width:thin;
+            position:relative !important;
+        }
+        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable {
+            display:block !important;
+            width:100% !important;
+            min-width:1120px !important;
+            max-width:none !important;
+        }
+        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator {
+            width:100% !important;
+            min-width:1120px !important;
+            max-width:none !important;
+            border:0 !important;
+            border-radius:0 !important;
+            box-shadow:none !important;
+            background:transparent !important;
+            background-color:transparent !important;
+            color:var(--text) !important;
+        }
+        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-header {
+            width:100% !important;
+            overflow:hidden !important;
+            background:transparent !important;
+            background-color:transparent !important;
+            color:var(--text) !important;
+            border:0 !important;
+            border-bottom:1px solid var(--border) !important;
+        }
+        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col,
+        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col .tabulator-col-content,
+        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col-title,
+        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-col,
+        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-col-content {
+            background:transparent !important;
+            background-color:transparent !important;
+            background-image:none !important;
+            color:var(--text) !important;
+            border-color:var(--border) !important;
+        }
+        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-tableholder {
+            width:100% !important;
+            max-width:none !important;
+            overflow-x:hidden !important;
+            overflow-y:auto !important;
+            -webkit-overflow-scrolling:touch !important;
+            overscroll-behavior-y:contain !important;
+            background:transparent !important;
+            background-color:transparent !important;
+        }
+        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-table,
+        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-calcs-holder,
+        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-calcs,
+        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-footer {
+            background:transparent !important;
+            background-color:transparent !important;
+            background-image:none !important;
+            color:var(--text) !important;
+            border-color:var(--border) !important;
+        }
+        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-row,
+        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-row-even,
+        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-row-odd,
+        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-row:nth-child(even),
+        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-row:nth-child(odd) {
+            background:transparent !important;
+            background-color:transparent !important;
+            background-image:none !important;
+            color:var(--text) !important;
+            border-bottom:1px solid var(--border) !important;
+        }
+        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-row:hover,
+        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-row-even:hover,
+        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-row-odd:hover {
+            background:var(--row-hover-bg) !important;
+            background-color:var(--row-hover-bg) !important;
+        }
+        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell {
+            background:transparent !important;
+            background-color:transparent !important;
+            background-image:none !important;
+            color:var(--text) !important;
+            border-color:var(--border) !important;
+            border-bottom:0 !important;
+        }
+        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell.tabulator-frozen,
+        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col.tabulator-frozen {
+            position:static !important;
+            left:auto !important;
+            z-index:auto !important;
+            background:transparent !important;
+            background-color:transparent !important;
+            color:var(--text) !important;
+            box-shadow:none !important;
+        }
+        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-paginator,
+        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-page,
+        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-page-size {
+            background:transparent !important;
+            background-color:transparent !important;
+            color:var(--text) !important;
+            border-color:var(--border) !important;
+            box-shadow:none !important;
+        }
+        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-page.active {
+            background:var(--primary) !important;
+            background-color:var(--primary) !important;
+            color:#fff !important;
+            border-color:var(--primary) !important;
+        }
+        @media(max-width:767.98px) {
+            #targetRealizationModule #se2026WorkloadSection .se2026-workload-table-wrap {
+                width:100% !important;
+                max-width:100% !important;
+                margin:0 !important;
+            }
+            #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable,
+            #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator {
+                width:100% !important;
+                min-width:1120px !important;
+                max-width:none !important;
+            }
+            #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell {
+                padding:7px 8px !important;
+                font-size:11px !important;
+            }
+        }
+
+        /* Keep the workload table panel on the same parent surface as the Deployment table. */
+        #targetRealizationModule #se2026WorkloadSection .se2026-workload-table-panel {
+            background:transparent !important;
+            border:0 !important;
+            box-shadow:none !important;
+        }
+
+        /* v80: keep the four module tabs pinned below the application header while the page scrolls. */
+        .container-dashboard {
+            overflow:visible !important;
+        }
+        .module-navigation {
+            position:-webkit-sticky !important;
+            position:sticky !important;
+            top:var(--app-header-height, 76px) !important;
+            z-index:1001 !important;
+            width:100%;
+            background:var(--card-solid) !important;
+            border-bottom:1px solid var(--border) !important;
+            box-shadow:0 8px 16px rgba(0,0,0,.10) !important;
+            isolation:isolate;
+        }
+        .header {
+            z-index:1002 !important;
+        }
+
 </style>
             <div class="row g-3 mb-4">
                 <div class="col-12 col-xl-4"><div class="bp-breakdown-card"><div class="bp-breakdown-head"><div class="bp-breakdown-icon"><i class="bi bi-people-fill"></i></div><div><div class="chart-title mb-0">Keberadaan Keluarga</div><div class="bp-breakdown-subtitle">Satu hitungan per UUID · <code>ada_keluarga_label</code></div></div></div><div id="businessFamilyChart" style="min-height:245px"></div><div class="table-responsive"><table class="table bp-breakdown-table"><thead><tr><th>Status</th><th class="text-end">Jumlah</th><th class="text-end">% Assignment</th></tr></thead><tbody id="businessFamilyRows"></tbody></table></div></div></div>
