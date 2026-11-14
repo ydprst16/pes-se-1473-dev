@@ -1684,6 +1684,220 @@
           #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col[tabulator-field="name"]{max-width:145px!important}
         }
 
+
+        /* v75: Deployment SE2026 uses the same Tabulator visual language as Data Enumerator. */
+        #deploymentModule .deployment-table-wrap {
+            display:block !important;
+            width:100% !important;
+            max-width:100% !important;
+            min-width:0 !important;
+            overflow-x:auto !important;
+            overflow-y:hidden !important;
+            overscroll-behavior-x:contain !important;
+            -webkit-overflow-scrolling:touch !important;
+            touch-action:pan-x pan-y !important;
+            scrollbar-width:thin;
+        }
+        #deploymentModule #deploymentOfficerTable {
+            display:block !important;
+            width:100% !important;
+            min-width:0 !important;
+            max-width:100% !important;
+        }
+        #deploymentModule #deploymentOfficerTable .tabulator {
+            width:max-content !important;
+            min-width:100% !important;
+            max-width:none !important;
+            border:0 !important;
+            border-radius:15px !important;
+            overflow:hidden !important;
+            background:var(--bg-2) !important;
+            color:var(--text) !important;
+            font-size:12px !important;
+        }
+        #deploymentModule #deploymentOfficerTable .tabulator-header,
+        #deploymentModule #deploymentOfficerTable .tabulator-tableholder,
+        #deploymentModule #deploymentOfficerTable .tabulator-footer {
+            background-color:var(--bg-2) !important;
+            color:var(--text) !important;
+            border-color:var(--border) !important;
+        }
+        #deploymentModule #deploymentOfficerTable .tabulator-header .tabulator-col,
+        #deploymentModule #deploymentOfficerTable .tabulator-header .tabulator-col .tabulator-col-content,
+        #deploymentModule #deploymentOfficerTable .tabulator-header .tabulator-col-title,
+        #deploymentModule #deploymentOfficerTable .tabulator-col-title {
+            background-color:transparent !important;
+            color:var(--text) !important;
+            border-color:var(--border) !important;
+        }
+        #deploymentModule #deploymentOfficerTable .tabulator-header .tabulator-col-title {
+            white-space:normal !important;
+            overflow-wrap:anywhere !important;
+            word-break:normal !important;
+            line-height:1.2 !important;
+            text-align:center !important;
+        }
+        #deploymentModule #deploymentOfficerTable .tabulator-header .tabulator-col .tabulator-col-content {
+            min-height:58px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            padding:7px 6px;
+        }
+        #deploymentModule #deploymentOfficerTable .tabulator-header .tabulator-col .tabulator-header-filter input {
+            background:var(--card-solid) !important;
+            color:var(--text) !important;
+            border:1px solid var(--border) !important;
+            border-radius:6px !important;
+        }
+        #deploymentModule #deploymentOfficerTable .tabulator-row {
+            min-height:42px !important;
+            background-color:transparent !important;
+            color:var(--text) !important;
+            border-bottom:1px solid var(--border) !important;
+        }
+        #deploymentModule #deploymentOfficerTable .tabulator-row.tabulator-row-even {
+            background-color:var(--row-even-bg) !important;
+        }
+        #deploymentModule #deploymentOfficerTable .tabulator-row:hover {
+            background-color:var(--row-hover-bg) !important;
+        }
+        #deploymentModule #deploymentOfficerTable .tabulator-row .tabulator-cell,
+        #deploymentModule #deploymentOfficerTable .tabulator-cell {
+            white-space:nowrap;
+            background:transparent !important;
+            color:var(--text) !important;
+            border-right:1px solid var(--border) !important;
+            border-bottom:0 !important;
+            padding:8px 9px !important;
+        }
+        #deploymentModule #deploymentOfficerTable .tabulator-cell[tabulator-field="officer"] {
+            max-width:190px;
+            min-width:160px;
+            white-space:normal !important;
+            overflow-wrap:anywhere;
+            line-height:1.3;
+        }
+        #deploymentModule #deploymentOfficerTable .tabulator-cell[tabulator-field="idsubsls"] {
+            min-width:170px;
+            white-space:nowrap !important;
+            font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+            letter-spacing:.01em;
+        }
+        #deploymentModule #deploymentOfficerTable .tabulator-cell.tabulator-frozen {
+            z-index:12 !important;
+            background:inherit !important;
+            color:inherit !important;
+            box-shadow:2px 0 5px rgba(0,0,0,.16) !important;
+        }
+        #deploymentModule #deploymentOfficerTable .tabulator-header .tabulator-col.tabulator-frozen {
+            z-index:14 !important;
+            background:var(--bg-2) !important;
+            color:var(--text) !important;
+            box-shadow:2px 0 5px rgba(0,0,0,.18) !important;
+        }
+        #deploymentModule #deploymentOfficerTable .deployment-col-header {
+            font-weight:700;
+        }
+        #deploymentModule #deploymentOfficerTable .deployment-col-header.deployment-col-keluarga {
+            border-top:3px solid #3b82f6 !important;
+        }
+        #deploymentModule #deploymentOfficerTable .deployment-col-header.deployment-col-usaha_keluarga {
+            border-top:3px solid #0d9488 !important;
+        }
+        #deploymentModule #deploymentOfficerTable .deployment-col-header.deployment-col-usaha_bku {
+            border-top:3px solid #d97706 !important;
+        }
+        #deploymentModule #deploymentOfficerTable .deployment-count-cell {
+            font-variant-numeric:tabular-nums;
+            font-weight:600;
+        }
+        #deploymentModule #deploymentOfficerTable .tabulator-paginator,
+        #deploymentModule #deploymentOfficerTable .tabulator-page,
+        #deploymentModule #deploymentOfficerTable .tabulator-page-size {
+            color:var(--text) !important;
+            background:var(--card-solid) !important;
+            border:1px solid var(--border) !important;
+        }
+        #deploymentModule #deploymentOfficerTable .tabulator-page.active {
+            background:var(--primary) !important;
+            color:#fff !important;
+            border-color:var(--primary) !important;
+        }
+        #deploymentModule #deploymentOfficerTable .tabulator-placeholder span {
+            color:var(--text-mute) !important;
+        }
+
+        /* Light mode mirrors the white/slate Data Enumerator table. */
+        [data-bs-theme="light"] #deploymentModule #deploymentOfficerTable .tabulator,
+        [data-bs-theme="light"] #deploymentModule #deploymentOfficerTable .tabulator-header,
+        [data-bs-theme="light"] #deploymentModule #deploymentOfficerTable .tabulator-tableholder,
+        [data-bs-theme="light"] #deploymentModule #deploymentOfficerTable .tabulator-footer {
+            background:#fff !important;
+            color:#0f172a !important;
+            border-color:#dbe3ee !important;
+        }
+        [data-bs-theme="light"] #deploymentModule #deploymentOfficerTable .tabulator-header .tabulator-col,
+        [data-bs-theme="light"] #deploymentModule #deploymentOfficerTable .tabulator-header .tabulator-col .tabulator-col-content {
+            background:#eef2f7 !important;
+            color:#0f172a !important;
+            border-color:#dbe3ee !important;
+        }
+        [data-bs-theme="light"] #deploymentModule #deploymentOfficerTable .tabulator-header .tabulator-col-title,
+        [data-bs-theme="light"] #deploymentModule #deploymentOfficerTable .tabulator-col-title {
+            color:#0f172a !important;
+        }
+        [data-bs-theme="light"] #deploymentModule #deploymentOfficerTable .tabulator-row {
+            background:#fff !important;
+            color:#0f172a !important;
+            border-color:#e2e8f0 !important;
+        }
+        [data-bs-theme="light"] #deploymentModule #deploymentOfficerTable .tabulator-row.tabulator-row-even {
+            background:#f8fafc !important;
+        }
+        [data-bs-theme="light"] #deploymentModule #deploymentOfficerTable .tabulator-row:hover {
+            background:#eff6ff !important;
+        }
+        [data-bs-theme="light"] #deploymentModule #deploymentOfficerTable .tabulator-cell {
+            background:transparent !important;
+            color:#0f172a !important;
+            border-color:#e2e8f0 !important;
+        }
+        [data-bs-theme="light"] #deploymentModule #deploymentOfficerTable .tabulator-cell.tabulator-frozen {
+            background:inherit !important;
+            color:inherit !important;
+        }
+        [data-bs-theme="light"] #deploymentModule #deploymentOfficerTable .tabulator-header .tabulator-col.tabulator-frozen {
+            background:#eef2f7 !important;
+            color:#0f172a !important;
+        }
+        [data-bs-theme="light"] #deploymentModule #deploymentOfficerTable .tabulator-paginator,
+        [data-bs-theme="light"] #deploymentModule #deploymentOfficerTable .tabulator-page,
+        [data-bs-theme="light"] #deploymentModule #deploymentOfficerTable .tabulator-page-size {
+            background:#fff !important;
+            color:#0f172a !important;
+            border-color:#cbd5e1 !important;
+        }
+        [data-bs-theme="light"] #deploymentModule #deploymentOfficerTable .tabulator-page.active {
+            background:var(--primary) !important;
+            color:#fff !important;
+            border-color:var(--primary) !important;
+        }
+        @media(max-width:767.98px) {
+            #deploymentModule #deploymentOfficerTable .tabulator {
+                min-width:900px !important;
+                font-size:11px !important;
+            }
+            #deploymentModule #deploymentOfficerTable .tabulator-cell {
+                padding:7px 8px !important;
+                font-size:11px !important;
+            }
+            #deploymentModule #deploymentOfficerTable .tabulator-cell[tabulator-field="officer"] {
+                max-width:145px !important;
+                min-width:135px !important;
+            }
+        }
+
 </style>
 
 </head>

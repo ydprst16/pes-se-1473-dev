@@ -139,8 +139,7 @@
       movableColumns:true,resizableColumns:true,responsiveLayout:false,
       pagination:true,paginationSize:15,paginationSizeSelector:[15,25,50],
       placeholder:"Tidak ada data untuk kategori ini.",
-      initialSort:[{column:"officer",dir:"asc"}],
-      rowFormatter:function(row){row.getElement().style.borderLeft=`3px solid ${category==="keluarga"?"#3b82f6":category==="usaha_keluarga"?"#0d9488":"#d97706"}`;}
+      initialSort:[{column:"officer",dir:"asc"}]
     });
     if(search)applySearch(search);
     document.querySelectorAll(".deployment-category-tab").forEach(btn=>{
