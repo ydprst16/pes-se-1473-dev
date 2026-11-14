@@ -1,13 +1,15 @@
 /*
- * SE2026 workload vs actual Pencacah assignment.
- * Target source: data/se2026_targets.json (sheet PES SLS, Excel K and M).
- * Actual: Dashboard.enumerators[].assignment (all assigned records, including OPEN).
+ * SE2026 workload vs PES SE2026 realization per PPL/PCL.
+ * Target source: data/se2026_targets.json.
+ * Realization: statuses Ditemukan + Baru from Keluarga, Usaha Keluarga, and Usaha BKU.
  */
 let se2026WorkloadTargets = null;
 let se2026WorkloadChart = null;
 let se2026WorkloadLoadPromise = null;
 let se2026WorkloadTabulator = null;
 let se2026WorkloadRows = [];
+let se2026RealizationByName = new Map();
+let se2026RealizationSourceDate = null;
 
 function se2026NormalizeName(value) {
   return String(value || "")
@@ -57,6 +59,36 @@ function se2026ThemeColors() {
     target: "#3b82f6", actual: "#16a34a"
   };
 }
+async function loadSe2026PesRealization() {
+  const [snapshotResponse, officersResponse] = await Promise.all([
+    fetch(`api/deployment.php?action=latest&_ts=${Date.now()}`, { cache: "no-store" }),
+    fetch(`api/history.php?action=latest&role=pencacah&_ts=${Date.now()}`, { cache: "no-store" })
+  ]);
+  if (!snapshotResponse.ok) throw new Error("Snapshot Deployment SE2026 belum tersedia. Upload tiga file Excel terlebih dahulu.");
+  if (!officersResponse.ok) throw new Error("Data PPL/PCL FASIH tidak dapat dimuat untuk menghitung realisasi.");
+  const [snapshot, officerPayload] = await Promise.all([snapshotResponse.json(), officersResponse.json()]);
+  const officers = Array.isArray(officerPayload.data) ? officerPayload.data : [];
+  const ssls = snapshot.ssls || {};
+  const foundNewStatuses = ["1. Ditemukan", "2. Baru"];
+  const result = new Map();
+  officers.forEach(officer => {
+    const raw = (typeof USERNAME_MAP !== "undefined" && USERNAME_MAP[officer.email || officer.username]) || officer.username || officer.email || officer.name || "";
+    const key = se2026NormalizeName(raw);
+    if (!key) return;
+    const ids = new Set((officer.regionSummary || []).map(item => String(item.regionCode || "").replace(/\D/g, "")).filter(id => id.length === 16));
+    let total = 0;
+    ids.forEach(id => {
+      const record = ssls[id] || {};
+      ["keluarga", "usaha_keluarga", "usaha_bku"].forEach(category => {
+        foundNewStatuses.forEach(status => { total += Number(record?.[category]?.[status] || 0); });
+      });
+    });
+    result.set(key, (result.get(key) || 0) + total);
+  });
+  se2026RealizationByName = result;
+  se2026RealizationSourceDate = snapshot.importDate || null;
+}
+
 function renderSe2026WorkloadComparison() {
   const section = document.getElementById("se2026WorkloadSection");
   if (!section) return;
@@ -83,12 +115,13 @@ function renderSe2026WorkloadComparison() {
   const remainingDays = se2026RemainingDays();
   const rows = se2026WorkloadTargets.officers.map(officer => {
     const key = normalize(officer.name);
-    const actual = actualByName.get(key) || 0;
+    const assignment = actualByName.get(key) || 0;
+    const realization = se2026RealizationByName.get(key) || 0;
     const target = Number(officer.target) || 0;
-    const gap = actual - target;
-    const dailyTarget = se2026DailyTarget(target, actual, remainingDays);
-    return { name: se2026DisplayName(officer.name), target, actual, gap, dailyTarget, remainingDays, achievement: target > 0 ? actual / target * 100 : 0, matched: actualByName.has(key) };
-  }).sort((a,b) => a.gap - b.gap || a.achievement - b.achievement || a.name.localeCompare(b.name, "id"));
+    const gap = target - realization;
+    const dailyTarget = se2026DailyTarget(target, realization, remainingDays);
+    return { name: se2026DisplayName(officer.name), target, assignment, realization, actual: realization, gap, dailyTarget, remainingDays, achievement: target > 0 ? realization / target * 100 : 0, matched: actualByName.has(key), realizationMatched: se2026RealizationByName.has(key) };
+  }).sort((a,b) => b.gap - a.gap || a.achievement - b.achievement || a.name.localeCompare(b.name, "id"));
 
   // Keep the complete, unpaginated comparison dataset available for Excel export.
   se2026WorkloadRows = rows.map(row => ({ ...row }));
@@ -105,23 +138,24 @@ function renderSe2026WorkloadComparison() {
       resizableColumns: true,
       pagination: true,
       paginationSize: 15,
-      initialSort: [{ column: "gap", dir: "asc" }, { column: "achievement", dir: "asc" }],
+      initialSort: [{ column: "gap", dir: "desc" }, { column: "achievement", dir: "asc" }],
       sortMode: "local",
       paginationSizeSelector: [15, 25, 50],
       placeholder: "Tidak ada data perbandingan",
       columns: [
         { title: "Petugas", field: "name", minWidth: 145, widthGrow: 2, headerFilter: "input" },
         { title: "Muatan SE2026", field: "target", hozAlign: "right", headerHozAlign: "center", minWidth: 105, widthGrow: 1, formatter: cell => se2026Number(cell.getValue()) },
-        { title: "Assignment PES 2026", field: "actual", hozAlign: "right", headerHozAlign: "center", minWidth: 125, widthGrow: 1, formatter: cell => se2026Number(cell.getValue()) },
-        { title: "Selisih", field: "gap", sorter: "number", hozAlign: "right", headerHozAlign: "center", minWidth: 90, widthGrow: 1, formatter: cell => { const v=Number(cell.getValue())||0; return `<span class="fw-semibold ${v>=0?"text-success":"text-danger"}">${v>0?"+":""}${se2026Number(v)}</span>`; } },
+        { title: "Assignment PES 2026", field: "assignment", hozAlign: "right", headerHozAlign: "center", minWidth: 125, widthGrow: 1, formatter: cell => se2026Number(cell.getValue()) },
+        { title: "Realisasi PES SE2026", field: "realization", hozAlign: "right", headerHozAlign: "center", minWidth: 135, widthGrow: 1, formatter: cell => se2026Number(cell.getValue()) },
+        { title: "Selisih", field: "gap", sorter: "number", hozAlign: "right", headerHozAlign: "center", minWidth: 90, widthGrow: 1, formatter: cell => { const v=Number(cell.getValue())||0; const color=v>0?"text-warning":v<0?"text-success":"text-secondary"; return `<span class="fw-semibold ${color}">${v>0?"+":""}${se2026Number(v)}</span>`; } },
         { title: "Target Pendataan Harian", field: "dailyTarget", hozAlign: "right", headerHozAlign: "center", minWidth: 145, widthGrow: 1, formatter: cell => cell.getValue() == null ? "—" : `<span class="se2026-daily-pill">${se2026Number(cell.getValue())}</span>` },
         { title: "Pencapaian", field: "achievement", sorter: "number", hozAlign: "right", headerHozAlign: "center", minWidth: 100, widthGrow: 1, formatter: cell => { const v=Number(cell.getValue())||0; const level=v>=100?"complete":v>=50?"progress":"low"; return `<span class="se2026-achievement-pill se2026-achievement-${level}">${v.toFixed(1).replace(".",",")}%</span>`; } },
       ],
       tableBuilt: function () {
         // Force numeric priority order after Tabulator has initialized.
-        // Most negative gap first; for ties, lowest achievement first.
+        // Highest remaining workload first; for ties, lowest achievement first.
         this.setSort([
-          { column: "gap", dir: "asc" },
+          { column: "gap", dir: "desc" },
           { column: "achievement", dir: "asc" },
           { column: "name", dir: "asc" }
         ]);
@@ -136,7 +170,7 @@ function renderSe2026WorkloadComparison() {
   const chartRows=[...rows].sort((a,b)=>a.target-b.target);
   se2026WorkloadChart=new ApexCharts(el,{
     chart:{type:"bar",height:Math.max(520,chartRows.length* thirtyFive()),toolbar:{show:false},background:"transparent",foreColor:colors.text,fontFamily:"Inter, sans-serif",animations:{enabled:false}},
-    series:[{name:"Muatan SE2026",data:chartRows.map(r=>r.target)},{name:"Assignment PES 2026",data:chartRows.map(r=>r.actual)}],
+    series:[{name:"Muatan SE2026",data:chartRows.map(r=>r.target)},{name:"Realisasi PES SE2026",data:chartRows.map(r=>r.realization)}],
     colors:[colors.target,colors.actual],
     plotOptions:{bar:{horizontal:true,barHeight:"62%",borderRadius:3}},
     dataLabels:{enabled:false},
@@ -144,15 +178,21 @@ function renderSe2026WorkloadComparison() {
     yaxis:{labels:{style:{colors:colors.text},maxWidth:190}},
     grid:{borderColor:colors.grid,strokeDashArray:3},
     legend:{position:"top",labels:{colors:colors.text}},
-    tooltip:{theme:document.documentElement.getAttribute("data-bs-theme")||"light",y:{formatter:v=>se2026Number(v)+" assignment"}},
+    tooltip:{theme:document.documentElement.getAttribute("data-bs-theme")||"light",y:{formatter:v=>se2026Number(v)+""}},
     noData:{text:"Data target belum tersedia"}
   });
   se2026WorkloadChart.render();
 }
 function thirtyFive(){return window.matchMedia("(max-width: 768px)").matches?38:30;}
 async function refreshSe2026WorkloadComparison(){
-  try{await loadSe2026WorkloadTargets();renderSe2026WorkloadComparison();}
-  catch(err){console.error("[SE2026 workload]",err);const info=document.getElementById("se2026WorkloadMatchInfo");if(info)info.textContent="Gagal memuat data muatan petugas: "+err.message;}
+  try{
+    await loadSe2026WorkloadTargets();
+    await loadSe2026PesRealization();
+    renderSe2026WorkloadComparison();
+    const info=document.getElementById("se2026WorkloadMatchInfo");
+    if(info)info.textContent=se2026RealizationSourceDate?`Realisasi dihitung dari status Ditemukan + Baru pada tiga file Deployment (snapshot ${se2026RealizationSourceDate}).`:"Sumber realisasi belum tersedia.";
+  }
+  catch(err){console.error("[SE2026 workload]",err);const info=document.getElementById("se2026WorkloadMatchInfo");if(info)info.textContent="Gagal memuat realisasi PES SE2026: "+err.message;}
 }
 function exportSe2026WorkloadExcel() {
   if (!se2026WorkloadRows.length) {
@@ -164,23 +204,24 @@ function exportSe2026WorkloadExcel() {
     return;
   }
   const exportRows = [...se2026WorkloadRows]
-    .sort((a, b) => a.gap - b.gap || a.achievement - b.achievement || a.name.localeCompare(b.name, "id"))
+    .sort((a, b) => b.gap - a.gap || a.achievement - b.achievement || a.name.localeCompare(b.name, "id"))
     .map(row => ({
     "Petugas": row.name,
     "Muatan SE2026": row.target,
-    "Assignment PES 2026": row.actual,
-    "Selisih": row.gap,
+    "Assignment PES 2026": row.assignment,
+    "Realisasi PES SE2026": row.realization,
+    "Selisih (Muatan - Realisasi)": row.gap,
     "Target Pendataan Harian": row.dailyTarget,
     "Sisa Hari Pendataan": row.remainingDays,
     "Pencapaian (%)": Number(row.achievement.toFixed(1))
   }));
   const worksheet = XLSX.utils.json_to_sheet(exportRows);
-  worksheet["!cols"] = [{wch:30},{wch:18},{wch:22},{wch:14},{wch:24},{wch:20},{wch:18}];
+  worksheet["!cols"] = [{wch:30},{wch:18},{wch:22},{wch:22},{wch:22},{wch:24},{wch:20},{wch:18}];
   const workbook = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(workbook, worksheet, "Perbandingan Petugas");
   const now = new Date();
   const pad = value => String(value).padStart(2, "0");
-  const filename = `perbandingan_assignment_ppl_pcl_${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}.xlsx`;
+  const filename = `target_realisasi_pes_se2026_ppl_pcl_${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}.xlsx`;
   XLSX.writeFile(workbook, filename);
 }
 window.exportSe2026WorkloadExcel = exportSe2026WorkloadExcel;

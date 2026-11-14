@@ -1979,18 +1979,19 @@
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
                 <div>
                     <h3 class="mb-1"><i class="bi bi-bullseye text-primary me-2"></i>Target dan Realisasi</h3>
-                    <div class="text-secondary small">Perbandingan target Assignment SE2026 dengan realisasi berdasarkan petugas.</div>
+                    <div class="text-secondary small">Target Muatan SE2026 dibandingkan dengan realisasi PES SE2026 per PPL/PCL.</div>
                 </div>
             </div>
         <section id="se2026WorkloadSection" class="chart-card mt-4 mb-4">
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-                <div class="chart-title mb-0"><i class="bi bi-bullseye text-primary"></i> Perbandingan terhadap Assignment SE2026</div>
+                <div class="chart-title mb-0"><i class="bi bi-bullseye text-primary"></i> Perbandingan Muatan dan Realisasi PES SE2026</div>
             </div>
+            <div class="small text-secondary mb-2" id="se2026WorkloadMatchInfo">Mengambil data realisasi dari snapshot Deployment SE2026...</div>
             <div class="d-flex justify-content-end mb-2">
                 <button type="button" class="btn btn-success btn-sm" id="btnExportSe2026Workload"><i class="bi bi-file-earmark-excel me-1"></i> Export Excel</button>
             </div>
             <div class="row g-3 align-items-stretch">
-                <div class="col-12 col-xl-6"><div class="h-100 p-2 rounded-3" style="background:var(--card-solid);border:1px solid var(--border);"><div class="small fw-semibold mb-2 text-secondary">Grafik Muatan dan Assignment</div><div id="se2026WorkloadChart" style="min-height:520px;width:100%;"></div></div></div>
+                <div class="col-12 col-xl-6"><div class="h-100 p-2 rounded-3" style="background:var(--card-solid);border:1px solid var(--border);"><div class="small fw-semibold mb-2 text-secondary">Grafik Muatan dan Realisasi</div><div id="se2026WorkloadChart" style="min-height:520px;width:100%;"></div></div></div>
                 <div class="col-12 col-xl-6"><div class="h-100 p-2 rounded-3" style="background:var(--card-solid);border:1px solid var(--border);"><div class="small fw-semibold mb-2 text-secondary">Rincian per Petugas</div><div class="se2026-workload-table-wrap"><div id="se2026WorkloadTable"></div></div></div></div>
             </div>
         </section>
