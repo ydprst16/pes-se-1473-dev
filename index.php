@@ -1973,6 +1973,118 @@
             }
         }
 
+
+        /* v77: transparent Deployment table surface; inherit colors from the active app theme. */
+        #deploymentModule #deploymentOfficerTable .tabulator,
+        #deploymentModule #deploymentOfficerTable .tabulator-header,
+        #deploymentModule #deploymentOfficerTable .tabulator-header .tabulator-col,
+        #deploymentModule #deploymentOfficerTable .tabulator-header .tabulator-col .tabulator-col-content,
+        #deploymentModule #deploymentOfficerTable .tabulator-tableholder,
+        #deploymentModule #deploymentOfficerTable .tabulator-table,
+        #deploymentModule #deploymentOfficerTable .tabulator-footer,
+        #deploymentModule #deploymentOfficerTable .tabulator-calcs-holder,
+        #deploymentModule #deploymentOfficerTable .tabulator-calcs,
+        #deploymentModule #deploymentOfficerTable .tabulator-row,
+        #deploymentModule #deploymentOfficerTable .tabulator-row.tabulator-row-even,
+        #deploymentModule #deploymentOfficerTable .tabulator-row.tabulator-row-odd,
+        #deploymentModule #deploymentOfficerTable .tabulator-cell,
+        #deploymentModule #deploymentOfficerTable .tabulator-col,
+        #deploymentModule #deploymentOfficerTable .tabulator-col-content {
+            background:transparent !important;
+            background-color:transparent !important;
+            background-image:none !important;
+            color:var(--text) !important;
+        }
+        #deploymentModule #deploymentOfficerTable .tabulator {
+            border:0 !important;
+            box-shadow:none !important;
+        }
+        #deploymentModule #deploymentOfficerTable .tabulator-header {
+            border-top:0 !important;
+            border-left:0 !important;
+            border-right:0 !important;
+            border-bottom:1px solid var(--border) !important;
+        }
+        #deploymentModule #deploymentOfficerTable .tabulator-header .tabulator-col,
+        #deploymentModule #deploymentOfficerTable .tabulator-cell {
+            border-color:var(--border) !important;
+        }
+        #deploymentModule #deploymentOfficerTable .tabulator-row {
+            border-bottom:1px solid var(--border) !important;
+        }
+        #deploymentModule #deploymentOfficerTable .tabulator-row:hover,
+        #deploymentModule #deploymentOfficerTable .tabulator-row.tabulator-row-even:hover,
+        #deploymentModule #deploymentOfficerTable .tabulator-row.tabulator-row-odd:hover {
+            background:var(--row-hover-bg) !important;
+            background-color:var(--row-hover-bg) !important;
+        }
+        /* Remove old category column fills; retain only the slim colored header accents. */
+        #deploymentModule #deploymentOfficerTable .deployment-col-keluarga,
+        #deploymentModule #deploymentOfficerTable .deployment-col-usaha_keluarga,
+        #deploymentModule #deploymentOfficerTable .deployment-col-usaha_bku,
+        #deploymentModule #deploymentOfficerTable .tabulator-col[tabulator-field^="keluarga_"],
+        #deploymentModule #deploymentOfficerTable .tabulator-col[tabulator-field^="usaha_keluarga_"],
+        #deploymentModule #deploymentOfficerTable .tabulator-col[tabulator-field^="usaha_bku_"] {
+            background:transparent !important;
+            background-color:transparent !important;
+        }
+        #deploymentModule #deploymentOfficerTable .tabulator-paginator,
+        #deploymentModule #deploymentOfficerTable .tabulator-page,
+        #deploymentModule #deploymentOfficerTable .tabulator-page-size {
+            background:transparent !important;
+            background-color:transparent !important;
+            color:var(--text) !important;
+            border-color:var(--border) !important;
+            box-shadow:none !important;
+        }
+        #deploymentModule #deploymentOfficerTable .tabulator-page.active {
+            background:var(--primary) !important;
+            background-color:var(--primary) !important;
+            color:#fff !important;
+            border-color:var(--primary) !important;
+        }
+        #deploymentModule #deploymentOfficerTable .tabulator-cell.tabulator-frozen,
+        #deploymentModule #deploymentOfficerTable .tabulator-header .tabulator-col.tabulator-frozen {
+            background:transparent !important;
+            background-color:transparent !important;
+            box-shadow:none !important;
+        }
+        [data-bs-theme="light"] #deploymentModule #deploymentOfficerTable .tabulator,
+        [data-bs-theme="light"] #deploymentModule #deploymentOfficerTable .tabulator-header,
+        [data-bs-theme="light"] #deploymentModule #deploymentOfficerTable .tabulator-header .tabulator-col,
+        [data-bs-theme="light"] #deploymentModule #deploymentOfficerTable .tabulator-header .tabulator-col .tabulator-col-content,
+        [data-bs-theme="light"] #deploymentModule #deploymentOfficerTable .tabulator-tableholder,
+        [data-bs-theme="light"] #deploymentModule #deploymentOfficerTable .tabulator-table,
+        [data-bs-theme="light"] #deploymentModule #deploymentOfficerTable .tabulator-footer,
+        [data-bs-theme="light"] #deploymentModule #deploymentOfficerTable .tabulator-calcs-holder,
+        [data-bs-theme="light"] #deploymentModule #deploymentOfficerTable .tabulator-calcs,
+        [data-bs-theme="light"] #deploymentModule #deploymentOfficerTable .tabulator-row,
+        [data-bs-theme="light"] #deploymentModule #deploymentOfficerTable .tabulator-row.tabulator-row-even,
+        [data-bs-theme="light"] #deploymentModule #deploymentOfficerTable .tabulator-row.tabulator-row-odd,
+        [data-bs-theme="light"] #deploymentModule #deploymentOfficerTable .tabulator-cell,
+        [data-bs-theme="light"] #deploymentModule #deploymentOfficerTable .tabulator-col,
+        [data-bs-theme="light"] #deploymentModule #deploymentOfficerTable .tabulator-col-content {
+            background:transparent !important;
+            background-color:transparent !important;
+            background-image:none !important;
+            color:var(--text) !important;
+            border-color:var(--border) !important;
+        }
+        [data-bs-theme="light"] #deploymentModule #deploymentOfficerTable .tabulator-row:hover,
+        [data-bs-theme="light"] #deploymentModule #deploymentOfficerTable .tabulator-row.tabulator-row-even:hover,
+        [data-bs-theme="light"] #deploymentModule #deploymentOfficerTable .tabulator-row.tabulator-row-odd:hover {
+            background:var(--row-hover-bg) !important;
+            background-color:var(--row-hover-bg) !important;
+        }
+        [data-bs-theme="light"] #deploymentModule #deploymentOfficerTable .tabulator-paginator,
+        [data-bs-theme="light"] #deploymentModule #deploymentOfficerTable .tabulator-page,
+        [data-bs-theme="light"] #deploymentModule #deploymentOfficerTable .tabulator-page-size {
+            background:transparent !important;
+            background-color:transparent !important;
+            color:var(--text) !important;
+            border-color:var(--border) !important;
+        }
+
 </style>
 
 </head>
