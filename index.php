@@ -2257,6 +2257,175 @@
                 white-space:normal;
             }
         }
+
+
+        /* v73: Target & Realisasi adopts the Deployment officer table layout and mobile scroll behavior. */
+        #se2026WorkloadSection .se2026-workload-table-wrap {
+            display:block !important;
+            width:100% !important;
+            max-width:100% !important;
+            min-width:0 !important;
+            overflow-x:auto !important;
+            overflow-y:hidden !important;
+            -webkit-overflow-scrolling:touch !important;
+            overscroll-behavior-x:contain !important;
+            touch-action:pan-x pan-y !important;
+            border-radius:10px;
+        }
+        #se2026WorkloadSection #se2026WorkloadTable {
+            display:block !important;
+            width:100% !important;
+            min-width:0 !important;
+            max-width:100% !important;
+            overflow:visible !important;
+        }
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator {
+            display:block !important;
+            width:max-content !important;
+            min-width:100% !important;
+            max-width:none !important;
+            height:620px !important;
+            border:1px solid var(--border) !important;
+            border-radius:10px !important;
+            overflow:hidden !important;
+            background:var(--card-solid) !important;
+            color:var(--bs-body-color) !important;
+            font-size:11px !important;
+        }
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator-tableholder {
+            overflow-x:auto !important;
+            overflow-y:auto !important;
+            overscroll-behavior-x:contain !important;
+            -webkit-overflow-scrolling:touch !important;
+            background:var(--card-solid) !important;
+        }
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator-header,
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator-col {
+            background:var(--card-solid) !important;
+            color:var(--bs-body-color) !important;
+            border-color:var(--border) !important;
+        }
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator-col-title {
+            white-space:normal !important;
+            overflow-wrap:anywhere !important;
+            word-break:normal !important;
+            line-height:1.25 !important;
+            text-align:center !important;
+        }
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col .tabulator-col-content {
+            min-height:76px !important;
+            display:flex !important;
+            align-items:center !important;
+            justify-content:center !important;
+            padding:6px 5px !important;
+        }
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator-row {
+            min-height:34px !important;
+            background:var(--card-solid) !important;
+            color:var(--bs-body-color) !important;
+            border-color:var(--border) !important;
+        }
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator-row:nth-child(even) {
+            background:rgba(127,127,127,.07) !important;
+        }
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell {
+            padding:6px 8px !important;
+            border-color:var(--border) !important;
+            background:transparent !important;
+            color:var(--bs-body-color) !important;
+            font-size:11px !important;
+        }
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell[tabulator-field="name"] {
+            white-space:normal !important;
+            overflow-wrap:anywhere !important;
+            line-height:1.3 !important;
+        }
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell.tabulator-frozen {
+            z-index:12 !important;
+            background:#172033 !important;
+            color:#f8fafc !important;
+            box-shadow:2px 0 5px rgba(0,0,0,.16) !important;
+        }
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col.tabulator-frozen {
+            z-index:14 !important;
+            background:#263449 !important;
+            color:#fff !important;
+        }
+        [data-bs-theme="light"] #se2026WorkloadSection #se2026WorkloadTable .tabulator-row {
+            background:#fff !important;
+            color:#1f2937 !important;
+        }
+        [data-bs-theme="light"] #se2026WorkloadSection #se2026WorkloadTable .tabulator-row:nth-child(even) {
+            background:#f8fafc !important;
+        }
+        [data-bs-theme="light"] #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell.tabulator-frozen {
+            background:#e8eef7 !important;
+            color:#0f172a !important;
+        }
+        [data-bs-theme="light"] #se2026WorkloadSection #se2026WorkloadTable .tabulator-row.tabulator-row-even .tabulator-cell.tabulator-frozen {
+            background:#dce6f3 !important;
+        }
+        [data-bs-theme="light"] #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col.tabulator-frozen {
+            background:#d7e2f0 !important;
+            color:#0f172a !important;
+        }
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator-footer {
+            display:flex !important;
+            justify-content:flex-end !important;
+            align-items:center !important;
+            flex-wrap:wrap !important;
+            gap:6px !important;
+            min-height:42px !important;
+            height:auto !important;
+            padding:6px 10px !important;
+            overflow:visible !important;
+            background:var(--card-solid) !important;
+            border-top:1px solid var(--border) !important;
+        }
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator-paginator {
+            display:flex !important;
+            justify-content:flex-end !important;
+            align-items:center !important;
+            flex-wrap:wrap !important;
+            gap:4px !important;
+            margin-left:auto !important;
+            overflow:visible !important;
+            white-space:normal !important;
+        }
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator-page,
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator-page-size {
+            flex:0 0 auto !important;
+            min-width:32px;
+            background:var(--card-solid) !important;
+            color:var(--bs-body-color) !important;
+            border:1px solid var(--border) !important;
+        }
+        @media(max-width:767.98px) {
+            #se2026WorkloadSection .se2026-workload-table-wrap {
+                width:100% !important;
+                max-width:100% !important;
+                overflow-x:auto !important;
+                overflow-y:hidden !important;
+            }
+            #se2026WorkloadSection #se2026WorkloadTable .tabulator {
+                width:max-content !important;
+                min-width:1050px !important;
+                font-size:11px !important;
+            }
+            #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col[tabulator-field="name"],
+            #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell[tabulator-field="name"] {
+                min-width:145px !important;
+                max-width:150px !important;
+            }
+            #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell {
+                padding:6px 6px !important;
+                font-size:10.5px !important;
+            }
+            #se2026WorkloadSection #se2026WorkloadTable .tabulator-footer {
+                justify-content:flex-end !important;
+            }
+        }
+
 </style>
             <div class="row g-3 mb-4">
                 <div class="col-12 col-xl-4"><div class="bp-breakdown-card"><div class="bp-breakdown-head"><div class="bp-breakdown-icon"><i class="bi bi-people-fill"></i></div><div><div class="chart-title mb-0">Keberadaan Keluarga</div><div class="bp-breakdown-subtitle">Satu hitungan per UUID · <code>ada_keluarga_label</code></div></div></div><div id="businessFamilyChart" style="min-height:245px"></div><div class="table-responsive"><table class="table bp-breakdown-table"><thead><tr><th>Status</th><th class="text-end">Jumlah</th><th class="text-end">% Assignment</th></tr></thead><tbody id="businessFamilyRows"></tbody></table></div></div></div>
