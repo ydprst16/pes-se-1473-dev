@@ -1437,9 +1437,11 @@
         .module-navigation {
             display:flex; align-items:center; gap:clamp(1.25rem, 3vw, 2.25rem);
             border-bottom:1px solid var(--border); margin:0 0 1.5rem; padding:0 .15rem;
-            overflow-x:auto; scrollbar-width:thin;
-            position:sticky; top:var(--app-header-height, 0px); z-index:998;
-            background:var(--card-solid); box-shadow:0 8px 16px rgba(0,0,0,.08);
+            overflow-x:auto; overflow-y:hidden; scrollbar-width:thin;
+            position:sticky; top:var(--app-header-height, 0px); z-index:1000;
+            background:var(--card-solid); box-shadow:0 8px 16px rgba(0,0,0,.12);
+            isolation:isolate; min-height:54px; overscroll-behavior-x:contain;
+            -webkit-overflow-scrolling:touch;
         }
         .module-navigation .module-tab {
             appearance:none; border:0; border-bottom:3px solid transparent; background:transparent;
@@ -1452,7 +1454,11 @@
         .module-navigation .module-tab.active { color:var(--primary); border-bottom-color:var(--primary); }
         .module-navigation .module-tab:focus-visible { outline:2px solid var(--primary); outline-offset:3px; border-radius:4px; }
         @media (max-width:575.98px) {
-            .module-navigation { gap:1.25rem; margin-bottom:1.1rem; }
+            .module-navigation {
+                gap:1.25rem; margin-bottom:1.1rem; min-height:50px;
+                position:sticky; top:var(--app-header-height, 0px); z-index:1000;
+                width:100%; max-width:100%; background:var(--card-solid);
+            }
             .module-navigation .module-tab { font-size:.82rem; padding:.75rem .1rem .68rem; }
         }
 
@@ -1632,7 +1638,7 @@
         #deploymentModule .chart-card,
         #deploymentModule .bp-breakdown-card{min-width:0}
         @media(max-width:767.98px){
-            .container-dashboard{padding:12px;overflow-x:clip}
+            .container-dashboard{padding:12px;overflow-x:visible}
             .container-dashboard .row{--bs-gutter-x:.9rem}
             #deploymentModule{padding-inline:0}
             #deploymentModule>div:first-child{padding-inline:0}
@@ -1675,13 +1681,17 @@
         [data-bs-theme="light"] #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col.tabulator-frozen .tabulator-col-title{color:#0f172a!important}
         #se2026WorkloadSection #se2026WorkloadTable .tabulator-footer,#se2026WorkloadSection #se2026WorkloadTable .tabulator-paginator,#se2026WorkloadSection #se2026WorkloadTable .tabulator-page,#se2026WorkloadSection #se2026WorkloadTable .tabulator-page-size{background:var(--bs-tertiary-bg)!important;color:var(--bs-body-color)!important;border-color:var(--bs-border-color)!important}
         #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell[tabulator-field="name"],
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col[tabulator-field="name"]{max-width:190px!important}
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell[tabulator-field="name"]{white-space:normal!important;overflow-wrap:anywhere!important;line-height:1.3}
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col[tabulator-field="name"]{max-width:280px!important}
+        #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell[tabulator-field="name"]{white-space:normal!important;overflow-wrap:break-word!important;line-height:1.35}
+        @media(min-width:1200px){
+          #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell[tabulator-field="name"],
+          #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col[tabulator-field="name"]{max-width:300px!important}
+        }
         @media(max-width:767.98px){
           #se2026WorkloadSection .se2026-workload-table-wrap{width:calc(100vw - 56px)!important;max-width:calc(100vw - 56px)!important}
           #se2026WorkloadSection #se2026WorkloadTable .tabulator{min-width:1120px!important;font-size:11px!important}
           #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell[tabulator-field="name"],
-          #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col[tabulator-field="name"]{max-width:145px!important}
+          #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col[tabulator-field="name"]{max-width:190px!important}
         }
 
 </style>
@@ -2334,11 +2344,19 @@
             <script>
                 (() => {
                     const header = document.querySelector('.header');
-                    if (!header) return;
-                    const updateHeaderHeight = () => document.documentElement.style.setProperty('--app-header-height', `${Math.ceil(header.getBoundingClientRect().height)}px`);
+                    const nav = document.querySelector('.module-navigation');
+                    if (!header || !nav) return;
+                    const updateHeaderHeight = () => {
+                        const height = Math.ceil(header.getBoundingClientRect().height);
+                        document.documentElement.style.setProperty('--app-header-height', `${height}px`);
+                        nav.style.top = `${height}px`;
+                    };
                     updateHeaderHeight();
+                    requestAnimationFrame(updateHeaderHeight);
+                    window.addEventListener('load', updateHeaderHeight, { once: true });
                     if ('ResizeObserver' in window) new ResizeObserver(updateHeaderHeight).observe(header);
                     window.addEventListener('resize', updateHeaderHeight, {passive:true});
+                    if (window.visualViewport) window.visualViewport.addEventListener('resize', updateHeaderHeight, {passive:true});
                 })();
             </script>
             <!-- Bootstrap -->

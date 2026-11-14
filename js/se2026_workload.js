@@ -202,7 +202,7 @@ function renderSe2026WorkloadComparison() {
       paginationSizeSelector: [15, 25, 50],
       placeholder: "Tidak ada data perbandingan",
       columns: [
-        { title: "Nama Petugas", field: "name", frozen: true, minWidth: 125, width: 155, widthGrow: 0, headerFilter: false, variableHeight: true, formatter: "textarea", tooltip: true },
+        { title: "Nama Petugas", field: "name", frozen: true, minWidth: 220, width: 245, widthGrow: 0, headerFilter: false, variableHeight: true, formatter: "textarea", tooltip: true },
         { title: "Muatan SE2026", field: "target", hozAlign: "right", headerHozAlign: "center", minWidth: 105, widthGrow: 1, formatter: cell => se2026Number(cell.getValue()) },
         { title: "Assignment PES 2026", field: "assignment", hozAlign: "right", headerHozAlign: "center", minWidth: 125, widthGrow: 1, formatter: cell => se2026Number(cell.getValue()) },
         { title: "Realisasi PES SE2026 (Ditemukan & Baru)", field: "realization", hozAlign: "right", headerHozAlign: "center", minWidth: 190, widthGrow: 1, formatter: cell => se2026Number(cell.getValue()) },
