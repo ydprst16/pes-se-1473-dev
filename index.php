@@ -1619,6 +1619,17 @@
             #deploymentModule>div:first-child{padding-inline:0}
         }
 
+
+        /* Deployment officer column stays compact so the horizontally scrollable data remains usable on phones. */
+        #deploymentOfficerTable .tabulator-cell[tabulator-field="officer"],
+        #deploymentOfficerTable .tabulator-header .tabulator-col[tabulator-field="officer"]{max-width:190px}
+        #deploymentOfficerTable .tabulator-cell[tabulator-field="officer"]{white-space:normal!important;overflow-wrap:anywhere;line-height:1.3}
+        @media(max-width:767.98px){
+          #deploymentOfficerTable .tabulator-cell[tabulator-field="officer"],
+          #deploymentOfficerTable .tabulator-header .tabulator-col[tabulator-field="officer"]{max-width:145px!important}
+          #deploymentOfficerTable .tabulator{min-width:820px!important}
+        }
+
 </style>
 
 </head>
@@ -1666,6 +1677,9 @@
         <nav class="module-navigation" role="tablist" aria-label="Navigasi modul">
             <button class="module-tab active" id="menuMonitoring" type="button" role="tab" aria-selected="true" aria-controls="monitoringModule">
                 <i class="bi bi-speedometer2"></i><span>Monitoring Progress</span>
+            </button>
+            <button class="module-tab" id="menuTargetRealization" type="button" role="tab" aria-selected="false" aria-controls="targetRealizationModule">
+                <i class="bi bi-bullseye"></i><span>Target dan Realisasi</span>
             </button>
             <button class="module-tab" id="menuBusinessPresence" type="button" role="tab" aria-selected="false" aria-controls="businessPresenceModule">
                 <i class="bi bi-people-fill"></i><span>Keberadaan Keluarga/Usaha</span>
@@ -1746,18 +1760,7 @@
             <div class="row g-3" id="comparisonCards"></div>
         </div>
 
-        <section id="se2026WorkloadSection" class="chart-card mt-4 mb-4">
-            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-                <div class="chart-title mb-0"><i class="bi bi-bullseye text-primary"></i> Perbandingan terhadap Assignment SE2026</div>
-            </div>
-            <div class="d-flex justify-content-end mb-2">
-                <button type="button" class="btn btn-success btn-sm" id="btnExportSe2026Workload"><i class="bi bi-file-earmark-excel me-1"></i> Export Excel</button>
-            </div>
-            <div class="row g-3 align-items-stretch">
-                <div class="col-12 col-xl-6"><div class="h-100 p-2 rounded-3" style="background:var(--card-solid);border:1px solid var(--border);"><div class="small fw-semibold mb-2 text-secondary">Grafik Muatan dan Assignment</div><div id="se2026WorkloadChart" style="min-height:520px;width:100%;"></div></div></div>
-                <div class="col-12 col-xl-6"><div class="h-100 p-2 rounded-3" style="background:var(--card-solid);border:1px solid var(--border);"><div class="small fw-semibold mb-2 text-secondary">Rincian per Petugas</div><div class="se2026-workload-table-wrap"><div id="se2026WorkloadTable"></div></div></div></div>
-            </div>
-        </section>
+
 
         <div class="row mt-4 g-4">
             <div class="col-xl-4 d-flex">
@@ -1965,6 +1968,27 @@
                         Powered by Bootstrap 5 • ApexCharts • Grid.js
                     </small>
                 </footer>
+        </section>
+
+        <section id="targetRealizationModule" class="d-none">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+                <div>
+                    <h3 class="mb-1"><i class="bi bi-bullseye text-primary me-2"></i>Target dan Realisasi</h3>
+                    <div class="text-secondary small">Perbandingan target Assignment SE2026 dengan realisasi berdasarkan petugas.</div>
+                </div>
+            </div>
+        <section id="se2026WorkloadSection" class="chart-card mt-4 mb-4">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+                <div class="chart-title mb-0"><i class="bi bi-bullseye text-primary"></i> Perbandingan terhadap Assignment SE2026</div>
+            </div>
+            <div class="d-flex justify-content-end mb-2">
+                <button type="button" class="btn btn-success btn-sm" id="btnExportSe2026Workload"><i class="bi bi-file-earmark-excel me-1"></i> Export Excel</button>
+            </div>
+            <div class="row g-3 align-items-stretch">
+                <div class="col-12 col-xl-6"><div class="h-100 p-2 rounded-3" style="background:var(--card-solid);border:1px solid var(--border);"><div class="small fw-semibold mb-2 text-secondary">Grafik Muatan dan Assignment</div><div id="se2026WorkloadChart" style="min-height:520px;width:100%;"></div></div></div>
+                <div class="col-12 col-xl-6"><div class="h-100 p-2 rounded-3" style="background:var(--card-solid);border:1px solid var(--border);"><div class="small fw-semibold mb-2 text-secondary">Rincian per Petugas</div><div class="se2026-workload-table-wrap"><div id="se2026WorkloadTable"></div></div></div></div>
+            </div>
+        </section>
         </section>
 
                 <div class="modal fade" id="businessUploadModal" tabindex="-1" aria-hidden="true">

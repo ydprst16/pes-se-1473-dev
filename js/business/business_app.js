@@ -35,10 +35,12 @@
     const monitoring = which === 'monitoring';
     const business = which === 'business';
     const deployment = which === 'deployment';
+    const targetRealization = which === 'target-realization';
     $('monitoringModule').classList.toggle('d-none', !monitoring);
+    $('targetRealizationModule')?.classList.toggle('d-none', !targetRealization);
     $('businessPresenceModule').classList.toggle('d-none', !business);
     $('deploymentModule')?.classList.toggle('d-none', !deployment);
-    const tabs = [['menuMonitoring',monitoring],['menuBusinessPresence',business],['menuDeployment',deployment]];
+    const tabs = [['menuMonitoring',monitoring],['menuTargetRealization',targetRealization],['menuBusinessPresence',business],['menuDeployment',deployment]];
     tabs.forEach(([id,active])=>{
       const el=$(id); if(!el) return;
       el.classList.toggle('active',active);
@@ -342,7 +344,7 @@
   function exportRegion(){if(regionTable)regionTable.download('xlsx',`rekap_keberadaan_keluarga_usaha_${currentPayload?.importDate||'latest'}.xlsx`,{sheetName:'Rekap Keluarga Usaha'});}
 
   document.addEventListener('DOMContentLoaded',()=>{
-    $('menuMonitoring')?.addEventListener('click',()=>switchModule('monitoring'));$('menuBusinessPresence')?.addEventListener('click',()=>switchModule('business'));$('menuDeployment')?.addEventListener('click',()=>switchModule('deployment'));
+    $('menuMonitoring')?.addEventListener('click',()=>switchModule('monitoring'));$('menuTargetRealization')?.addEventListener('click',()=>switchModule('target-realization'));$('menuBusinessPresence')?.addEventListener('click',()=>switchModule('business'));$('menuDeployment')?.addEventListener('click',()=>switchModule('deployment'));
     $('btnOpenBusinessUpload')?.addEventListener('click',()=>{$('businessImportDate').value=new Date().toLocaleDateString('en-CA',{timeZone:'Asia/Jakarta'});bootstrap.Modal.getOrCreateInstance($('businessUploadModal')).show();});
     $('businessExcelFile')?.addEventListener('change',handleFileChange);$('btnBusinessImport')?.addEventListener('click',uploadExcel);
     $('btnBusinessRefresh')?.addEventListener('click',async()=>{await loadLatest();await loadHistory();});$('businessHistorySelect')?.addEventListener('change',e=>loadDate(e.target.value));
