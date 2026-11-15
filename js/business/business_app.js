@@ -20,8 +20,6 @@
     '4. Ganda':'Ganda',
     '7. Data diperoleh dari Kantor Pusat (KP)':'Data dari Kantor Pusat (KP)'
   };
-  const familyOrder = ['Ditemukan','Baru','Tidak Ditemukan (STOP)','Meninggal','Belum Diisi'];
-  const businessOrder = ['Ditemukan','Baru','Tidak Ditemukan','Tutup','Ganda','Data dari Kantor Pusat (KP)','Belum Diisi'];
   const api = (action, extra={}) => `api/business_presence.php?${new URLSearchParams({action,...extra,_ts:Date.now()})}`;
   const fmt = (n) => Number(n || 0).toLocaleString('id-ID');
   const escapeHtml = (v) => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -223,12 +221,6 @@
     }
   }
 
-  function summaryRows(counts,order,total){
-    const rows=order.filter(name=>name!=='Belum Diisi').map(name=>({name,count:counts[name]||0})).filter(x=>x.count>0);
-    if(!rows.length)return '<tr><td colspan="3" class="text-center text-secondary py-4">Belum ada hasil isian</td></tr>';
-    return rows.map(x=>{const pct=total?(x.count/total*100):0;return `<tr><td><span class="bp-category-name">${escapeHtml(x.name)}</span><div class="bp-category-track"><div class="bp-category-fill" style="width:${Math.min(100,pct).toFixed(2)}%"></div></div></td><td class="text-end"><span class="bp-count-pill">${fmt(x.count)}</span></td><td class="text-end fw-semibold">${pct.toLocaleString('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2})}%</td></tr>`;}).join('');
-  }
-
   function mobileSearchHtml(id,placeholder){return `<div class="bp-mobile-search"><input type="search" id="${id}" placeholder="${placeholder}" autocomplete="off"></div><div class="bp-mobile-count" data-count-for="${id}"></div>`;}
   function metric(label,value){return `<div class="bp-mobile-metric"><div class="bp-mobile-metric-label">${label}</div><div class="bp-mobile-metric-value">${fmt(value||0)}</div></div>`;}
   function renderRegionMobile(rows){
@@ -255,7 +247,7 @@
     const totalRows=currentRows.length;
     const uniqueIds=new Set(currentRows.map(r=>cell(r.id)).filter(Boolean));
     const familyById=new Map();
-    const family={},familyBusiness={},bku={},statuses={};
+    const familyBusiness={},bku={},statuses={};
     const regions={};
     currentRows.forEach(r=>{
       const id=cell(r.id),fv=cell(r.ada_keluarga_label),fb=businessOf(r.ada_bang_usaha_label),uv=businessOf(r.keberadaan_usaha_label),st=r.assignment_status_alias||'Status Kosong';
@@ -269,7 +261,6 @@
       if(fv)g.familyFilled++;
       if(fb!=='Belum Diisi'||uv!=='Belum Diisi')g.businessFilled++;
     });
-    familyById.forEach(v=>family[v]=(family[v]||0)+1);
     const familyFilled=familyById.size;
     const familyBusinessFilled=Object.values(familyBusiness).reduce((a,b)=>a+b,0);
     const bkuFilled=Object.values(bku).reduce((a,b)=>a+b,0);
@@ -278,9 +269,6 @@
     const combinedPercent=uniqueIds.size?coveredIds.size/uniqueIds.size*100:0;
     $('businessSnapshotDate').textContent=payload.importDate||'-';$('businessUpdatedAt').textContent=payload.uploadedAt?new Date(payload.uploadedAt).toLocaleString('id-ID'):'-';
     $('bpTotal').textContent=fmt(totalRows);$('bpFamilyFilled').textContent=fmt(familyFilled);$('bpFamilyBusinessFilled').textContent=fmt(familyBusinessFilled);$('bpBkuFilled').textContent=fmt(bkuFilled);$('bpCombinedPercent').textContent=combinedPercent.toLocaleString('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2})+'%';$('bpCombinedDetail').textContent=`${fmt(coveredIds.size)} dari ${fmt(uniqueIds.size)} assignment memiliki minimal satu isian keluarga/usaha`;
-    $('businessFamilyRows').innerHTML=summaryRows(family,familyOrder,uniqueIds.size);
-    $('businessFamilyBusinessRows').innerHTML=summaryRows(familyBusiness,businessOrder,Math.max(1,familyBusinessFilled));
-    $('businessBkuRows').innerHTML=summaryRows(bku,businessOrder,Math.max(1,bkuFilled));
     // Ambil seluruh petugas PPL dan PML, lalu cocokkan berdasarkan regionCode = idsubsls.
     const officerNames={};
     for (const role of ['pencacah','pengawas']) {

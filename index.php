@@ -2731,12 +2731,7 @@
 
 
 </style>
-            <div class="row g-3 mb-4">
-                <div class="col-12 col-xl-4"><div class="bp-breakdown-card"><div class="bp-breakdown-head"><div class="bp-breakdown-icon"><i class="bi bi-people-fill"></i></div><div><div class="chart-title mb-0">Keberadaan Keluarga</div><div class="bp-breakdown-subtitle">Satu hitungan per UUID · <code>ada_keluarga_label</code></div></div></div><div class="table-responsive"><table class="table bp-breakdown-table"><thead><tr><th>Status</th><th class="text-end">Jumlah</th><th class="text-end">% Assignment</th></tr></thead><tbody id="businessFamilyRows"></tbody></table></div></div></div>
-                <div class="col-12 col-xl-4"><div class="bp-breakdown-card"><div class="bp-breakdown-head"><div class="bp-breakdown-icon"><i class="bi bi-shop"></i></div><div><div class="chart-title mb-0">Usaha Keluarga</div><div class="bp-breakdown-subtitle">Satu baris per objek · <code>ada_bang_usaha_label</code></div></div></div><div class="table-responsive"><table class="table bp-breakdown-table"><thead><tr><th>Status</th><th class="text-end">Jumlah</th><th class="text-end">% Catatan</th></tr></thead><tbody id="businessFamilyBusinessRows"></tbody></table></div></div></div>
-                <div class="col-12 col-xl-4"><div class="bp-breakdown-card"><div class="bp-breakdown-head"><div class="bp-breakdown-icon"><i class="bi bi-building"></i></div><div><div class="chart-title mb-0">Usaha BKU</div><div class="bp-breakdown-subtitle">Satu baris per objek · <code>keberadaan_usaha_label</code></div></div></div><div class="table-responsive"><table class="table bp-breakdown-table"><thead><tr><th>Status</th><th class="text-end">Jumlah</th><th class="text-end">% Catatan</th></tr></thead><tbody id="businessBkuRows"></tbody></table></div></div></div>
-            </div>
-            <div class="chart-card mt-5 mb-4"><div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2"><div class="chart-title m-0">Rekapitulasi Assignment & Petugas per Sub-SLS</div><button class="btn btn-sm btn-success" id="btnBusinessExport"><i class="bi bi-file-earmark-excel me-1"></i>Export Excel</button></div><div class="small text-secondary mb-3">Satu baris untuk setiap assignment pada file Excel. Nama PPL dan PML dicocokkan otomatis berdasarkan ID Sub-SLS (regionCode). URL membuka assignment di FASIH.</div><div id="businessRegionTable" class="bp-data-table"></div></div>
+            <div class="chart-card mt-3 mb-4"><div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2"><div class="chart-title m-0">Rekapitulasi Assignment & Petugas per Sub-SLS</div><button class="btn btn-sm btn-success" id="btnBusinessExport"><i class="bi bi-file-earmark-excel me-1"></i>Export Excel</button></div><div class="small text-secondary mb-3">Satu baris untuk setiap assignment pada file Excel. Nama PPL dan PML dicocokkan otomatis berdasarkan ID Sub-SLS (regionCode). URL membuka assignment di FASIH.</div><div id="businessRegionTable" class="bp-data-table"></div></div>
         </section>
 
             </div>
@@ -2853,7 +2848,7 @@
             <script src="js/app.js?v=85"></script>
             <script src="js/se2026_workload.js"></script>
             <script src="js/se2026_deployment_officers.js"></script>
-            <script src="js/business/business_app.js"></script>
+            <script src="js/business/business_app.js?v=86"></script>
             <script src="js/deployment_officers.js"></script>
 
 </body>
