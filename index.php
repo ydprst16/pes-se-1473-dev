@@ -2730,6 +2730,120 @@
 
 
 
+
+        /* v87: Assignment list uses the same transparent Tabulator surfaces as Deployment. */
+        #businessPresenceModule #businessRegionTable .tabulator,
+        #businessPresenceModule #businessRegionTable .tabulator-header,
+        #businessPresenceModule #businessRegionTable .tabulator-header .tabulator-col,
+        #businessPresenceModule #businessRegionTable .tabulator-header .tabulator-col .tabulator-col-content,
+        #businessPresenceModule #businessRegionTable .tabulator-tableholder,
+        #businessPresenceModule #businessRegionTable .tabulator-table,
+        #businessPresenceModule #businessRegionTable .tabulator-footer,
+        #businessPresenceModule #businessRegionTable .tabulator-calcs-holder,
+        #businessPresenceModule #businessRegionTable .tabulator-calcs,
+        #businessPresenceModule #businessRegionTable .tabulator-row,
+        #businessPresenceModule #businessRegionTable .tabulator-row.tabulator-row-even,
+        #businessPresenceModule #businessRegionTable .tabulator-row.tabulator-row-odd,
+        #businessPresenceModule #businessRegionTable .tabulator-cell,
+        #businessPresenceModule #businessRegionTable .tabulator-col,
+        #businessPresenceModule #businessRegionTable .tabulator-col-content {
+            background:transparent !important;
+            background-color:transparent !important;
+            background-image:none !important;
+            color:var(--text) !important;
+        }
+        #businessPresenceModule #businessRegionTable .tabulator {
+            border:0 !important;
+            box-shadow:none !important;
+            border-radius:0 !important;
+        }
+        #businessPresenceModule #businessRegionTable .tabulator-header {
+            border-top:0 !important;
+            border-left:0 !important;
+            border-right:0 !important;
+            border-bottom:1px solid var(--border) !important;
+        }
+        #businessPresenceModule #businessRegionTable .tabulator-header .tabulator-col,
+        #businessPresenceModule #businessRegionTable .tabulator-cell {
+            border-color:var(--border) !important;
+        }
+        #businessPresenceModule #businessRegionTable .tabulator-row {
+            border-bottom:1px solid var(--border) !important;
+        }
+        #businessPresenceModule #businessRegionTable .tabulator-row:hover,
+        #businessPresenceModule #businessRegionTable .tabulator-row.tabulator-row-even:hover,
+        #businessPresenceModule #businessRegionTable .tabulator-row.tabulator-row-odd:hover {
+            background:var(--row-hover-bg) !important;
+            background-color:var(--row-hover-bg) !important;
+        }
+        #businessPresenceModule #businessRegionTable .tabulator-paginator,
+        #businessPresenceModule #businessRegionTable .tabulator-page,
+        #businessPresenceModule #businessRegionTable .tabulator-page-size {
+            background:transparent !important;
+            background-color:transparent !important;
+            color:var(--text) !important;
+            border-color:var(--border) !important;
+            box-shadow:none !important;
+        }
+        #businessPresenceModule #businessRegionTable .tabulator-page.active {
+            background:var(--primary) !important;
+            background-color:var(--primary) !important;
+            color:#fff !important;
+            border-color:var(--primary) !important;
+        }
+        #businessPresenceModule #businessRegionTable .tabulator-header-filter input {
+            background:transparent !important;
+            color:var(--text) !important;
+            border:1px solid var(--border) !important;
+            border-radius:7px !important;
+            min-width:0 !important;
+        }
+        #businessPresenceModule #businessRegionTable .tabulator-header-filter input::placeholder {
+            color:var(--text-mute) !important;
+            opacity:1;
+        }
+        [data-bs-theme="light"] #businessPresenceModule #businessRegionTable .tabulator,
+        [data-bs-theme="light"] #businessPresenceModule #businessRegionTable .tabulator-header,
+        [data-bs-theme="light"] #businessPresenceModule #businessRegionTable .tabulator-header .tabulator-col,
+        [data-bs-theme="light"] #businessPresenceModule #businessRegionTable .tabulator-header .tabulator-col .tabulator-col-content,
+        [data-bs-theme="light"] #businessPresenceModule #businessRegionTable .tabulator-tableholder,
+        [data-bs-theme="light"] #businessPresenceModule #businessRegionTable .tabulator-table,
+        [data-bs-theme="light"] #businessPresenceModule #businessRegionTable .tabulator-footer,
+        [data-bs-theme="light"] #businessPresenceModule #businessRegionTable .tabulator-calcs-holder,
+        [data-bs-theme="light"] #businessPresenceModule #businessRegionTable .tabulator-calcs,
+        [data-bs-theme="light"] #businessPresenceModule #businessRegionTable .tabulator-row,
+        [data-bs-theme="light"] #businessPresenceModule #businessRegionTable .tabulator-row.tabulator-row-even,
+        [data-bs-theme="light"] #businessPresenceModule #businessRegionTable .tabulator-row.tabulator-row-odd,
+        [data-bs-theme="light"] #businessPresenceModule #businessRegionTable .tabulator-cell,
+        [data-bs-theme="light"] #businessPresenceModule #businessRegionTable .tabulator-col,
+        [data-bs-theme="light"] #businessPresenceModule #businessRegionTable .tabulator-col-content {
+            background:transparent !important;
+            background-color:transparent !important;
+            background-image:none !important;
+            color:var(--text) !important;
+            border-color:var(--border) !important;
+        }
+        [data-bs-theme="light"] #businessPresenceModule #businessRegionTable .tabulator-row:hover,
+        [data-bs-theme="light"] #businessPresenceModule #businessRegionTable .tabulator-row.tabulator-row-even:hover,
+        [data-bs-theme="light"] #businessPresenceModule #businessRegionTable .tabulator-row.tabulator-row-odd:hover {
+            background:var(--row-hover-bg) !important;
+            background-color:var(--row-hover-bg) !important;
+        }
+        [data-bs-theme="light"] #businessPresenceModule #businessRegionTable .tabulator-paginator,
+        [data-bs-theme="light"] #businessPresenceModule #businessRegionTable .tabulator-page,
+        [data-bs-theme="light"] #businessPresenceModule #businessRegionTable .tabulator-page-size {
+            background:transparent !important;
+            background-color:transparent !important;
+            color:var(--text) !important;
+            border-color:var(--border) !important;
+        }
+        @media(max-width:767.98px) {
+            #businessPresenceModule #businessRegionTable .tabulator-header-filter input {
+                font-size:11px !important;
+                padding:4px 6px !important;
+            }
+        }
+
 </style>
             <div class="chart-card mt-3 mb-4"><div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2"><div class="chart-title m-0">Rekapitulasi Assignment & Petugas per Sub-SLS</div><button class="btn btn-sm btn-success" id="btnBusinessExport"><i class="bi bi-file-earmark-excel me-1"></i>Export Excel</button></div><div class="small text-secondary mb-3">Satu baris untuk setiap assignment pada file Excel. Nama PPL dan PML dicocokkan otomatis berdasarkan ID Sub-SLS (regionCode). URL membuka assignment di FASIH.</div><div id="businessRegionTable" class="bp-data-table"></div></div>
         </section>
@@ -2845,10 +2959,10 @@
             <script src="js/master_subsls.js"></script>
             <script src="js/table.js"></script>
             <script src="js/comparison.js?v=85"></script>
-            <script src="js/app.js?v=85"></script>
-            <script src="js/se2026_workload.js"></script>
+            <script src="js/app.js?v=87"></script>
+            <script src="js/se2026_workload.js?v=87"></script>
             <script src="js/se2026_deployment_officers.js"></script>
-            <script src="js/business/business_app.js?v=86"></script>
+            <script src="js/business/business_app.js?v=87"></script>
             <script src="js/deployment_officers.js"></script>
 
 </body>

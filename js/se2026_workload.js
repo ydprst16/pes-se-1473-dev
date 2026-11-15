@@ -67,7 +67,13 @@ async function loadSe2026SnapshotHistory(preferredDate = null) {
   if (!response.ok) throw new Error("Gagal memuat riwayat snapshot Deployment SE2026.");
   const payload = await response.json();
   if (payload.status === "error") throw new Error(payload.message || "Gagal memuat riwayat snapshot.");
-  se2026SnapshotHistory = Array.isArray(payload.items) ? payload.items : [];
+
+  // Sort by ISO date in the browser as a defensive guarantee; the newest date
+  // must be the default even if the Storage listing order changes.
+  se2026SnapshotHistory = (Array.isArray(payload.items) ? payload.items : [])
+    .filter(item => /^\d{4}-\d{2}-\d{2}$/.test(String(item.date || "")))
+    .sort((a, b) => String(b.date).localeCompare(String(a.date)));
+
   const select = document.getElementById("se2026WorkloadHistorySelect");
   if (select) {
     select.innerHTML = "";
@@ -77,14 +83,14 @@ async function loadSe2026SnapshotHistory(preferredDate = null) {
     } else {
       select.disabled = false;
       se2026SnapshotHistory.forEach(item => {
-        const date = String(item.date || "");
-        if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return;
+        const date = String(item.date);
         const [year, month, day] = date.split("-");
         select.add(new Option(`${day}/${month}/${year}`, date));
       });
+      const latestDate = se2026SnapshotHistory[0].date;
       const selected = se2026SnapshotHistory.some(item => item.date === preferredDate)
         ? preferredDate
-        : (se2026SnapshotHistory[0]?.date || "");
+        : latestDate;
       select.value = selected;
     }
   }
@@ -253,14 +259,18 @@ function renderSe2026WorkloadComparison() {
   se2026WorkloadChart.render();
 }
 function thirtyFive(){return window.matchMedia("(max-width: 768px)").matches?38:30;}
-async function refreshSe2026WorkloadComparison(date = null){
+async function refreshSe2026WorkloadComparison(date = null, options = {}){
   const select = document.getElementById("se2026WorkloadHistorySelect");
-  const requestedDate = date || select?.value || null;
+  const forceLatest = options?.forceLatest === true;
+  // Normal navigation preserves an explicitly selected historical snapshot.
+  // Page load and the global Refresh button can force the authoritative latest.json.
+  const requestedDate = forceLatest ? null : (date || select?.value || null);
   try{
     await loadSe2026WorkloadTargets();
     const selectedDate = await loadSe2026SnapshotHistory(requestedDate);
-    await loadSe2026PesRealization(selectedDate);
-    if (select && selectedDate) select.value = selectedDate;
+    await loadSe2026PesRealization(forceLatest ? null : selectedDate);
+    const displayedDate = se2026RealizationSnapshot?.importDate || selectedDate;
+    if (select && displayedDate) select.value = displayedDate;
     renderSe2026WorkloadComparison();
     updateSe2026SnapshotInfo();
   }
@@ -319,5 +329,5 @@ document.addEventListener("DOMContentLoaded",()=>{
     });
     historySelect.dataset.bound = "1";
   }
-  refreshSe2026WorkloadComparison();
+  refreshSe2026WorkloadComparison(null, { forceLatest: true });
 });

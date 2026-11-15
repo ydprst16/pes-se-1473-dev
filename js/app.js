@@ -555,6 +555,11 @@ function bindEvents() {
         showLoading();
         await loadByDate(viewedDate);
         await renderAll();
+        // The global header refresh also resets Target/Realisasi to the newest
+        // Deployment snapshot, independent of a previously selected history date.
+        if (typeof window.refreshSe2026WorkloadComparison === "function") {
+          await window.refreshSe2026WorkloadComparison(null, { forceLatest: true });
+        }
         hideLoading();
         toast("success", "Data berhasil dimuat ulang");
       } catch (e) {
