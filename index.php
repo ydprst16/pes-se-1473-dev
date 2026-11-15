@@ -2849,8 +2849,8 @@
             <script src="js/charts.js"></script>
             <script src="js/master_subsls.js"></script>
             <script src="js/table.js"></script>
-            <script src="js/comparison.js"></script>
-            <script src="js/app.js"></script>
+            <script src="js/comparison.js?v=85"></script>
+            <script src="js/app.js?v=85"></script>
             <script src="js/se2026_workload.js"></script>
             <script src="js/se2026_deployment_officers.js"></script>
             <script src="js/business/business_app.js"></script>

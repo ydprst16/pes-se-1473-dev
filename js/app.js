@@ -348,7 +348,13 @@ function renderCards() {
   renderChange("openChange",       s.open,       prev ? prev.open : null);
   renderChange("draftChange",      s.draft,      prev ? prev.draft : null);
   renderChange("submittedChange",  s.submitted,  prev ? prev.submitted : null);
-  renderChange("approvedChange",   s.approved,   prev ? prev.approved : null);
+  // KPI "Complete" menggunakan bucket completedByPengawas, bukan approved.
+  // Elemen delta-nya dibuat dari ID completedByPengawasChange di index.php.
+  renderChange(
+    "completedByPengawasChange",
+    s.completedByPengawas,
+    prev ? prev.completedByPengawas : null
+  );
   renderChange("rejectedChange",   s.rejected,   prev ? prev.rejected : null);
   renderChange("revokeChange",     s.revoked,    prev ? prev.revoked : null);
 

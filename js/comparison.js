@@ -182,6 +182,7 @@ async function loadPreviousDay(referenceDate) {
       Comparison.available = false;
       Comparison.previousDate = null;
       Comparison.previousMap = {};
+      Comparison.previousSummary = null;
       return;
     }
 
@@ -190,6 +191,7 @@ async function loadPreviousDay(referenceDate) {
       Comparison.available = false;
       Comparison.previousDate = null;
       Comparison.previousMap = {};
+      Comparison.previousSummary = null;
       return;
     }
 
@@ -210,6 +212,7 @@ async function loadPreviousDay(referenceDate) {
     Comparison.available = false;
     Comparison.previousDate = null;
     Comparison.previousMap = {};
+    Comparison.previousSummary = null;
   }
 }
 
