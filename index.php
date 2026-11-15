@@ -449,20 +449,22 @@
             color: var(--text-mute) !important;
         }
 
-        /* Tabulator light theme: shared surfaces for enumerator, detail, business and workload tables. */
-        [data-bs-theme="light"] #gridTable .tabulator,
-        [data-bs-theme="light"] #gridTableDetail .tabulator,
-        [data-bs-theme="light"] #businessRegionTable .tabulator,
-        [data-bs-theme="light"] #se2026WorkloadTable .tabulator {
-            background:#fff !important; color:#0f172a !important; border-color:#dbe3ee !important;
-        }
+        /* Tabulator light theme: plain header text and borders. Keep table headers out of badge styling. */
         [data-bs-theme="light"] #gridTable .tabulator-header,
         [data-bs-theme="light"] #gridTableDetail .tabulator-header,
         [data-bs-theme="light"] #businessRegionTable .tabulator-header,
-        [data-bs-theme="light"] #se2026WorkloadTable .tabulator-header,
-        [data-bs-theme="light"] #gridTable .tabulator-col,
-        [data-bs-theme="light"] #gridTableDetail .tabulator-col,
-        [data-bs-theme="light"] #businessRegionTable .tabulator-col,
+        [data-bs-theme="light"] #gridTable .tabulator-header .tabulator-col,
+        [data-bs-theme="light"] #gridTableDetail .tabulator-header .tabulator-col,
+        [data-bs-theme="light"] #businessRegionTable .tabulator-header .tabulator-col,
+        [data-bs-theme="light"] #businessPresenceModule #businessRegionTable .tabulator-header .tabulator-col .tabulator-col-content {
+            background:transparent !important;
+            background-color:transparent !important;
+            background-image:none !important;
+            color:#0f172a !important;
+            border-color:#e2e8f0 !important;
+            border-radius:0 !important;
+            box-shadow:none !important;
+        }
         /* Workload indicators: soft contrast in dark and light themes. */
         #se2026WorkloadTable .se2026-achievement-pill,
         #se2026WorkloadTable .se2026-daily-pill {
@@ -2269,7 +2271,7 @@
                 <i class="bi bi-clipboard2-data-fill"></i><span>Daftar Assignment</span>
             </button>
             <button class="module-tab" id="menuDeployment" type="button" role="tab" aria-selected="false" aria-controls="deploymentModule">
-                <i class="bi bi-diagram-3-fill"></i><span>Deployment SE2026</span>
+                <i class="bi bi-diagram-3-fill"></i><span>Deployment PES SE2026</span>
             </button>
             <button class="module-tab" id="menuTargetRealization" type="button" role="tab" aria-selected="false" aria-controls="targetRealizationModule">
                 <i class="bi bi-bullseye"></i><span>Target dan Realisasi</span>
@@ -2842,6 +2844,130 @@
                 font-size:11px !important;
                 padding:4px 6px !important;
             }
+        }
+
+        /* v88: Monitoring Progress tables use the same clean transparent surfaces as the other modules. */
+        #monitoringModule #gridTable .tabulator,
+        #monitoringModule #gridTable .tabulator-header,
+        #monitoringModule #gridTable .tabulator-header .tabulator-col,
+        #monitoringModule #gridTable .tabulator-header .tabulator-col .tabulator-col-content,
+        #monitoringModule #gridTable .tabulator-tableholder,
+        #monitoringModule #gridTable .tabulator-table,
+        #monitoringModule #gridTable .tabulator-footer,
+        #monitoringModule #gridTable .tabulator-calcs-holder,
+        #monitoringModule #gridTable .tabulator-calcs,
+        #monitoringModule #gridTable .tabulator-row,
+        #monitoringModule #gridTable .tabulator-row.tabulator-row-even,
+        #monitoringModule #gridTable .tabulator-row.tabulator-row-odd,
+        #monitoringModule #gridTable .tabulator-cell,
+        #monitoringModule #gridTable .tabulator-col,
+        #monitoringModule #gridTable .tabulator-col-content,
+        #monitoringModule #gridTableDetail .tabulator,
+        #monitoringModule #gridTableDetail .tabulator-header,
+        #monitoringModule #gridTableDetail .tabulator-header .tabulator-col,
+        #monitoringModule #gridTableDetail .tabulator-header .tabulator-col .tabulator-col-content,
+        #monitoringModule #gridTableDetail .tabulator-tableholder,
+        #monitoringModule #gridTableDetail .tabulator-table,
+        #monitoringModule #gridTableDetail .tabulator-footer,
+        #monitoringModule #gridTableDetail .tabulator-calcs-holder,
+        #monitoringModule #gridTableDetail .tabulator-calcs,
+        #monitoringModule #gridTableDetail .tabulator-row,
+        #monitoringModule #gridTableDetail .tabulator-row.tabulator-row-even,
+        #monitoringModule #gridTableDetail .tabulator-row.tabulator-row-odd,
+        #monitoringModule #gridTableDetail .tabulator-cell,
+        #monitoringModule #gridTableDetail .tabulator-col,
+        #monitoringModule #gridTableDetail .tabulator-col-content {
+            background:transparent !important;
+            background-color:transparent !important;
+            background-image:none !important;
+            color:var(--text) !important;
+        }
+        #monitoringModule #gridTable .tabulator,
+        #monitoringModule #gridTableDetail .tabulator {
+            border:0 !important;
+            border-radius:0 !important;
+            box-shadow:none !important;
+        }
+        #monitoringModule #gridTable .tabulator-header,
+        #monitoringModule #gridTableDetail .tabulator-header {
+            border-top:0 !important;
+            border-left:0 !important;
+            border-right:0 !important;
+            border-bottom:1px solid var(--border) !important;
+        }
+        #monitoringModule #gridTable .tabulator-header .tabulator-col,
+        #monitoringModule #gridTableDetail .tabulator-header .tabulator-col,
+        #monitoringModule #gridTable .tabulator-cell,
+        #monitoringModule #gridTableDetail .tabulator-cell {
+            border-color:var(--border) !important;
+            border-radius:0 !important;
+            box-shadow:none !important;
+        }
+        #monitoringModule #gridTable .tabulator-row,
+        #monitoringModule #gridTableDetail .tabulator-row {
+            border-bottom:1px solid var(--border) !important;
+        }
+        #monitoringModule #gridTable .tabulator-row:hover,
+        #monitoringModule #gridTable .tabulator-row.tabulator-row-even:hover,
+        #monitoringModule #gridTable .tabulator-row.tabulator-row-odd:hover,
+        #monitoringModule #gridTableDetail .tabulator-row:hover,
+        #monitoringModule #gridTableDetail .tabulator-row.tabulator-row-even:hover,
+        #monitoringModule #gridTableDetail .tabulator-row.tabulator-row-odd:hover {
+            background:var(--row-hover-bg) !important;
+            background-color:var(--row-hover-bg) !important;
+        }
+        #monitoringModule #gridTable .tabulator-paginator,
+        #monitoringModule #gridTable .tabulator-page,
+        #monitoringModule #gridTable .tabulator-page-size,
+        #monitoringModule #gridTableDetail .tabulator-paginator,
+        #monitoringModule #gridTableDetail .tabulator-page,
+        #monitoringModule #gridTableDetail .tabulator-page-size {
+            background:transparent !important;
+            background-color:transparent !important;
+            color:var(--text) !important;
+            border-color:var(--border) !important;
+            box-shadow:none !important;
+        }
+        #monitoringModule #gridTable .tabulator-page.active,
+        #monitoringModule #gridTableDetail .tabulator-page.active {
+            background:var(--primary) !important;
+            background-color:var(--primary) !important;
+            color:#fff !important;
+            border-color:var(--primary) !important;
+        }
+        #monitoringModule #gridTable .tabulator-header-filter input,
+        #monitoringModule #gridTableDetail .tabulator-header-filter input {
+            background:transparent !important;
+            color:var(--text) !important;
+            border:1px solid var(--border) !important;
+            border-radius:7px !important;
+        }
+        #monitoringModule #gridTable .tabulator-header-filter input::placeholder,
+        #monitoringModule #gridTableDetail .tabulator-header-filter input::placeholder {
+            color:var(--text-mute) !important;
+            opacity:1;
+        }
+
+        /* v88: Assignment header cells remain plain rectangular headings in light mode. */
+        #businessPresenceModule #businessRegionTable .tabulator-header .tabulator-col,
+        #businessPresenceModule #businessRegionTable .tabulator-header .tabulator-col .tabulator-col-content,
+        #businessPresenceModule #businessRegionTable .tabulator-header .tabulator-col-title {
+            border-radius:0 !important;
+            box-shadow:none !important;
+            background:transparent !important;
+            background-color:transparent !important;
+            background-image:none !important;
+        }
+        [data-bs-theme="light"] #businessPresenceModule #businessRegionTable .tabulator-header .tabulator-col,
+        [data-bs-theme="light"] #businessPresenceModule #businessRegionTable .tabulator-header .tabulator-col .tabulator-col-content,
+        [data-bs-theme="light"] #businessPresenceModule #businessRegionTable .tabulator-header .tabulator-col-title {
+            border-radius:0 !important;
+            box-shadow:none !important;
+            background:transparent !important;
+            background-color:transparent !important;
+            background-image:none !important;
+            color:#0f172a !important;
+            border-color:var(--border) !important;
         }
 
 </style>
