@@ -2085,6 +2085,8 @@
             border-color:var(--border) !important;
         }
 
+
+
 </style>
 
 </head>
@@ -3378,6 +3380,87 @@
                 margin-bottom:1.1rem;
             }
         }
+
+        /* v82: keep Target & Realisasi header/body widths controlled by one Tabulator instance.
+           The outer wrapper scrolls horizontally, matching the Deployment table architecture. */
+        #targetRealizationModule #se2026WorkloadSection .se2026-workload-table-wrap {
+            display:block !important;
+            width:100% !important;
+            max-width:100% !important;
+            min-width:0 !important;
+            overflow-x:auto !important;
+            overflow-y:hidden !important;
+            -webkit-overflow-scrolling:touch !important;
+            overscroll-behavior-x:contain !important;
+            touch-action:pan-x pan-y !important;
+            scrollbar-width:thin;
+        }
+        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable {
+            display:block !important;
+            width:100% !important;
+            min-width:0 !important;
+            max-width:100% !important;
+            overflow:visible !important;
+        }
+        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator {
+            display:block !important;
+            width:100% !important;
+            min-width:100% !important;
+            max-width:none !important;
+            overflow:hidden !important;
+        }
+        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-header {
+            width:100% !important;
+            max-width:100% !important;
+            overflow:hidden !important;
+        }
+        /* Reset v81's separate min-width/max-content constraints; Tabulator owns both sets of columns. */
+        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-headers,
+        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-tableholder .tabulator-table {
+            width:auto !important;
+            min-width:0 !important;
+            max-width:none !important;
+        }
+        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-tableholder {
+            display:block !important;
+            width:100% !important;
+            max-width:100% !important;
+            overflow-x:hidden !important;
+            overflow-y:auto !important;
+            -webkit-overflow-scrolling:touch !important;
+            overscroll-behavior-y:contain !important;
+            background:transparent !important;
+            background-color:transparent !important;
+        }
+        @media(max-width:767.98px) {
+            #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator {
+                width:1040px !important;
+                min-width:1040px !important;
+                max-width:none !important;
+                font-size:11px !important;
+            }
+            #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-header,
+            #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-tableholder,
+            #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-headers,
+            #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-tableholder .tabulator-table {
+                width:auto !important;
+                min-width:0 !important;
+                max-width:none !important;
+            }
+        }
+
+        /* Supabase-inspired green for the daily target pill (kept distinct from achievement colors). */
+        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .se2026-daily-pill {
+            color:#3ECF8E !important;
+            background:rgba(62,207,142,.13) !important;
+            border-color:rgba(62,207,142,.34) !important;
+        }
+        [data-bs-theme="light"] #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .se2026-daily-pill {
+            color:#137A55 !important;
+            background:#E9FBF2 !important;
+            border-color:#B6EAD0 !important;
+        }
+
 
 </style>
             <div class="row g-3 mb-4">
