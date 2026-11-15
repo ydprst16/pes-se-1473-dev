@@ -265,61 +265,6 @@
             border-radius: 8px;
         }
 
-        /* Workload comparison deliberately uses the shared Tabulator theme below,
-           identical to Data Enumerator (#gridTable), including light/dark surfaces. */
-
-        /* Workload comparison: balanced two-panel layout with calmer dark surfaces. */
-        #se2026WorkloadSection .se2026-workload-table-wrap { width:100%; min-width:0; }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator {
-            border:1px solid var(--border) !important;
-            border-radius:8px !important;
-            background:#172033 !important;
-            color:#e5eaf3 !important;
-            font-size:12px;
-        }
-        [data-bs-theme="dark"] #se2026WorkloadSection #se2026WorkloadTable .tabulator-header,
-        [data-bs-theme="dark"] #se2026WorkloadSection #se2026WorkloadTable .tabulator-col {
-            background:#202c40 !important; color:#e8edf5 !important; border-color:#354258 !important;
-        }
-        [data-bs-theme="dark"] #se2026WorkloadSection #se2026WorkloadTable .tabulator-tableholder { background:#172033 !important; }
-        [data-bs-theme="dark"] #se2026WorkloadSection #se2026WorkloadTable .tabulator-row { background:#1b2638 !important; color:#e5eaf3 !important; border-color:#303d52 !important; }
-        [data-bs-theme="dark"] #se2026WorkloadSection #se2026WorkloadTable .tabulator-row-even { background:#202c40 !important; }
-        [data-bs-theme="dark"] #se2026WorkloadSection #se2026WorkloadTable .tabulator-row:hover { background:#29384f !important; }
-        [data-bs-theme="dark"] #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell { color:#e5eaf3 !important; border-color:#354258 !important; }
-        [data-bs-theme="dark"] #se2026WorkloadSection #se2026WorkloadTable .tabulator-footer,
-        [data-bs-theme="dark"] #se2026WorkloadSection #se2026WorkloadTable .tabulator-page,
-        [data-bs-theme="dark"] #se2026WorkloadSection #se2026WorkloadTable .tabulator-page-size { background:#172033 !important; color:#dbe4f0 !important; border-color:#354258 !important; }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-row { min-height:34px; }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell { padding:7px 8px; }
-        @media (max-width:1199.98px) {
-            #se2026WorkloadSection #se2026WorkloadChart { min-height:480px !important; }
-        }
-        @media (max-width:767.98px) {
-            #se2026WorkloadSection #se2026WorkloadChart { min-height:560px !important; }
-            #se2026WorkloadSection #se2026WorkloadTable .tabulator { min-width:0 !important; font-size:11px !important; }
-            #se2026WorkloadSection #se2026WorkloadTable .tabulator .tabulator-header .tabulator-col { min-width:0 !important; }
-            #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell { padding:6px 5px !important; font-size:11px !important; }
-        }
-
-        /* Target & Realisasi table follows the Deployment SE2026 table proportions and surfaces. */
-        #se2026WorkloadTable { width:100%; min-width:0; overflow-x:auto; -webkit-overflow-scrolling:touch; }
-        #se2026WorkloadTable .tabulator { width:max-content; min-width:100%; border:1px solid var(--border)!important; border-radius:10px!important; overflow:hidden; background:var(--card-solid)!important; color:var(--bs-body-color)!important; font-size:12px; }
-        #se2026WorkloadTable .tabulator-tableholder { overflow-x:auto!important; overscroll-behavior-x:contain; background:var(--card-solid)!important; }
-        #se2026WorkloadTable .tabulator-header, #se2026WorkloadTable .tabulator-col { background:var(--card-solid)!important; color:var(--bs-body-color)!important; border-color:var(--border)!important; }
-        #se2026WorkloadTable .tabulator-col-title { white-space:normal!important; overflow-wrap:anywhere; line-height:1.25; text-align:center; }
-        #se2026WorkloadTable .tabulator-header .tabulator-col .tabulator-col-content { min-height:62px; display:flex; align-items:center; justify-content:center; padding:7px 6px; }
-        #se2026WorkloadTable .tabulator-row { min-height:38px; background:var(--card-solid)!important; color:var(--bs-body-color)!important; border-color:var(--border)!important; }
-        #se2026WorkloadTable .tabulator-row:nth-child(even) { background:rgba(127,127,127,.07)!important; }
-        #se2026WorkloadTable .tabulator-cell { padding:8px 9px!important; border-color:var(--border)!important; background:transparent!important; color:var(--bs-body-color)!important; }
-        #se2026WorkloadTable .tabulator-cell.tabulator-frozen { z-index:12!important; background:#243247!important; color:#f8fafc!important; box-shadow:2px 0 5px rgba(0,0,0,.16); }
-        #se2026WorkloadTable .tabulator-header .tabulator-col.tabulator-frozen { z-index:14!important; background:#263449!important; color:#fff!important; }
-        [data-bs-theme="light"] #se2026WorkloadTable .tabulator-row { background:#fff!important; color:#1f2937!important; }
-        [data-bs-theme="light"] #se2026WorkloadTable .tabulator-row:nth-child(even) { background:#f8fafc!important; }
-        [data-bs-theme="light"] #se2026WorkloadTable .tabulator-cell.tabulator-frozen { background:#e8eef7!important; color:#0f172a!important; }
-        [data-bs-theme="light"] #se2026WorkloadTable .tabulator-header .tabulator-col.tabulator-frozen { background:#d7e2f0!important; color:#0f172a!important; }
-        #se2026WorkloadTable .tabulator-footer, #se2026WorkloadTable .tabulator-page, #se2026WorkloadTable .tabulator-page-size { background:var(--card-solid)!important; color:var(--bs-body-color)!important; border-color:var(--border)!important; }
-        @media(max-width:767.98px){ #se2026WorkloadTable .tabulator{min-width:900px;font-size:11px;} #se2026WorkloadTable .tabulator-cell{padding:7px 8px!important;font-size:11px!important;} }
-
         .performer-list .border-bottom {
             transition: background-color .2s ease, padding-left .2s ease;
             border-radius: 8px;
@@ -1651,40 +1596,6 @@
 
 
 
-        /* v69: match Deployment SE2026 table surfaces and keep frozen name column legible. */
-        #se2026WorkloadSection .se2026-workload-table-wrap{width:100%!important;max-width:100%!important;min-width:0!important;overflow-x:auto!important;overflow-y:hidden!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior-x:contain;touch-action:pan-x pan-y}
-        #se2026WorkloadSection #se2026WorkloadTable{width:100%!important;min-width:0!important;max-width:none!important}
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator{width:max-content!important;min-width:1120px!important;max-width:none!important;background:var(--bs-body-bg)!important;color:var(--bs-body-color)!important;border:1px solid var(--bs-border-color)!important;border-radius:10px!important}
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-header,
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col,
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col .tabulator-col-content{background:var(--bs-tertiary-bg)!important;color:var(--bs-body-color)!important;border-color:var(--bs-border-color)!important}
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-tableholder{width:auto!important;max-width:none!important;overflow:visible!important;background:var(--bs-body-bg)!important}
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-row{background:var(--bs-body-bg)!important;color:var(--bs-body-color)!important;border-color:var(--bs-border-color)!important}
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-row:nth-child(even){background:var(--bs-secondary-bg)!important}
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-row:hover{background:var(--bs-tertiary-bg)!important}
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell{background:transparent!important;color:var(--bs-body-color)!important;border-color:var(--bs-border-color)!important}
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell.tabulator-frozen{position:sticky!important;left:0!important;z-index:12!important;background:#172033!important;color:#f8fafc!important;opacity:1!important;box-shadow:2px 0 5px rgba(0,0,0,.16)!important}
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-row:nth-child(even) .tabulator-cell.tabulator-frozen{background:#243247!important;color:#f8fafc!important}
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col.tabulator-frozen,
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col.tabulator-frozen .tabulator-col-content{position:relative!important;z-index:14!important;background:#263449!important;color:#fff!important;opacity:1!important;box-shadow:2px 0 5px rgba(0,0,0,.2)!important}
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col.tabulator-frozen .tabulator-col-title{color:#fff!important;background:transparent!important}
-        [data-bs-theme="light"] #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell.tabulator-frozen{background:#f1f5f9!important;color:#0f172a!important}
-        [data-bs-theme="light"] #se2026WorkloadSection #se2026WorkloadTable .tabulator-row:nth-child(even) .tabulator-cell.tabulator-frozen{background:#e2eaf4!important;color:#0f172a!important}
-        [data-bs-theme="light"] #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col.tabulator-frozen,
-        [data-bs-theme="light"] #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col.tabulator-frozen .tabulator-col-content{background:#dbeafe!important;color:#0f172a!important}
-        [data-bs-theme="light"] #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col.tabulator-frozen .tabulator-col-title{color:#0f172a!important}
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-footer,#se2026WorkloadSection #se2026WorkloadTable .tabulator-paginator,#se2026WorkloadSection #se2026WorkloadTable .tabulator-page,#se2026WorkloadSection #se2026WorkloadTable .tabulator-page-size{background:var(--bs-tertiary-bg)!important;color:var(--bs-body-color)!important;border-color:var(--bs-border-color)!important}
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell[tabulator-field="name"],
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col[tabulator-field="name"]{max-width:220px!important}
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell[tabulator-field="name"]{white-space:normal!important;overflow-wrap:anywhere!important;line-height:1.3}
-        @media(max-width:767.98px){
-          #se2026WorkloadSection .se2026-workload-table-wrap{width:calc(100vw - 56px)!important;max-width:calc(100vw - 56px)!important}
-          #se2026WorkloadSection #se2026WorkloadTable .tabulator{min-width:1120px!important;font-size:11px!important}
-          #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell[tabulator-field="name"],
-          #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col[tabulator-field="name"]{max-width:145px!important}
-        }
-
-
         /* v75: Deployment SE2026 uses the same Tabulator visual language as Data Enumerator. */
         #deploymentModule .deployment-table-wrap {
             display:block !important;
@@ -2087,6 +1998,224 @@
 
 
 
+        /* v83: isolate chart/table cards and make Target & Realisasi use the exact Deployment scroll model.
+           Tabulator owns column widths; only .tabulator-tableholder owns horizontal + vertical scrolling.
+           Do not assign widths to .tabulator-headers or .tabulator-table separately. */
+        #targetRealizationModule,
+        #targetRealizationModule #se2026WorkloadSection,
+        #targetRealizationModule #se2026WorkloadSection > .chart-card {
+            width:100% !important;
+            max-width:100% !important;
+            min-width:0 !important;
+        }
+        #targetRealizationModule #se2026WorkloadSection {
+            display:flex !important;
+            flex-direction:column !important;
+            align-items:stretch !important;
+            gap:24px !important;
+        }
+        #targetRealizationModule #se2026WorkloadChartCard {
+            overflow:hidden !important;
+        }
+        #targetRealizationModule .se2026-workload-chart-viewport,
+        #targetRealizationModule #se2026WorkloadChart,
+        #targetRealizationModule #se2026WorkloadChart .apexcharts-canvas,
+        #targetRealizationModule #se2026WorkloadChart .apexcharts-svg {
+            width:100% !important;
+            max-width:100% !important;
+            min-width:0 !important;
+        }
+        #targetRealizationModule #se2026WorkloadTableCard {
+            overflow:visible !important;
+        }
+        #targetRealizationModule .se2026-workload-table-wrap,
+        #targetRealizationModule .deployment-table-wrap.se2026-workload-table-wrap {
+            display:block !important;
+            width:100% !important;
+            max-width:100% !important;
+            min-width:0 !important;
+            overflow:visible !important;
+            position:relative !important;
+            overscroll-behavior-x:contain !important;
+        }
+        #targetRealizationModule #se2026WorkloadTable {
+            display:block !important;
+            width:100% !important;
+            max-width:100% !important;
+            min-width:0 !important;
+            overflow:visible !important;
+        }
+        #targetRealizationModule #se2026WorkloadTable .tabulator {
+            display:block !important;
+            width:100% !important;
+            max-width:100% !important;
+            min-width:0 !important;
+            height:620px !important;
+            overflow:hidden !important;
+            border:0 !important;
+            border-radius:0 !important;
+            box-shadow:none !important;
+            background:transparent !important;
+            background-color:transparent !important;
+            color:var(--text) !important;
+            font-size:12px !important;
+        }
+        #targetRealizationModule #se2026WorkloadTable .tabulator-header {
+            display:block !important;
+            width:100% !important;
+            max-width:100% !important;
+            overflow:hidden !important;
+            background:transparent !important;
+            background-color:transparent !important;
+            color:var(--text) !important;
+            border:0 !important;
+            border-bottom:1px solid var(--border) !important;
+        }
+        #targetRealizationModule #se2026WorkloadTable .tabulator-header .tabulator-col,
+        #targetRealizationModule #se2026WorkloadTable .tabulator-header .tabulator-col .tabulator-col-content,
+        #targetRealizationModule #se2026WorkloadTable .tabulator-header .tabulator-col-title,
+        #targetRealizationModule #se2026WorkloadTable .tabulator-cell,
+        #targetRealizationModule #se2026WorkloadTable .tabulator-col,
+        #targetRealizationModule #se2026WorkloadTable .tabulator-col-content {
+            background:transparent !important;
+            background-color:transparent !important;
+            background-image:none !important;
+            color:var(--text) !important;
+            border-color:var(--border) !important;
+        }
+        #targetRealizationModule #se2026WorkloadTable .tabulator-header .tabulator-col-title {
+            white-space:normal !important;
+            overflow-wrap:anywhere !important;
+            word-break:normal !important;
+            line-height:1.2 !important;
+            text-align:center !important;
+        }
+        #targetRealizationModule #se2026WorkloadTable .tabulator-header .tabulator-col .tabulator-col-content {
+            min-height:64px !important;
+            display:flex !important;
+            align-items:center !important;
+            justify-content:center !important;
+            padding:7px 6px !important;
+        }
+        #targetRealizationModule #se2026WorkloadTable .tabulator-tableholder {
+            display:block !important;
+            width:100% !important;
+            max-width:100% !important;
+            overflow-x:auto !important;
+            overflow-y:auto !important;
+            -webkit-overflow-scrolling:touch !important;
+            overscroll-behavior-x:contain !important;
+            overscroll-behavior-y:contain !important;
+            touch-action:pan-x pan-y !important;
+            scrollbar-width:thin;
+            background:transparent !important;
+            background-color:transparent !important;
+        }
+        #targetRealizationModule #se2026WorkloadTable .tabulator-table,
+        #targetRealizationModule #se2026WorkloadTable .tabulator-footer,
+        #targetRealizationModule #se2026WorkloadTable .tabulator-paginator,
+        #targetRealizationModule #se2026WorkloadTable .tabulator-calcs-holder,
+        #targetRealizationModule #se2026WorkloadTable .tabulator-calcs {
+            background:transparent !important;
+            background-color:transparent !important;
+            background-image:none !important;
+            color:var(--text) !important;
+            border-color:var(--border) !important;
+        }
+        #targetRealizationModule #se2026WorkloadTable .tabulator-row,
+        #targetRealizationModule #se2026WorkloadTable .tabulator-row.tabulator-row-even,
+        #targetRealizationModule #se2026WorkloadTable .tabulator-row.tabulator-row-odd,
+        #targetRealizationModule #se2026WorkloadTable .tabulator-row:nth-child(odd),
+        #targetRealizationModule #se2026WorkloadTable .tabulator-row:nth-child(even) {
+            min-height:38px !important;
+            background:transparent !important;
+            background-color:transparent !important;
+            background-image:none !important;
+            color:var(--text) !important;
+            border-bottom:1px solid var(--border) !important;
+        }
+        #targetRealizationModule #se2026WorkloadTable .tabulator-row:hover,
+        #targetRealizationModule #se2026WorkloadTable .tabulator-row.tabulator-row-even:hover,
+        #targetRealizationModule #se2026WorkloadTable .tabulator-row.tabulator-row-odd:hover {
+            background:var(--row-hover-bg) !important;
+            background-color:var(--row-hover-bg) !important;
+        }
+        #targetRealizationModule #se2026WorkloadTable .tabulator-cell {
+            padding:8px 9px !important;
+            border-right:1px solid var(--border) !important;
+            border-bottom:0 !important;
+            white-space:nowrap;
+            background:transparent !important;
+            color:var(--text) !important;
+        }
+        #targetRealizationModule #se2026WorkloadTable .tabulator-cell[tabulator-field="name"] {
+            min-width:170px !important;
+            max-width:220px !important;
+            white-space:normal !important;
+            overflow-wrap:anywhere !important;
+            line-height:1.3 !important;
+        }
+        #targetRealizationModule #se2026WorkloadTable .tabulator-footer {
+            display:flex !important;
+            justify-content:flex-end !important;
+            align-items:center !important;
+            flex-wrap:wrap !important;
+            min-height:42px !important;
+            height:auto !important;
+            padding:6px 10px !important;
+            overflow:visible !important;
+            border-top:1px solid var(--border) !important;
+        }
+        #targetRealizationModule #se2026WorkloadTable .tabulator-paginator {
+            display:flex !important;
+            justify-content:flex-end !important;
+            align-items:center !important;
+            flex-wrap:wrap !important;
+            gap:4px !important;
+            margin-left:auto !important;
+            overflow:visible !important;
+            white-space:normal !important;
+        }
+        #targetRealizationModule #se2026WorkloadTable .tabulator-page,
+        #targetRealizationModule #se2026WorkloadTable .tabulator-page-size {
+            flex:0 0 auto !important;
+            min-width:32px !important;
+            background:transparent !important;
+            background-color:transparent !important;
+            color:var(--text) !important;
+            border:1px solid var(--border) !important;
+            box-shadow:none !important;
+        }
+        #targetRealizationModule #se2026WorkloadTable .tabulator-page.active {
+            background:var(--primary) !important;
+            background-color:var(--primary) !important;
+            color:#fff !important;
+            border-color:var(--primary) !important;
+        }
+        #targetRealizationModule #se2026WorkloadTable .se2026-daily-pill {
+            color:#3ECF8E !important;
+            background:rgba(62,207,142,.13) !important;
+            border-color:rgba(62,207,142,.34) !important;
+        }
+        [data-bs-theme="light"] #targetRealizationModule #se2026WorkloadTable .se2026-daily-pill {
+            color:#137A55 !important;
+            background:#E9FBF2 !important;
+            border-color:#B6EAD0 !important;
+        }
+        @media(max-width:767.98px) {
+            #targetRealizationModule #se2026WorkloadTable .tabulator {
+                font-size:11px !important;
+            }
+            #targetRealizationModule #se2026WorkloadTable .tabulator-cell {
+                padding:7px 8px !important;
+                font-size:11px !important;
+            }
+            #targetRealizationModule #se2026WorkloadTable .tabulator-header .tabulator-col .tabulator-col-content {
+                min-height:68px !important;
+                padding:6px 5px !important;
+            }
+        }
+
 </style>
 
 </head>
@@ -2441,33 +2570,32 @@
                     <div class="text-secondary small">Target Muatan SE2026 dibandingkan dengan realisasi PES SE2026 per PPL/PCL.</div>
                 </div>
             </div>
-        <section id="se2026WorkloadSection" class="chart-card mt-4 mb-4">
-            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-                <div class="chart-title mb-0"><i class="bi bi-bullseye text-primary"></i> Perbandingan Muatan dan Realisasi PES SE2026</div>
-            </div>
-            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-                <div class="small text-secondary" id="se2026WorkloadMatchInfo">Mengambil data realisasi dari snapshot Deployment SE2026...</div>
-                <div class="d-flex align-items-center gap-2">
-                    <label for="se2026WorkloadHistorySelect" class="small text-secondary text-nowrap mb-0">Riwayat snapshot</label>
-                    <select class="form-select form-select-sm" id="se2026WorkloadHistorySelect" style="min-width:170px;max-width:220px" aria-label="Pilih riwayat snapshot Deployment"><option value="">Memuat riwayat...</option></select>
+        <section id="se2026WorkloadSection" class="mt-4 mb-4 d-flex flex-column gap-4">
+            <!-- Chart and data table are separate cards so the chart's intrinsic width cannot constrain table scrolling. -->
+            <div id="se2026WorkloadChartCard" class="chart-card">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+                    <div class="chart-title mb-0"><i class="bi bi-bullseye text-primary"></i> Perbandingan Muatan dan Realisasi PES SE2026</div>
                 </div>
-            </div>
-            <div class="d-flex flex-column gap-3">
-                <div class="p-2 rounded-3" style="background:var(--card-solid);border:1px solid var(--border);">
-                    <div class="small fw-semibold mb-2 text-secondary">Grafik Muatan dan Realisasi</div>
-                    <div id="se2026WorkloadChart" style="min-height:520px;width:100%;"></div>
-                </div>
-                <div class="p-2 rounded-3 se2026-workload-table-panel" style="background:var(--card-solid);border:1px solid var(--border);">
-                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">
-                        <div class="small fw-semibold text-secondary">Rincian Target dan Realisasi per Petugas</div>
-                        <button type="button" class="btn btn-success btn-sm" id="btnExportSe2026Workload"><i class="bi bi-file-earmark-excel me-1"></i> Export Excel</button>
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+                    <div class="small text-secondary" id="se2026WorkloadMatchInfo">Mengambil data realisasi dari snapshot Deployment SE2026...</div>
+                    <div class="d-flex align-items-center gap-2">
+                        <label for="se2026WorkloadHistorySelect" class="small text-secondary text-nowrap mb-0">Riwayat snapshot</label>
+                        <select class="form-select form-select-sm" id="se2026WorkloadHistorySelect" style="min-width:170px;max-width:220px" aria-label="Pilih riwayat snapshot"><option value="">Memuat riwayat...</option></select>
                     </div>
-                    <div class="deployment-table-toolbar">
-                        <input type="search" class="form-control form-control-sm deployment-table-search" id="se2026WorkloadSearch" placeholder="Cari nama petugas..." aria-label="Cari nama petugas">
-                        <div class="small text-secondary" id="se2026WorkloadTableCount">-</div>
-                    </div>
-                    <div class="deployment-table-wrap se2026-workload-table-wrap"><div id="se2026WorkloadTable"></div></div>
                 </div>
+                <div id="se2026WorkloadChart" class="se2026-workload-chart-viewport" style="min-height:520px;width:100%;"></div>
+            </div>
+
+            <div id="se2026WorkloadTableCard" class="chart-card">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">
+                    <div class="chart-title mb-0">Rincian Target dan Realisasi per Petugas</div>
+                    <button type="button" class="btn btn-success btn-sm" id="btnExportSe2026Workload"><i class="bi bi-file-earmark-excel me-1"></i> Export Excel</button>
+                </div>
+                <div class="deployment-table-toolbar">
+                    <input type="search" class="form-control form-control-sm deployment-table-search" id="se2026WorkloadSearch" placeholder="Cari nama petugas..." aria-label="Cari nama petugas">
+                    <div class="small text-secondary" id="se2026WorkloadTableCount">-</div>
+                </div>
+                <div class="deployment-table-wrap se2026-workload-table-wrap"><div id="se2026WorkloadTable"></div></div>
             </div>
         </section>
         </section>
@@ -2560,788 +2688,6 @@
         .schedule-progress-foot{font-size:.76rem;color:var(--bs-secondary-color);margin-top:9px}
         @media(max-width:575.98px){.schedule-progress-alert{padding:13px 14px}.schedule-progress-head{align-items:flex-start;flex-direction:column;gap:8px}.schedule-progress-grid{gap:7px}.schedule-progress-value{font-size:1.12rem}.schedule-progress-label{font-size:.69rem}}
 
-        /* Shared Deployment-style table treatment for Target & Realisasi.
-           The outer wrapper owns horizontal touch scrolling on narrow screens. */
-        .se2026-workload-table-wrap{display:block;width:100%;max-width:100%;min-width:0;overflow-x:auto!important;overflow-y:hidden;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y;border-radius:10px}
-        #se2026WorkloadTable{display:block;width:100%;max-width:100%;min-width:0;overflow:visible}
-        #se2026WorkloadTable .tabulator{width:100%!important;min-width:100%!important;max-width:none!important;background:var(--bs-body-bg)!important;color:var(--bs-body-color)!important;border:1px solid var(--bs-border-color)!important;border-radius:10px!important;font-size:12px}
-        #se2026WorkloadTable .tabulator-header,#se2026WorkloadTable .tabulator-header .tabulator-col,#se2026WorkloadTable .tabulator-header .tabulator-col .tabulator-col-content{background:var(--bs-tertiary-bg)!important;color:var(--bs-body-color)!important;border-color:var(--bs-border-color)!important}
-        #se2026WorkloadTable .tabulator-col-title{white-space:normal!important;overflow-wrap:anywhere;line-height:1.25;text-align:center}
-        #se2026WorkloadTable .tabulator-header .tabulator-col .tabulator-col-content{min-height:76px;display:flex;align-items:center;justify-content:center;padding:7px 6px}
-        #se2026WorkloadTable .tabulator-tableholder{width:100%;background:var(--bs-body-bg)!important;overflow-x:auto!important;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch}
-        #se2026WorkloadTable .tabulator-row{min-height:36px;background:var(--bs-body-bg)!important;color:var(--bs-body-color)!important;border-color:var(--bs-border-color)!important}
-        #se2026WorkloadTable .tabulator-row:nth-child(even){background:var(--bs-secondary-bg)!important}
-        #se2026WorkloadTable .tabulator-row:hover{background:var(--bs-tertiary-bg)!important}
-        #se2026WorkloadTable .tabulator-cell{padding:7px 8px!important;background:transparent!important;color:var(--bs-body-color)!important;border-color:var(--bs-border-color)!important;line-height:1.35}
-        #se2026WorkloadTable .tabulator-cell.tabulator-frozen{z-index:12!important;background:#172033!important;color:#f8fafc!important;opacity:1!important;box-shadow:2px 0 5px rgba(0,0,0,.16)}
-        #se2026WorkloadTable .tabulator-header .tabulator-col.tabulator-frozen{z-index:14!important;background:#263449!important;color:#fff!important;opacity:1!important}
-        #se2026WorkloadTable .tabulator-footer,#se2026WorkloadTable .tabulator-paginator,#se2026WorkloadTable .tabulator-page,#se2026WorkloadTable .tabulator-page-size{background:var(--bs-tertiary-bg)!important;color:var(--bs-body-color)!important;border-color:var(--bs-border-color)!important}
-        [data-bs-theme="light"] #se2026WorkloadTable .tabulator-cell.tabulator-frozen{background:#f1f5f9!important;color:#0f172a!important}
-        [data-bs-theme="light"] #se2026WorkloadTable .tabulator-row:nth-child(even) .tabulator-cell.tabulator-frozen{background:#e2eaf4!important;color:#0f172a!important}
-        [data-bs-theme="light"] #se2026WorkloadTable .tabulator-header .tabulator-col.tabulator-frozen{background:#dbeafe!important;color:#0f172a!important}
-        @media(max-width:700px){.se2026-workload-table-wrap{width:100%;max-width:100%;overflow-x:auto!important;touch-action:pan-x pan-y}#se2026WorkloadTable .tabulator{width:100%!important;min-width:980px!important;font-size:11px!important}#se2026WorkloadTable .tabulator-tableholder{overflow-x:auto!important}#se2026WorkloadTable .tabulator-cell{padding:7px 8px!important;font-size:11px!important}}
-
-        /* v72: keep Tabulator pagination inside the table and preserve a stable wide layout. */
-        #se2026WorkloadSection .se2026-workload-table-wrap {
-            display:block !important;
-            width:100% !important;
-            max-width:100% !important;
-            min-width:0 !important;
-            overflow-x:auto !important;
-            overflow-y:visible !important;
-            -webkit-overflow-scrolling:touch;
-            overscroll-behavior-x:contain;
-            touch-action:pan-x pan-y;
-            position:relative;
-            padding-bottom:8px;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable {
-            display:block !important;
-            width:100% !important;
-            min-width:0 !important;
-            max-width:none !important;
-            overflow:visible !important;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator {
-            display:block !important;
-            width:100% !important;
-            min-width:1320px !important;
-            max-width:none !important;
-            height:620px !important;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-tableholder {
-            width:100% !important;
-            max-width:none !important;
-            overflow:auto !important;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-footer {
-            display:flex !important;
-            align-items:center;
-            justify-content:space-between;
-            flex-wrap:wrap;
-            gap:6px;
-            min-height:44px;
-            height:auto !important;
-            overflow:visible !important;
-            position:relative !important;
-            clear:both;
-            padding:6px 10px;
-            z-index:2;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-paginator {
-            display:flex !important;
-            align-items:center;
-            justify-content:flex-end;
-            flex-wrap:wrap;
-            gap:4px;
-            max-width:100%;
-            overflow:visible !important;
-            white-space:normal !important;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-page {
-            flex:0 0 auto;
-            min-width:34px;
-        }
-        @media (max-width:767.98px) {
-            #se2026WorkloadSection .se2026-workload-table-wrap {
-                width:100% !important;
-                max-width:100% !important;
-                overflow-x:auto !important;
-                overflow-y:visible !important;
-            }
-            #se2026WorkloadSection #se2026WorkloadTable .tabulator {
-                width:1320px !important;
-                min-width:1320px !important;
-                font-size:11px !important;
-            }
-            #se2026WorkloadSection #se2026WorkloadTable .tabulator-tableholder {
-                overflow:visible !important;
-            }
-            #se2026WorkloadSection #se2026WorkloadTable .tabulator-col,
-            #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell {
-                white-space:normal;
-            }
-        }
-
-
-        /* v73: Target & Realisasi adopts the Deployment officer table layout and mobile scroll behavior. */
-        #se2026WorkloadSection .se2026-workload-table-wrap {
-            display:block !important;
-            width:100% !important;
-            max-width:100% !important;
-            min-width:0 !important;
-            overflow-x:auto !important;
-            overflow-y:hidden !important;
-            -webkit-overflow-scrolling:touch !important;
-            overscroll-behavior-x:contain !important;
-            touch-action:pan-x pan-y !important;
-            border-radius:10px;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable {
-            display:block !important;
-            width:100% !important;
-            min-width:0 !important;
-            max-width:100% !important;
-            overflow:visible !important;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator {
-            display:block !important;
-            width:max-content !important;
-            min-width:100% !important;
-            max-width:none !important;
-            height:620px !important;
-            border:1px solid var(--border) !important;
-            border-radius:10px !important;
-            overflow:hidden !important;
-            background:var(--card-solid) !important;
-            color:var(--bs-body-color) !important;
-            font-size:11px !important;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-tableholder {
-            overflow-x:auto !important;
-            overflow-y:auto !important;
-            overscroll-behavior-x:contain !important;
-            -webkit-overflow-scrolling:touch !important;
-            background:var(--card-solid) !important;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-header,
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-col {
-            background:var(--card-solid) !important;
-            color:var(--bs-body-color) !important;
-            border-color:var(--border) !important;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-col-title {
-            white-space:normal !important;
-            overflow-wrap:anywhere !important;
-            word-break:normal !important;
-            line-height:1.25 !important;
-            text-align:center !important;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col .tabulator-col-content {
-            min-height:76px !important;
-            display:flex !important;
-            align-items:center !important;
-            justify-content:center !important;
-            padding:6px 5px !important;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-row {
-            min-height:34px !important;
-            background:var(--card-solid) !important;
-            color:var(--bs-body-color) !important;
-            border-color:var(--border) !important;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-row:nth-child(even) {
-            background:rgba(127,127,127,.07) !important;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell {
-            padding:6px 8px !important;
-            border-color:var(--border) !important;
-            background:transparent !important;
-            color:var(--bs-body-color) !important;
-            font-size:11px !important;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell[tabulator-field="name"] {
-            white-space:normal !important;
-            overflow-wrap:anywhere !important;
-            line-height:1.3 !important;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell.tabulator-frozen {
-            z-index:12 !important;
-            background:#172033 !important;
-            color:#f8fafc !important;
-            box-shadow:2px 0 5px rgba(0,0,0,.16) !important;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col.tabulator-frozen {
-            z-index:14 !important;
-            background:#263449 !important;
-            color:#fff !important;
-        }
-        [data-bs-theme="light"] #se2026WorkloadSection #se2026WorkloadTable .tabulator-row {
-            background:#fff !important;
-            color:#1f2937 !important;
-        }
-        [data-bs-theme="light"] #se2026WorkloadSection #se2026WorkloadTable .tabulator-row:nth-child(even) {
-            background:#f8fafc !important;
-        }
-        [data-bs-theme="light"] #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell.tabulator-frozen {
-            background:#e8eef7 !important;
-            color:#0f172a !important;
-        }
-        [data-bs-theme="light"] #se2026WorkloadSection #se2026WorkloadTable .tabulator-row.tabulator-row-even .tabulator-cell.tabulator-frozen {
-            background:#dce6f3 !important;
-        }
-        [data-bs-theme="light"] #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col.tabulator-frozen {
-            background:#d7e2f0 !important;
-            color:#0f172a !important;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-footer {
-            display:flex !important;
-            justify-content:flex-end !important;
-            align-items:center !important;
-            flex-wrap:wrap !important;
-            gap:6px !important;
-            min-height:42px !important;
-            height:auto !important;
-            padding:6px 10px !important;
-            overflow:visible !important;
-            background:var(--card-solid) !important;
-            border-top:1px solid var(--border) !important;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-paginator {
-            display:flex !important;
-            justify-content:flex-end !important;
-            align-items:center !important;
-            flex-wrap:wrap !important;
-            gap:4px !important;
-            margin-left:auto !important;
-            overflow:visible !important;
-            white-space:normal !important;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-page,
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-page-size {
-            flex:0 0 auto !important;
-            min-width:32px;
-            background:var(--card-solid) !important;
-            color:var(--bs-body-color) !important;
-            border:1px solid var(--border) !important;
-        }
-        @media(max-width:767.98px) {
-            #se2026WorkloadSection .se2026-workload-table-wrap {
-                width:100% !important;
-                max-width:100% !important;
-                overflow-x:auto !important;
-                overflow-y:hidden !important;
-            }
-            #se2026WorkloadSection #se2026WorkloadTable .tabulator {
-                width:max-content !important;
-                min-width:1050px !important;
-                font-size:11px !important;
-            }
-            #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col[tabulator-field="name"],
-            #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell[tabulator-field="name"] {
-                min-width:145px !important;
-                max-width:150px !important;
-            }
-            #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell {
-                padding:6px 6px !important;
-                font-size:10.5px !important;
-            }
-            #se2026WorkloadSection #se2026WorkloadTable .tabulator-footer {
-                justify-content:flex-end !important;
-            }
-        }
-
-
-
-        /* v74: Exact Deployment SE2026 table surface and horizontal scrolling for Target & Realisasi. */
-        #se2026WorkloadSection .se2026-workload-table-wrap,
-        #se2026WorkloadSection .deployment-table-wrap {
-            display:block !important;
-            width:100% !important;
-            max-width:100% !important;
-            min-width:0 !important;
-            overflow-x:auto !important;
-            overflow-y:hidden !important;
-            overscroll-behavior-x:contain !important;
-            -webkit-overflow-scrolling:touch !important;
-            touch-action:pan-x pan-y !important;
-            scrollbar-width:thin;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable {
-            display:block !important;
-            width:100% !important;
-            min-width:100% !important;
-            max-width:100% !important;
-            overflow:visible !important;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator {
-            display:block !important;
-            width:100% !important;
-            min-width:100% !important;
-            max-width:none !important;
-            border:1px solid var(--bs-border-color) !important;
-            border-radius:10px !important;
-            overflow:hidden !important;
-            background:var(--bs-body-bg) !important;
-            color:var(--bs-body-color) !important;
-            font-size:11px !important;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-header,
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col,
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col .tabulator-col-content {
-            background:var(--bs-tertiary-bg) !important;
-            color:var(--bs-body-color) !important;
-            border-color:var(--bs-border-color) !important;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col-title {
-            white-space:normal !important;
-            overflow-wrap:anywhere !important;
-            line-height:1.25 !important;
-            text-align:center !important;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-tableholder {
-            width:100% !important;
-            background:var(--bs-body-bg) !important;
-            overflow-x:auto !important;
-            overflow-y:auto !important;
-            -webkit-overflow-scrolling:touch !important;
-            overscroll-behavior-x:contain !important;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-row {
-            background:var(--bs-body-bg) !important;
-            color:var(--bs-body-color) !important;
-            border-color:var(--bs-border-color) !important;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-row:nth-child(even) {
-            background:var(--bs-secondary-bg) !important;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-row:hover {
-            background:var(--bs-tertiary-bg) !important;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell {
-            background:transparent !important;
-            color:var(--bs-body-color) !important;
-            border-color:var(--bs-border-color) !important;
-            padding:7px 8px !important;
-            font-size:11px !important;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell[tabulator-field="name"] {
-            white-space:normal !important;
-            overflow-wrap:anywhere !important;
-            min-width:190px !important;
-            line-height:1.3 !important;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell.tabulator-frozen {
-            z-index:12 !important;
-            background:#172033 !important;
-            color:#f8fafc !important;
-            opacity:1 !important;
-            box-shadow:2px 0 5px rgba(0,0,0,.16) !important;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-row:nth-child(even) .tabulator-cell.tabulator-frozen {
-            background:#243247 !important;
-            color:#f8fafc !important;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col.tabulator-frozen {
-            z-index:14 !important;
-            background:#263449 !important;
-            color:#fff !important;
-            opacity:1 !important;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-footer,
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-paginator,
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-page,
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-page-size {
-            background:var(--bs-tertiary-bg) !important;
-            color:var(--bs-body-color) !important;
-            border-color:var(--bs-border-color) !important;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-footer {
-            display:flex !important;
-            justify-content:flex-end !important;
-            align-items:center !important;
-            flex-wrap:wrap !important;
-            min-height:40px !important;
-            height:auto !important;
-            overflow:visible !important;
-            padding:5px 8px !important;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-paginator {
-            display:flex !important;
-            justify-content:flex-end !important;
-            align-items:center !important;
-            flex-wrap:wrap !important;
-            gap:3px !important;
-            margin-left:auto !important;
-            overflow:visible !important;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-page,
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-page-size {
-            flex:0 0 auto !important;
-            min-width:30px !important;
-        }
-        @media(max-width:700px) {
-            #se2026WorkloadSection .se2026-workload-table-wrap,
-            #se2026WorkloadSection .deployment-table-wrap {
-                width:100% !important;
-                max-width:100% !important;
-                overflow-x:auto !important;
-                overflow-y:hidden !important;
-                touch-action:pan-x pan-y !important;
-            }
-            #se2026WorkloadSection #se2026WorkloadTable {
-                width:100% !important;
-                min-width:100% !important;
-            }
-            #se2026WorkloadSection #se2026WorkloadTable .tabulator {
-                width:100% !important;
-                min-width:900px !important;
-                max-width:none !important;
-            }
-            #se2026WorkloadSection #se2026WorkloadTable .tabulator-tableholder {
-                overflow-x:visible !important;
-                overflow-y:auto !important;
-            }
-            #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell[tabulator-field="name"] {
-                min-width:145px !important;
-                max-width:155px !important;
-            }
-        }
-
-
-
-        /* v78: Target & Realisasi adopts the transparent, theme-aware Deployment table style.
-           The outer wrapper owns horizontal scrolling; no frozen columns are used. */
-        #se2026WorkloadSection .se2026-workload-table-wrap {
-            display:block !important;
-            width:100% !important;
-            max-width:100% !important;
-            min-width:0 !important;
-            overflow-x:auto !important;
-            overflow-y:hidden !important;
-            overscroll-behavior-x:contain !important;
-            -webkit-overflow-scrolling:touch !important;
-            touch-action:pan-x pan-y !important;
-            scrollbar-width:thin;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable {
-            display:block !important;
-            width:100% !important;
-            min-width:0 !important;
-            max-width:100% !important;
-            overflow:visible !important;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator {
-            display:block !important;
-            width:max-content !important;
-            min-width:100% !important;
-            max-width:none !important;
-            border:0 !important;
-            border-radius:15px !important;
-            overflow:hidden !important;
-            background:transparent !important;
-            color:var(--text) !important;
-            font-size:12px !important;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-header,
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-tableholder,
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-footer,
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-paginator {
-            background:transparent !important;
-            color:var(--text) !important;
-            border-color:var(--border) !important;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col,
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col .tabulator-col-content,
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col-title {
-            background:transparent !important;
-            color:var(--text) !important;
-            border-color:var(--border) !important;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col-title {
-            white-space:normal !important;
-            overflow-wrap:anywhere !important;
-            word-break:normal !important;
-            line-height:1.2 !important;
-            text-align:center !important;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col .tabulator-col-content {
-            min-height:64px !important;
-            display:flex !important;
-            align-items:center !important;
-            justify-content:center !important;
-            padding:7px 6px !important;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-tableholder {
-            width:100% !important;
-            overflow-x:clip !important;
-            overflow-y:auto !important;
-            overscroll-behavior-y:contain !important;
-            -webkit-overflow-scrolling:touch !important;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-row,
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-row.tabulator-row-even {
-            min-height:40px !important;
-            background:transparent !important;
-            color:var(--text) !important;
-            border-bottom:1px solid var(--border) !important;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-row:hover {
-            background:var(--row-hover-bg) !important;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-row .tabulator-cell,
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell {
-            background:transparent !important;
-            color:var(--text) !important;
-            border-right:1px solid var(--border) !important;
-            border-bottom:0 !important;
-            padding:8px 9px !important;
-            font-size:11px !important;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell[tabulator-field="name"] {
-            min-width:190px !important;
-            white-space:normal !important;
-            overflow-wrap:anywhere !important;
-            line-height:1.3 !important;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-footer {
-            display:flex !important;
-            justify-content:flex-end !important;
-            align-items:center !important;
-            flex-wrap:wrap !important;
-            min-height:40px !important;
-            height:auto !important;
-            overflow:visible !important;
-            padding:5px 8px !important;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-paginator {
-            display:flex !important;
-            justify-content:flex-end !important;
-            align-items:center !important;
-            flex-wrap:wrap !important;
-            gap:3px !important;
-            margin-left:auto !important;
-            overflow:visible !important;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-page,
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-page-size {
-            flex:0 0 auto !important;
-            min-width:30px !important;
-            background:transparent !important;
-            color:var(--text) !important;
-            border:1px solid var(--border) !important;
-        }
-        @media(max-width:700px) {
-            #se2026WorkloadSection .se2026-workload-table-wrap {
-                width:100% !important;
-                max-width:100% !important;
-                overflow-x:auto !important;
-                overflow-y:hidden !important;
-                touch-action:pan-x pan-y !important;
-            }
-            #se2026WorkloadSection #se2026WorkloadTable .tabulator {
-                width:max-content !important;
-                min-width:1040px !important;
-                max-width:none !important;
-                font-size:11px !important;
-            }
-            #se2026WorkloadSection #se2026WorkloadTable .tabulator-tableholder {
-                overflow-x:clip !important;
-                overflow-y:auto !important;
-            }
-            #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell {
-                padding:7px 8px !important;
-                font-size:11px !important;
-            }
-            #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell[tabulator-field="name"] {
-                min-width:145px !important;
-                max-width:165px !important;
-            }
-        }
-
-
-
-        /* v79: enforce genuinely transparent Target & Realisasi Tabulator surfaces.
-           This final override intentionally covers legacy :nth-child(even) rules as well. */
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator,
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-header,
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-headers,
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-tableholder,
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-table,
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-footer,
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-paginator,
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col,
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col .tabulator-col-content,
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-row,
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-row.tabulator-row-even,
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-row.tabulator-row-odd,
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-row:nth-child(odd),
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-row:nth-child(even),
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell,
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-row .tabulator-cell,
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell.tabulator-frozen,
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col.tabulator-frozen {
-            background:transparent !important;
-            background-color:transparent !important;
-            background-image:none !important;
-            color:var(--text) !important;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-row:hover,
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-row:hover .tabulator-cell {
-            background:var(--row-hover-bg) !important;
-            background-color:var(--row-hover-bg) !important;
-        }
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-header,
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col,
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell,
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-footer,
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-page,
-        #se2026WorkloadSection #se2026WorkloadTable .tabulator-page-size {
-            border-color:var(--border) !important;
-        }
-        html[data-bs-theme="dark"] #se2026WorkloadSection #se2026WorkloadTable .tabulator-row,
-        html[data-bs-theme="dark"] #se2026WorkloadSection #se2026WorkloadTable .tabulator-row:nth-child(odd),
-        html[data-bs-theme="dark"] #se2026WorkloadSection #se2026WorkloadTable .tabulator-row:nth-child(even),
-        html[data-bs-theme="light"] #se2026WorkloadSection #se2026WorkloadTable .tabulator-row,
-        html[data-bs-theme="light"] #se2026WorkloadSection #se2026WorkloadTable .tabulator-row:nth-child(odd),
-        html[data-bs-theme="light"] #se2026WorkloadSection #se2026WorkloadTable .tabulator-row:nth-child(even) {
-            background:transparent !important;
-            background-color:transparent !important;
-            background-image:none !important;
-        }
-
-
-        /* v81: Target & Realisasi scroll exactly like Deployment: the Tabulator tableholder owns X/Y scrolling. */
-        #targetRealizationModule,
-        #targetRealizationModule #se2026WorkloadSection,
-        #targetRealizationModule #se2026WorkloadSection .d-flex,
-        #targetRealizationModule #se2026WorkloadSection .se2026-workload-table-panel,
-        #targetRealizationModule #se2026WorkloadSection .se2026-workload-table-wrap {
-            min-width:0 !important;
-            max-width:100% !important;
-        }
-        #targetRealizationModule #se2026WorkloadSection .se2026-workload-table-wrap {
-            display:block !important;
-            width:100% !important;
-            overflow:visible !important;
-            position:relative !important;
-            touch-action:auto !important;
-        }
-        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable {
-            display:block !important;
-            width:100% !important;
-            min-width:0 !important;
-            max-width:100% !important;
-            overflow:visible !important;
-        }
-        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator {
-            width:100% !important;
-            min-width:0 !important;
-            max-width:100% !important;
-            border:0 !important;
-            border-radius:0 !important;
-            box-shadow:none !important;
-            overflow:hidden !important;
-            background:transparent !important;
-            background-color:transparent !important;
-            color:var(--text) !important;
-        }
-        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-header {
-            width:100% !important;
-            overflow:hidden !important;
-            background:transparent !important;
-            background-color:transparent !important;
-            color:var(--text) !important;
-            border:0 !important;
-            border-bottom:1px solid var(--border) !important;
-        }
-        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-headers,
-        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-tableholder .tabulator-table {
-            min-width:1040px !important;
-            width:max-content !important;
-        }
-        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col,
-        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col .tabulator-col-content,
-        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col-title,
-        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-col,
-        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-col-content {
-            background:transparent !important;
-            background-color:transparent !important;
-            background-image:none !important;
-            color:var(--text) !important;
-            border-color:var(--border) !important;
-        }
-        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-tableholder {
-            display:block !important;
-            width:100% !important;
-            max-width:100% !important;
-            overflow-x:auto !important;
-            overflow-y:auto !important;
-            -webkit-overflow-scrolling:touch !important;
-            overscroll-behavior-x:contain !important;
-            overscroll-behavior-y:contain !important;
-            touch-action:pan-x pan-y !important;
-            scrollbar-width:thin;
-            background:transparent !important;
-            background-color:transparent !important;
-        }
-        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-table,
-        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-calcs-holder,
-        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-calcs,
-        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-footer {
-            background:transparent !important;
-            background-color:transparent !important;
-            background-image:none !important;
-            color:var(--text) !important;
-            border-color:var(--border) !important;
-        }
-        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-row,
-        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-row-even,
-        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-row-odd,
-        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-row:nth-child(even),
-        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-row:nth-child(odd) {
-            background:transparent !important;
-            background-color:transparent !important;
-            background-image:none !important;
-            color:var(--text) !important;
-            border-bottom:1px solid var(--border) !important;
-        }
-        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-row:hover,
-        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-row-even:hover,
-        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-row-odd:hover {
-            background:var(--row-hover-bg) !important;
-            background-color:var(--row-hover-bg) !important;
-        }
-        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell {
-            background:transparent !important;
-            background-color:transparent !important;
-            background-image:none !important;
-            color:var(--text) !important;
-            border-color:var(--border) !important;
-            border-bottom:0 !important;
-        }
-        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell.tabulator-frozen,
-        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-col.tabulator-frozen {
-            position:static !important;
-            left:auto !important;
-            z-index:auto !important;
-            background:transparent !important;
-            background-color:transparent !important;
-            color:var(--text) !important;
-            box-shadow:none !important;
-        }
-        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-paginator,
-        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-page,
-        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-page-size {
-            background:transparent !important;
-            background-color:transparent !important;
-            color:var(--text) !important;
-            border-color:var(--border) !important;
-            box-shadow:none !important;
-        }
-        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-page.active {
-            background:var(--primary) !important;
-            background-color:var(--primary) !important;
-            color:#fff !important;
-            border-color:var(--primary) !important;
-        }
-        @media(max-width:767.98px) {
-            #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator {
-                font-size:11px !important;
-            }
-            #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-cell {
-                padding:7px 8px !important;
-                font-size:11px !important;
-            }
-        }
-
-        /* Keep the workload table panel on the same parent surface as the Deployment table. */
-        #targetRealizationModule #se2026WorkloadSection .se2026-workload-table-panel {
-            background:transparent !important;
-            border:0 !important;
-            box-shadow:none !important;
-        }
-
         /* v81: keep module navigation sticky outside the dashboard's scroll/overflow context. */
         .module-navigation-shell {
             position:-webkit-sticky !important;
@@ -3381,85 +2727,6 @@
             }
         }
 
-        /* v82: keep Target & Realisasi header/body widths controlled by one Tabulator instance.
-           The outer wrapper scrolls horizontally, matching the Deployment table architecture. */
-        #targetRealizationModule #se2026WorkloadSection .se2026-workload-table-wrap {
-            display:block !important;
-            width:100% !important;
-            max-width:100% !important;
-            min-width:0 !important;
-            overflow-x:auto !important;
-            overflow-y:hidden !important;
-            -webkit-overflow-scrolling:touch !important;
-            overscroll-behavior-x:contain !important;
-            touch-action:pan-x pan-y !important;
-            scrollbar-width:thin;
-        }
-        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable {
-            display:block !important;
-            width:100% !important;
-            min-width:0 !important;
-            max-width:100% !important;
-            overflow:visible !important;
-        }
-        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator {
-            display:block !important;
-            width:100% !important;
-            min-width:100% !important;
-            max-width:none !important;
-            overflow:hidden !important;
-        }
-        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-header {
-            width:100% !important;
-            max-width:100% !important;
-            overflow:hidden !important;
-        }
-        /* Reset v81's separate min-width/max-content constraints; Tabulator owns both sets of columns. */
-        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-headers,
-        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-tableholder .tabulator-table {
-            width:auto !important;
-            min-width:0 !important;
-            max-width:none !important;
-        }
-        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-tableholder {
-            display:block !important;
-            width:100% !important;
-            max-width:100% !important;
-            overflow-x:hidden !important;
-            overflow-y:auto !important;
-            -webkit-overflow-scrolling:touch !important;
-            overscroll-behavior-y:contain !important;
-            background:transparent !important;
-            background-color:transparent !important;
-        }
-        @media(max-width:767.98px) {
-            #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator {
-                width:1040px !important;
-                min-width:1040px !important;
-                max-width:none !important;
-                font-size:11px !important;
-            }
-            #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-header,
-            #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-tableholder,
-            #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-header .tabulator-headers,
-            #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .tabulator-tableholder .tabulator-table {
-                width:auto !important;
-                min-width:0 !important;
-                max-width:none !important;
-            }
-        }
-
-        /* Supabase-inspired green for the daily target pill (kept distinct from achievement colors). */
-        #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .se2026-daily-pill {
-            color:#3ECF8E !important;
-            background:rgba(62,207,142,.13) !important;
-            border-color:rgba(62,207,142,.34) !important;
-        }
-        [data-bs-theme="light"] #targetRealizationModule #se2026WorkloadSection #se2026WorkloadTable .se2026-daily-pill {
-            color:#137A55 !important;
-            background:#E9FBF2 !important;
-            border-color:#B6EAD0 !important;
-        }
 
 
 </style>
