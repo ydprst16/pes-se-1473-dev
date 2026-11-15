@@ -2148,9 +2148,10 @@
             background:transparent !important;
             color:var(--text) !important;
         }
+        /* Keep the first body cell on Tabulator's computed column width.
+           The column is configured as 240px in JS; a body-only max-width
+           makes body borders drift ~20px from the header separators. */
         #targetRealizationModule #se2026WorkloadTable .tabulator-cell[tabulator-field="name"] {
-            min-width:170px !important;
-            max-width:220px !important;
             white-space:normal !important;
             overflow-wrap:anywhere !important;
             line-height:1.3 !important;
@@ -2265,7 +2266,7 @@
                 <i class="bi bi-speedometer2"></i><span>Monitoring Progress</span>
             </button>
             <button class="module-tab" id="menuBusinessPresence" type="button" role="tab" aria-selected="false" aria-controls="businessPresenceModule">
-                <i class="bi bi-people-fill"></i><span>Keberadaan Keluarga/Usaha</span>
+                <i class="bi bi-clipboard2-data-fill"></i><span>Daftar Assignment</span>
             </button>
             <button class="module-tab" id="menuDeployment" type="button" role="tab" aria-selected="false" aria-controls="deploymentModule">
                 <i class="bi bi-diagram-3-fill"></i><span>Deployment SE2026</span>
@@ -2616,7 +2617,7 @@
 
         <section id="businessPresenceModule" class="d-none">
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
-                <div><h3 class="mb-1"><i class="bi bi-people-fill text-primary me-2"></i>Keberadaan Keluarga/Usaha</h3><div class="text-secondary small">Monitoring keberadaan keluarga, keberadaan usaha, dan status pendataan.</div></div>
+                <div><h3 class="mb-1"><i class="bi bi-clipboard2-data-fill text-primary me-2"></i>Daftar Assignment</h3><div class="text-secondary small">Daftar assignment keluarga dan usaha beserta status keberadaan dan status pendataannya.</div></div>
                 <div class="d-flex gap-2"><button class="btn btn-outline-secondary" id="btnBusinessRefresh"><i class="bi bi-arrow-clockwise me-1"></i>Refresh</button><button class="btn btn-primary" id="btnOpenBusinessUpload"><i class="bi bi-upload me-1"></i>Upload Excel</button></div>
             </div>
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
@@ -2731,9 +2732,9 @@
 
 </style>
             <div class="row g-3 mb-4">
-                <div class="col-12 col-xl-4"><div class="bp-breakdown-card"><div class="bp-breakdown-head"><div class="bp-breakdown-icon"><i class="bi bi-people-fill"></i></div><div><div class="chart-title mb-0">Keberadaan Keluarga</div><div class="bp-breakdown-subtitle">Satu hitungan per UUID · <code>ada_keluarga_label</code></div></div></div><div id="businessFamilyChart" style="min-height:245px"></div><div class="table-responsive"><table class="table bp-breakdown-table"><thead><tr><th>Status</th><th class="text-end">Jumlah</th><th class="text-end">% Assignment</th></tr></thead><tbody id="businessFamilyRows"></tbody></table></div></div></div>
-                <div class="col-12 col-xl-4"><div class="bp-breakdown-card"><div class="bp-breakdown-head"><div class="bp-breakdown-icon"><i class="bi bi-shop"></i></div><div><div class="chart-title mb-0">Usaha Keluarga</div><div class="bp-breakdown-subtitle">Satu baris per objek · <code>ada_bang_usaha_label</code></div></div></div><div id="businessFamilyBusinessChart" style="min-height:245px"></div><div class="table-responsive"><table class="table bp-breakdown-table"><thead><tr><th>Status</th><th class="text-end">Jumlah</th><th class="text-end">% Catatan</th></tr></thead><tbody id="businessFamilyBusinessRows"></tbody></table></div></div></div>
-                <div class="col-12 col-xl-4"><div class="bp-breakdown-card"><div class="bp-breakdown-head"><div class="bp-breakdown-icon"><i class="bi bi-building"></i></div><div><div class="chart-title mb-0">Usaha BKU</div><div class="bp-breakdown-subtitle">Satu baris per objek · <code>keberadaan_usaha_label</code></div></div></div><div id="businessBkuChart" style="min-height:245px"></div><div class="table-responsive"><table class="table bp-breakdown-table"><thead><tr><th>Status</th><th class="text-end">Jumlah</th><th class="text-end">% Catatan</th></tr></thead><tbody id="businessBkuRows"></tbody></table></div></div></div>
+                <div class="col-12 col-xl-4"><div class="bp-breakdown-card"><div class="bp-breakdown-head"><div class="bp-breakdown-icon"><i class="bi bi-people-fill"></i></div><div><div class="chart-title mb-0">Keberadaan Keluarga</div><div class="bp-breakdown-subtitle">Satu hitungan per UUID · <code>ada_keluarga_label</code></div></div></div><div class="table-responsive"><table class="table bp-breakdown-table"><thead><tr><th>Status</th><th class="text-end">Jumlah</th><th class="text-end">% Assignment</th></tr></thead><tbody id="businessFamilyRows"></tbody></table></div></div></div>
+                <div class="col-12 col-xl-4"><div class="bp-breakdown-card"><div class="bp-breakdown-head"><div class="bp-breakdown-icon"><i class="bi bi-shop"></i></div><div><div class="chart-title mb-0">Usaha Keluarga</div><div class="bp-breakdown-subtitle">Satu baris per objek · <code>ada_bang_usaha_label</code></div></div></div><div class="table-responsive"><table class="table bp-breakdown-table"><thead><tr><th>Status</th><th class="text-end">Jumlah</th><th class="text-end">% Catatan</th></tr></thead><tbody id="businessFamilyBusinessRows"></tbody></table></div></div></div>
+                <div class="col-12 col-xl-4"><div class="bp-breakdown-card"><div class="bp-breakdown-head"><div class="bp-breakdown-icon"><i class="bi bi-building"></i></div><div><div class="chart-title mb-0">Usaha BKU</div><div class="bp-breakdown-subtitle">Satu baris per objek · <code>keberadaan_usaha_label</code></div></div></div><div class="table-responsive"><table class="table bp-breakdown-table"><thead><tr><th>Status</th><th class="text-end">Jumlah</th><th class="text-end">% Catatan</th></tr></thead><tbody id="businessBkuRows"></tbody></table></div></div></div>
             </div>
             <div class="chart-card mt-5 mb-4"><div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2"><div class="chart-title m-0">Rekapitulasi Assignment & Petugas per Sub-SLS</div><button class="btn btn-sm btn-success" id="btnBusinessExport"><i class="bi bi-file-earmark-excel me-1"></i>Export Excel</button></div><div class="small text-secondary mb-3">Satu baris untuk setiap assignment pada file Excel. Nama PPL dan PML dicocokkan otomatis berdasarkan ID Sub-SLS (regionCode). URL membuka assignment di FASIH.</div><div id="businessRegionTable" class="bp-data-table"></div></div>
         </section>

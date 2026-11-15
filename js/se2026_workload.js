@@ -131,19 +131,12 @@ async function loadSe2026PesRealization(date = null) {
 function updateSe2026SnapshotInfo() {
   const info = document.getElementById("se2026WorkloadMatchInfo");
   if (!info) return;
-  if (!se2026RealizationSnapshot) { info.textContent = "Sumber realisasi belum tersedia."; return; }
+  if (!se2026RealizationSnapshot) { info.textContent = "Snapshot realisasi belum tersedia."; return; }
   const snapshot = se2026RealizationSnapshot;
-  const categories = [
-    ["keluarga", "Keluarga"],
-    ["usaha_keluarga", "Usaha Keluarga"],
-    ["usaha_bku", "Usaha BKU"]
-  ];
-  const sourceNames = categories.map(([key, label]) => {
-    const filename = snapshot.sources?.[key]?.filename;
-    return `${label}: ${filename || "nama file tidak tersedia"}`;
-  });
-  const uploadedAt = snapshot.uploadedAt ? new Date(snapshot.uploadedAt).toLocaleString("id-ID", { dateStyle: "medium", timeStyle: "short" }) : "waktu upload tidak tersedia";
-  info.innerHTML = `<div class="d-flex flex-column gap-1"><div><strong>Snapshot ${se2026Escape(snapshot.importDate || "-")}</strong> · Diunggah: ${se2026Escape(uploadedAt)}</div><div class="text-secondary">Sumber realisasi hanya status Ditemukan + Baru dari tiga file:</div><div class="d-flex flex-wrap gap-2">${sourceNames.map(name => `<span class="badge text-bg-light border">${se2026Escape(name)}</span>`).join("")}</div></div>`;
+  const uploadedAt = snapshot.uploadedAt
+    ? new Date(snapshot.uploadedAt).toLocaleString("id-ID", { dateStyle: "medium", timeStyle: "short" })
+    : "-";
+  info.innerHTML = `<strong>Snapshot ${se2026Escape(snapshot.importDate || "-")}</strong> · Diunggah: ${se2026Escape(uploadedAt)}`;
 }
 
 

@@ -3,7 +3,6 @@
   const $ = (id) => document.getElementById(id);
   let currentPayload = null;
   let currentRows = [];
-  let charts = {};
   let regionTable = null;
   let officerRole = 'pencacah';
 
@@ -224,11 +223,6 @@
     }
   }
 
-  function renderDonut(elementId,key,counts,order){
-    if(charts[key])charts[key].destroy();
-    const labels=order.filter(x=>x!=='Belum Diisi' && counts[x]);
-    charts[key]=new ApexCharts($(elementId),{chart:{type:'donut',height:285,toolbar:{show:false}},labels,series:labels.map(x=>counts[x]),legend:{position:'bottom'},dataLabels:{enabled:true,formatter:(_v,opts)=>Number(opts.w.config.series[opts.seriesIndex]).toLocaleString('id-ID')},noData:{text:'Belum ada isian'}});charts[key].render();
-  }
   function summaryRows(counts,order,total){
     const rows=order.filter(name=>name!=='Belum Diisi').map(name=>({name,count:counts[name]||0})).filter(x=>x.count>0);
     if(!rows.length)return '<tr><td colspan="3" class="text-center text-secondary py-4">Belum ada hasil isian</td></tr>';
@@ -287,7 +281,6 @@
     $('businessFamilyRows').innerHTML=summaryRows(family,familyOrder,uniqueIds.size);
     $('businessFamilyBusinessRows').innerHTML=summaryRows(familyBusiness,businessOrder,Math.max(1,familyBusinessFilled));
     $('businessBkuRows').innerHTML=summaryRows(bku,businessOrder,Math.max(1,bkuFilled));
-    renderDonut('businessFamilyChart','family',family,familyOrder);renderDonut('businessFamilyBusinessChart','familyBusiness',familyBusiness,businessOrder);renderDonut('businessBkuChart','bku',bku,businessOrder);
     // Ambil seluruh petugas PPL dan PML, lalu cocokkan berdasarkan regionCode = idsubsls.
     const officerNames={};
     for (const role of ['pencacah','pengawas']) {
