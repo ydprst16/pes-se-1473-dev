@@ -2742,6 +2742,24 @@
             margin-bottom:8px !important;
         }
 
+        /* v91: remove the remaining vertical gap above the Deployment heading. */
+        .module-navigation-shell:has(+ .container-dashboard #deploymentModule:not(.d-none)) {
+            margin-bottom:0 !important;
+        }
+        .container-dashboard:has(> #deploymentModule:not(.d-none)) {
+            padding-top:0 !important;
+            margin-top:0 !important;
+        }
+        #deploymentModule:not(.d-none) {
+            margin-top:0 !important;
+            padding-top:0 !important;
+        }
+        #deploymentModule:not(.d-none) > div:first-child {
+            margin-top:0 !important;
+            padding-top:0 !important;
+            margin-bottom:6px !important;
+        }
+
 
 
 
@@ -3014,11 +3032,11 @@
                         <div class="kpi-value" id="deploymentTotalUnique">-</div>
                     </div>
                     <div class="col-6 col-md-3">
-                        <div class="kpi-title">Cocok</div>
+                        <div class="kpi-title">Sudah didata</div>
                         <div class="kpi-value text-success" id="deploymentMatchedSsls">-</div>
                     </div>
                     <div class="col-6 col-md-2">
-                        <div class="kpi-title">Tidak cocok</div>
+                        <div class="kpi-title">Belum didata</div>
                         <div class="kpi-value text-warning" id="deploymentUnmatchedSsls">-</div>
                     </div>
                     <div class="col-12 col-md-3 text-md-end">
