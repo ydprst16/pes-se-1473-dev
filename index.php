@@ -2730,24 +2730,31 @@
             }
         }
 
-        /* v92: Deployment is a sibling after .container-dashboard, not a child of it.
-           When Deployment is active, the previous dashboard wrapper contains only hidden modules;
-           its padding was the real 40px+ gap visible above the Deployment heading. Hide that empty
-           wrapper and let the Deployment section start immediately below the sticky module tabs. */
+        /* v93: Deployment is outside .container-dashboard, so reproduce the same
+           vertical rhythm used by Daftar Assignment and Target/Realisasi:
+           navigation gap + dashboard top padding, with the same heading mb-3. */
         .module-navigation-shell:has(+ .container-dashboard + #deploymentModule:not(.d-none)) {
-            margin-bottom:0 !important;
+            margin-bottom:.65rem !important;
         }
         .container-dashboard:has(+ #deploymentModule:not(.d-none)) {
             display:none !important;
         }
         #deploymentModule:not(.d-none) {
             margin:0 !important;
-            padding-top:0 !important;
+            padding-top:10px !important;
         }
         #deploymentModule:not(.d-none) > div:first-child {
             margin-top:0 !important;
             padding-top:0 !important;
-            margin-bottom:6px !important;
+            margin-bottom:1rem !important;
+        }
+        @media(max-width:767.98px) {
+            .module-navigation-shell:has(+ .container-dashboard + #deploymentModule:not(.d-none)) {
+                margin-bottom:.55rem !important;
+            }
+            #deploymentModule:not(.d-none) {
+                padding-top:8px !important;
+            }
         }
 
 
