@@ -2528,7 +2528,7 @@
                                 <p class="text-secondary small mb-3">Pilih jenis data yang ingin diperbarui. Kedua proses upload dapat dilakukan secara terpisah.</p>
                                 <div class="row g-3">
                                   <div class="col-12 col-lg-6">
-                                    <div class="h-100 border rounded-3 p-3" style="border-color:var(--border)!important;background:var(--card-solid)">
+                                    <div class="h-100 border rounded-3 p-3 d-flex flex-column upload-panel" style="border-color:var(--border)!important;background:var(--card-solid)">
                                       <div class="fw-bold mb-1"><i class="bi bi-filetype-json text-primary me-1"></i>Data Monitoring FASIH</div>
                                       <div class="small text-secondary mb-3">Upload satu atau beberapa file JSON untuk memperbarui progres Pencacah dan Pengawas.</div>
                                       <div id="dropZone" class="drop-zone" data-testid="upload-dropzone">
@@ -2549,12 +2549,12 @@
                                 </div>
 
                                       <div id="fileList" class="file-list mt-3" data-testid="upload-file-list"></div>
-                                      <div class="d-flex justify-content-end mt-3"><button id="btnUpload" class="btn btn-primary" data-testid="upload-submit"><i class="bi bi-cloud-arrow-up"></i> Upload JSON Terpilih</button></div>
                                       <div class="small text-secondary mt-3"><i class="bi bi-info-circle"></i> Role dan tanggal dideteksi otomatis dari isi file. Tanggal hari ini menjadi data live + snapshot; tanggal lampau hanya snapshot.</div>
+                                      <div class="d-flex justify-content-end mt-auto pt-3 upload-actions"><button id="btnUpload" class="btn btn-primary" data-testid="upload-submit"><i class="bi bi-cloud-arrow-up"></i> Upload JSON Terpilih</button></div>
                                     </div>
                                   </div>
                                   <div class="col-12 col-lg-6">
-                                    <div class="h-100 border rounded-3 p-3" style="border-color:var(--border)!important;background:var(--card-solid)">
+                                    <div class="h-100 border rounded-3 p-3 d-flex flex-column upload-panel" style="border-color:var(--border)!important;background:var(--card-solid)">
                                       <div class="fw-bold mb-1"><i class="bi bi-file-earmark-excel text-success me-1"></i>Deployment SE2026</div>
                                       <div class="small text-secondary mb-3">Pilih tepat tiga file Excel: Keluarga, Usaha Keluarga, dan Usaha BKU.</div>
                                       <div class="deployment-file-drop" data-testid="deployment-file-picker">
@@ -2566,8 +2566,8 @@
                                       </div>
                                       <div class="small text-secondary mt-3" id="deploymentSelectedFiles" aria-live="polite">Belum ada file Excel deployment dipilih.</div>
                                       <div class="small text-secondary mt-2">Nama file harus diawali tanggal <code>yyyymmdd_</code> dan tanggal ketiganya harus sama.</div>
-                                      <div class="d-flex justify-content-end mt-3"><button type="button" class="btn btn-success btn-sm" id="btnUploadDeployment"><i class="bi bi-cloud-arrow-up me-1"></i>Upload Excel Deployment</button></div>
                                       <div id="deploymentUploadMessage" class="small mt-2" role="status">Belum ada upload deployment pada sesi ini.</div>
+                                      <div class="d-flex justify-content-end mt-auto pt-3 upload-actions"><button type="button" class="btn btn-success btn-sm" id="btnUploadDeployment"><i class="bi bi-cloud-arrow-up me-1"></i>Upload Excel Deployment</button></div>
                                     </div>
                                   </div>
                                 </div>
