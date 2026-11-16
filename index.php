@@ -2730,28 +2730,18 @@
             }
         }
 
-        /* v90: Deployment heading sits closer to the module tabs, matching the compact spacing of other modules. */
-        .module-navigation-shell:has(+ .container-dashboard #deploymentModule:not(.d-none)) {
-            margin-bottom:2px !important;
-        }
-        .container-dashboard:has(> #deploymentModule:not(.d-none)) {
-            padding-top:4px !important;
-        }
-        #deploymentModule:not(.d-none) > div:first-child {
-            margin-top:0 !important;
-            margin-bottom:8px !important;
-        }
-
-        /* v91: remove the remaining vertical gap above the Deployment heading. */
-        .module-navigation-shell:has(+ .container-dashboard #deploymentModule:not(.d-none)) {
+        /* v92: Deployment is a sibling after .container-dashboard, not a child of it.
+           When Deployment is active, the previous dashboard wrapper contains only hidden modules;
+           its padding was the real 40px+ gap visible above the Deployment heading. Hide that empty
+           wrapper and let the Deployment section start immediately below the sticky module tabs. */
+        .module-navigation-shell:has(+ .container-dashboard + #deploymentModule:not(.d-none)) {
             margin-bottom:0 !important;
         }
-        .container-dashboard:has(> #deploymentModule:not(.d-none)) {
-            padding-top:0 !important;
-            margin-top:0 !important;
+        .container-dashboard:has(+ #deploymentModule:not(.d-none)) {
+            display:none !important;
         }
         #deploymentModule:not(.d-none) {
-            margin-top:0 !important;
+            margin:0 !important;
             padding-top:0 !important;
         }
         #deploymentModule:not(.d-none) > div:first-child {
