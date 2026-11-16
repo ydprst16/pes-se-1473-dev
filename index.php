@@ -673,6 +673,28 @@
             color: var(--info);
         }
 
+        /* Excel Deployment picker mirrors the FASIH upload drop-zone layout. */
+        .deployment-file-drop {
+            min-height: 202px;
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            text-align: center;
+            background: rgba(59, 130, 246, 0.03);
+        }
+        .deployment-file-drop .drop-zone-icon { margin-bottom: 0; color: #16a36a; }
+        .deployment-file-drop .drop-zone-sub { max-width: 100%; }
+        .deployment-file-drop .form-control { width: 100%; max-width: 100%; text-align: left; }
+        .deployment-file-drop .badge { margin-top: 1px; }
+        @media (max-width: 575.98px) {
+            .deployment-file-drop { min-height: 190px; padding: 16px 12px; }
+        }
+
         .file-list {
             max-height: 300px;
             overflow-y: auto;
@@ -2535,9 +2557,14 @@
                                     <div class="h-100 border rounded-3 p-3" style="border-color:var(--border)!important;background:var(--card-solid)">
                                       <div class="fw-bold mb-1"><i class="bi bi-file-earmark-excel text-success me-1"></i>Deployment SE2026</div>
                                       <div class="small text-secondary mb-3">Pilih tepat tiga file Excel: Keluarga, Usaha Keluarga, dan Usaha BKU.</div>
-                                      <span class="badge text-bg-success mb-3">3 file Excel wajib</span>
-                                      <input class="form-control form-control-sm" type="file" id="deploymentFilesAll" accept=".xlsx,.xls" multiple>
-                                      <div class="small text-secondary mt-2" id="deploymentSelectedFiles">Belum ada file Excel deployment dipilih.</div>
+                                      <div class="deployment-file-drop" data-testid="deployment-file-picker">
+                                        <i class="bi bi-file-earmark-excel drop-zone-icon" aria-hidden="true"></i>
+                                        <div class="drop-zone-title">Pilih File Excel Deployment</div>
+                                        <div class="drop-zone-sub">Pilih tiga file <code>.xlsx</code> atau <code>.xls</code> sekaligus.</div>
+                                        <input class="form-control form-control-sm" type="file" id="deploymentFilesAll" accept=".xlsx,.xls" multiple aria-label="Pilih tiga file Excel Deployment">
+                                        <span class="badge text-bg-success">3 file Excel wajib</span>
+                                      </div>
+                                      <div class="small text-secondary mt-3" id="deploymentSelectedFiles" aria-live="polite">Belum ada file Excel deployment dipilih.</div>
                                       <div class="small text-secondary mt-2">Nama file harus diawali tanggal <code>yyyymmdd_</code> dan tanggal ketiganya harus sama.</div>
                                       <div class="d-flex justify-content-end mt-3"><button type="button" class="btn btn-success btn-sm" id="btnUploadDeployment"><i class="bi bi-cloud-arrow-up me-1"></i>Upload Excel Deployment</button></div>
                                       <div id="deploymentUploadMessage" class="small mt-2" role="status">Belum ada upload deployment pada sesi ini.</div>
