@@ -2730,6 +2730,18 @@
             }
         }
 
+        /* v90: Deployment heading sits closer to the module tabs, matching the compact spacing of other modules. */
+        .module-navigation-shell:has(+ .container-dashboard #deploymentModule:not(.d-none)) {
+            margin-bottom:2px !important;
+        }
+        .container-dashboard:has(> #deploymentModule:not(.d-none)) {
+            padding-top:4px !important;
+        }
+        #deploymentModule:not(.d-none) > div:first-child {
+            margin-top:0 !important;
+            margin-bottom:8px !important;
+        }
+
 
 
 
