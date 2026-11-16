@@ -1561,7 +1561,7 @@
             width:100%;
             max-width:100%;
             min-width:0;
-            padding:clamp(16px,2vw,26px);
+            padding:10px clamp(16px,2vw,26px) clamp(16px,2vw,26px);
             overflow-x:clip;
         }
         .container-dashboard>section,
@@ -1579,7 +1579,7 @@
         #deploymentModule .chart-card,
         #deploymentModule .bp-breakdown-card{min-width:0}
         @media(max-width:767.98px){
-            .container-dashboard{padding:12px;overflow-x:clip}
+            .container-dashboard{padding:8px 12px 12px;overflow-x:clip}
             .container-dashboard .row{--bs-gutter-x:.9rem}
             #deploymentModule{padding-inline:0}
             #deploymentModule>div:first-child{padding-inline:0}
@@ -2618,7 +2618,7 @@
                 </div>
 
         <section id="businessPresenceModule" class="d-none">
-            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
                 <div><h3 class="mb-1"><i class="bi bi-clipboard2-data-fill text-primary me-2"></i>Daftar Assignment</h3><div class="text-secondary small">Daftar assignment keluarga dan usaha beserta status keberadaan dan status pendataannya.</div></div>
                 <div class="d-flex gap-2"><button class="btn btn-outline-secondary" id="btnBusinessRefresh"><i class="bi bi-arrow-clockwise me-1"></i>Refresh</button><button class="btn btn-primary" id="btnOpenBusinessUpload"><i class="bi bi-upload me-1"></i>Upload Excel</button></div>
             </div>
@@ -2699,7 +2699,7 @@
             z-index:1001 !important;
             width:100%;
             padding:0 clamp(16px,2vw,26px);
-            margin:0 0 1.5rem;
+            margin:0 0 .65rem;
             background:var(--card-solid) !important;
             border-bottom:1px solid var(--border) !important;
             box-shadow:0 8px 16px rgba(0,0,0,.10) !important;
@@ -2726,7 +2726,7 @@
         @media(max-width:575.98px) {
             .module-navigation-shell {
                 padding-inline:12px;
-                margin-bottom:1.1rem;
+                margin-bottom:.55rem;
             }
         }
 
@@ -2977,7 +2977,7 @@
             </div>
 
         <section id="deploymentModule" class="d-none">
-            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
                 <div>
                     <h3 class="mb-1"><i class="bi bi-diagram-3-fill text-primary me-2"></i>Rekapitulasi per Petugas</h3>
                     <div class="text-secondary small">Rekap jumlah assignment Keluarga, Usaha Keluarga, dan Usaha BKU berdasarkan status untuk setiap PPL/PCL.</div>
