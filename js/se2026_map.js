@@ -141,14 +141,14 @@
       pml: officers.pml,
     };
   }
-  function styleFor(row, selected = false, hover = false) {
+  function styleFor(row, selected = false, hover = false, emphasized = false) {
     const color = COLORS[row.status] || COLORS.unmatched;
     return {
-      color: selected ? "#2563eb" : hover ? "#ffffff" : "#64748b",
-      weight: selected ? 3 : hover ? 2 : 0.8,
-      opacity: selected ? 1 : 0.78,
+      color: selected ? "#075985" : emphasized ? "#ffffff" : hover ? "#ffffff" : "#64748b",
+      weight: selected ? 4 : emphasized ? 2.4 : hover ? 2 : 0.8,
+      opacity: selected || emphasized ? 1 : 0.78,
       fillColor: color,
-      fillOpacity: selected ? 0.88 : hover ? 0.88 : 0.72,
+      fillOpacity: selected ? 0.98 : emphasized ? 0.94 : hover ? 0.88 : 0.72,
     };
   }
   function tooltipHtml(row) {
@@ -238,7 +238,7 @@
       if (!row) return;
       if (visible.has(id)) {
         if (!map.hasLayer(layer)) layer.addTo(map);
-        layer.setStyle(styleFor(row, selectedId === id));
+        layer.setStyle(styleFor(row, selectedId === id, false, !!(document.getElementById("mapStatusFilter")?.value || document.getElementById("mapSearch")?.value.trim() || document.getElementById("mapIdFilter")?.value)));
       } else if (map.hasLayer(layer)) map.removeLayer(layer);
     });
     $("mapFeatureCount").textContent =
@@ -316,14 +316,22 @@
     if (!map || !geoLayer) return;
     const rows = filteredRows();
     if (!rows.length) return;
-    const ids = new Set(rows.map((r) => r.id)),
-      bounds = L.latLngBounds([]);
+    const ids = new Set(rows.map((r) => r.id)), bounds = L.latLngBounds([]);
+    let onlyLayer = null;
     geoLayer.eachLayer((layer) => {
-      if (ids.has(idOf(layer.feature?.properties?.idsubsls)))
+      if (ids.has(idOf(layer.feature?.properties?.idsubsls))) {
         bounds.extend(layer.getBounds());
+        onlyLayer = layer;
+        if (rows.length > 1) onlyLayer = null;
+      }
     });
-    if (bounds.isValid())
-      map.fitBounds(bounds.pad(0.08), { maxZoom: 15, animate: true });
+    if (!bounds.isValid()) return;
+    // A single Sub-SLS should be brought close; status filters focus the full matching set.
+    if (rows.length === 1 && onlyLayer) {
+      map.fitBounds(onlyLayer.getBounds().pad(0.35), { maxZoom: 19, animate: true });
+    } else {
+      map.fitBounds(bounds.pad(0.12), { maxZoom: 18, animate: true });
+    }
   }
   function setTileTheme() {
     if (!map) return;
@@ -390,10 +398,18 @@
           applyFilters();
         }
       });
-      $("mapStatusFilter").addEventListener("change", applyFilters);
+      $("mapStatusFilter").addEventListener("change", () => {
+        selectedId = null;
+        selectedLayer = null;
+        renderDetail(null);
+        applyFilters();
+        zoomToFilteredRows();
+      });
       $("mapSearch").addEventListener("input", () => {
         if ($("mapSearch").value.trim()) $("mapIdFilter").value = "";
         applyFilters();
+        const rows = filteredRows();
+        if (rows.length === 1) zoomToFilteredRows();
       });
       $("btnMapReset").addEventListener("click", () => {
         [
