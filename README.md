@@ -700,3 +700,26 @@ The module can display a PPL/PML breakdown by matching Excel `idsubsls` to `regi
 - Angka pada setiap status menggunakan penjumlahan kolom `Jumlah Assignment` pada file sumber.
 - Tabel menyajikan Muatan SE2026, rincian status masing-masing kategori, dan total per kategori.
 - File Excel sumber tidak perlu diunggah saat dashboard digunakan; JSON historis sudah disimpan di project.
+
+## Peta Sebaran Pendataan PES SE2026
+
+Modul peta menggunakan `data/Prod_SLS_202611473.geojson` sebagai geometri Sub-SLS (join key `idsubsls`) dan mengambil snapshot Deployment terbaru melalui `api/deployment.php?action=latest`.
+
+- Hijau: realisasi gabungan Ditemukan + Baru mencapai atau melebihi 100% dari seluruh assignment tiga kategori.
+- Kuning: realisasi lebih dari 0% dan masih di bawah 100%.
+- Abu-abu: memiliki pasangan snapshot tetapi realisasi masih 0%.
+- Abu-abu muda: tidak memiliki pasangan `idsubsls` pada snapshot.
+
+Peta menggunakan Leaflet dan basemap CARTO (OpenStreetMap/CARTO attribution). Koneksi internet diperlukan untuk memuat library Leaflet dan tile basemap. Geometri GeoJSON disajikan dari file lokal aplikasi.
+
+
+### Konfigurasi Supabase untuk localhost (XAMPP)
+
+1. Salin `api/config.local.example.php` menjadi `api/config.local.php`.
+2. Isi `SUPABASE_URL` dengan Project URL Supabase, `SUPABASE_SERVICE_KEY` dengan Service Role Key, dan `SUPABASE_BUCKET` dengan nama bucket (default `data`).
+3. Pastikan objek `deployment/latest.json` tersedia di bucket tersebut.
+4. Buka `http://localhost/NAMA_FOLDER/api/deployment.php?action=latest` untuk memeriksa koneksi. Jika konfigurasi belum diisi, API sekarang mengembalikan HTTP 503 dengan pesan yang jelas; jika file latest belum ada, API mengembalikan HTTP 404 yang spesifik.
+
+**Keamanan:** `api/config.local.php` berisi kredensial rahasia, tidak boleh di-commit atau diletakkan di folder publik selain lokasi server aplikasi. Jangan pernah menaruh Service Role Key di JavaScript.
+
+Peta menggunakan tile standar OpenStreetMap tanpa API key. Atribusi OpenStreetMap tetap ditampilkan. Dark theme memakai filter visual pada tile agar tidak membutuhkan penyedia basemap ber-API-key.

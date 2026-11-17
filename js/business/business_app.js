@@ -33,11 +33,13 @@
     const business = which === 'business';
     const deployment = which === 'deployment';
     const targetRealization = which === 'target-realization';
+    const mapDistribution = which === 'map';
     $('monitoringModule').classList.toggle('d-none', !monitoring);
     $('targetRealizationModule')?.classList.toggle('d-none', !targetRealization);
     $('businessPresenceModule').classList.toggle('d-none', !business);
     $('deploymentModule')?.classList.toggle('d-none', !deployment);
-    const tabs = [['menuMonitoring',monitoring],['menuBusinessPresence',business],['menuDeployment',deployment],['menuTargetRealization',targetRealization]];
+    $('mapDistributionModule')?.classList.toggle('d-none', !mapDistribution);
+    const tabs = [['menuMonitoring',monitoring],['menuBusinessPresence',business],['menuDeployment',deployment],['menuTargetRealization',targetRealization],['menuMapDistribution',mapDistribution]];
     tabs.forEach(([id,active])=>{
       const el=$(id); if(!el) return;
       el.classList.toggle('active',active);
@@ -46,6 +48,9 @@
     });
     if (business && !currentPayload) { loadLatest(); loadHistory(); }
     if (deployment && typeof window.selectDeploymentCategory === 'function') window.selectDeploymentCategory();
+    if (mapDistribution && typeof window.activateSe2026Map === 'function') {
+      requestAnimationFrame(() => window.activateSe2026Map());
+    }
     if (targetRealization) {
       requestAnimationFrame(() => {
         if (typeof window.refreshSe2026WorkloadComparison === 'function') window.refreshSe2026WorkloadComparison();
@@ -334,7 +339,7 @@
     document.querySelector('.module-navigation')?.addEventListener('click',event=>{
       const tab=event.target.closest('.module-tab');
       if(!tab)return;
-      const routes={menuMonitoring:'monitoring',menuTargetRealization:'target-realization',menuBusinessPresence:'business',menuDeployment:'deployment'};
+      const routes={menuMonitoring:'monitoring',menuTargetRealization:'target-realization',menuBusinessPresence:'business',menuDeployment:'deployment',menuMapDistribution:'map'};
       const route=routes[tab.id];
       if(route)switchModule(route);
     });

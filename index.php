@@ -2242,6 +2242,7 @@
         }
 
 </style>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
 
 </head>
 
@@ -2297,6 +2298,9 @@
             </button>
             <button class="module-tab" id="menuTargetRealization" type="button" role="tab" aria-selected="false" aria-controls="targetRealizationModule">
                 <i class="bi bi-bullseye"></i><span>Target dan Realisasi</span>
+            </button>
+            <button class="module-tab" id="menuMapDistribution" type="button" role="tab" aria-selected="false" aria-controls="mapDistributionModule">
+                <i class="bi bi-map-fill"></i><span>Peta Sebaran Pendataan</span>
             </button>
         </nav>
     </div>
@@ -2766,6 +2770,8 @@
         .container-dashboard:has(+ #deploymentModule:not(.d-none)) {
             display:none !important;
         }
+        .container-dashboard:has(+ #deploymentModule.d-none + #mapDistributionModule:not(.d-none)) { display:none !important; }
+        #mapDistributionModule:not(.d-none) { margin-top:0; }
         #deploymentModule:not(.d-none) {
             margin:0 !important;
             padding-top:10px !important;
@@ -3024,6 +3030,20 @@
             border-color:var(--border) !important;
         }
 
+
+/* v98: SE2026 interactive Sub-SLS choropleth map */
+.map-distribution-module{padding:10px clamp(10px,1.2vw,18px) 24px;min-width:0}
+.map-kpi-card,.map-filter-card,.map-panel-card{border:1px solid var(--bs-border-color);border-radius:14px;background:var(--bs-card-bg, var(--bs-body-bg));color:var(--bs-body-color)}
+.map-kpi-card{padding:14px 16px;display:flex;flex-direction:column;gap:5px;min-height:88px}.map-kpi-card span{font-size:.78rem;color:var(--bs-secondary-color)}.map-kpi-card strong{font-size:1.55rem;line-height:1.2;font-weight:800;font-variant-numeric:tabular-nums}
+.map-filter-card{padding:13px 15px}.map-filter-card .form-label{margin-bottom:5px;color:var(--bs-secondary-color)}
+.map-panel-card{overflow:hidden;min-width:0}.map-panel-heading{min-height:48px;padding:12px 15px;border-bottom:1px solid var(--bs-border-color);display:flex;align-items:center;justify-content:space-between;gap:10px}
+#se2026LeafletMap{width:100%;height:min(68vh,720px);min-height:470px;background:var(--bs-tertiary-bg);z-index:1}
+.se2026-osm-dark{filter:invert(1) hue-rotate(180deg) brightness(.82) contrast(.9)}
+.se2026-osm-light{filter:none}
+.map-legend{display:flex;flex-direction:row;flex-wrap:nowrap;align-items:center;gap:12px 18px;padding:11px 14px;border-top:1px solid var(--bs-border-color);font-size:.76rem;line-height:1.2;color:var(--bs-secondary-color);overflow-x:auto;white-space:nowrap}.map-legend>span{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:flex-start;gap:6px;min-height:14px;line-height:14px}.map-legend-dot{display:block;flex:0 0 9px;width:9px;height:9px;min-width:9px;min-height:9px;padding:0;margin:0;border:0;border-radius:3px;box-sizing:border-box;vertical-align:middle}.map-legend-dot.complete{background:#16865b}.map-legend-dot.status-progress{background:#eaaa08}.map-legend-dot.none{background:#64748b}.map-legend-dot.unmatched{background:#cbd5e1;border:1px solid #94a3b8}
+.map-detail-content{padding:15px}.map-empty-state{min-height:300px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:9px;color:var(--bs-secondary-color);padding:24px}.map-empty-state i{font-size:2rem;color:var(--bs-primary)}.map-empty-state strong{color:var(--bs-body-color)}.map-empty-state span{font-size:.82rem;max-width:260px}
+.map-detail-title{font-size:1.15rem;font-weight:800;margin:0}.map-detail-subtitle{font-size:.8rem;color:var(--bs-secondary-color)}.map-detail-id{font-size:.76rem;font-family:ui-monospace,monospace;overflow-wrap:anywhere;color:var(--bs-secondary-color)}.map-detail-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:15px 0}.map-detail-stat{padding:11px;border:1px solid var(--bs-border-color);border-radius:10px}.map-detail-stat span{display:block;font-size:.72rem;color:var(--bs-secondary-color)}.map-detail-stat strong{font-size:1.25rem;font-weight:800;font-variant-numeric:tabular-nums}.map-detail-progress{height:9px;border-radius:99px;background:var(--bs-tertiary-bg);overflow:hidden}.map-detail-progress>span{display:block;height:100%;border-radius:99px;background:#3ecf8e}.map-detail-table{width:100%;font-size:.8rem;border-collapse:collapse;margin-top:12px}.map-detail-table th,.map-detail-table td{padding:8px 4px;border-bottom:1px solid var(--bs-border-color)}.map-detail-table th{color:var(--bs-secondary-color);font-weight:600}.map-status-pill{display:inline-flex;padding:4px 9px;border-radius:99px;font-size:.72rem;font-weight:700}.map-status-pill.complete{background:rgba(22,134,91,.14);color:#16865b}.map-status-pill.progress{background:rgba(234,170,8,.15);color:#b77900}.map-status-pill.none{background:rgba(100,116,139,.15);color:#64748b}.map-status-pill.unmatched{background:rgba(148,163,184,.18);color:var(--bs-secondary-color)}.leaflet-tooltip.map-hover-tooltip{border:1px solid var(--bs-border-color);border-radius:9px;box-shadow:0 8px 24px rgba(0,0,0,.18);padding:9px 11px;color:#0f172a}.leaflet-tooltip.map-hover-tooltip:before{display:none}.map-tooltip-title{font-weight:800;margin-bottom:3px}.map-tooltip-meta{font-size:11px;color:#64748b}.leaflet-container{font:inherit}.leaflet-control-attribution{font-size:9px!important}
+@media(max-width:767.98px){.map-distribution-module{padding:8px 10px 18px}.map-kpi-card{padding:11px;min-height:78px}.map-kpi-card strong{font-size:1.3rem}#se2026LeafletMap{height:58vh;min-height:390px}.map-detail-content{min-height:230px}.map-legend{gap:9px 12px;font-size:.7rem}}
 </style>
             <div class="chart-card mt-3 mb-4"><div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2"><div class="chart-title m-0">Rekapitulasi Assignment & Petugas per Sub-SLS</div><button class="btn btn-sm btn-success" id="btnBusinessExport"><i class="bi bi-file-earmark-excel me-1"></i>Export Excel</button></div><div class="small text-secondary mb-3">Satu baris untuk setiap assignment pada file Excel. Nama PPL dan PML dicocokkan otomatis berdasarkan ID Sub-SLS (regionCode). URL membuka assignment di FASIH.</div><div id="businessRegionTable" class="bp-data-table"></div></div>
         </section>
@@ -3115,6 +3135,33 @@
             </div>
         </section>
 
+        <section id="mapDistributionModule" class="d-none map-distribution-module">
+            <div class="map-page-heading d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+                <div><h3 class="mb-1"><i class="bi bi-map-fill text-primary me-2"></i>Peta Sebaran Pendataan</h3><div class="text-secondary small" id="mapSnapshotInfo">PES SE2026 · Memuat snapshot terbaru...</div></div>
+                <div class="d-flex gap-2"><button class="btn btn-outline-secondary btn-sm" id="btnMapReset"><i class="bi bi-arrows-fullscreen me-1"></i>Reset Peta</button><button class="btn btn-primary btn-sm" id="btnMapRefresh"><i class="bi bi-arrow-clockwise me-1"></i>Refresh Peta</button></div>
+            </div>
+            <div class="row g-3 mb-3 map-kpi-grid">
+                <div class="col-6 col-xl-3"><div class="map-kpi-card"><span>Total Sub-SLS</span><strong id="mapKpiTotal">936</strong></div></div>
+                <div class="col-6 col-xl-3"><div class="map-kpi-card"><span>Target tercapai</span><strong class="text-success" id="mapKpiComplete">0</strong></div></div>
+                <div class="col-6 col-xl-3"><div class="map-kpi-card"><span>Dalam proses</span><strong class="text-warning" id="mapKpiProgress">0</strong></div></div>
+                <div class="col-6 col-xl-3"><div class="map-kpi-card"><span>Belum / tanpa data</span><strong id="mapKpiNoProgress">0</strong></div></div>
+            </div>
+            <div class="map-filter-card mb-3">
+                <div class="row g-2 align-items-end">
+                    <div class="col-12 col-md-6 col-xl-3"><label class="form-label small" for="mapDistrictFilter">Kecamatan</label><select id="mapDistrictFilter" class="form-select form-select-sm"><option value="">Semua Kecamatan</option></select></div>
+                    <div class="col-12 col-md-6 col-xl-3"><label class="form-label small" for="mapVillageFilter">Kelurahan</label><select id="mapVillageFilter" class="form-select form-select-sm"><option value="">Semua Kelurahan</option></select></div>
+                    <div class="col-12 col-md-6 col-xl-2"><label class="form-label small" for="mapIdFilter">ID Sub-SLS</label><select id="mapIdFilter" class="form-select form-select-sm"><option value="">Semua ID Sub-SLS</option></select></div>
+                    <div class="col-12 col-md-6 col-xl-2"><label class="form-label small" for="mapStatusFilter">Status Pendataan</label><select id="mapStatusFilter" class="form-select form-select-sm"><option value="">Semua Status</option><option value="complete">Target tercapai</option><option value="progress">Dalam proses</option><option value="none">Belum didata</option><option value="unmatched">Tidak ada data</option></select></div>
+                    <div class="col-12 col-xl-2"><label class="form-label small" for="mapSearch">Cari Sub-SLS</label><input id="mapSearch" class="form-control form-control-sm" type="search" placeholder="Nama SLS..."></div>
+                </div>
+            </div>
+            <div class="row g-3 align-items-stretch">
+                <div class="col-12 col-xl-8"><div class="map-panel-card h-100"><div class="map-panel-heading"><strong><i class="bi bi-geo-alt me-1"></i> Sebaran Status per Sub-SLS</strong><span class="small text-secondary" id="mapFeatureCount">936 poligon</span></div><div id="se2026LeafletMap" role="application" aria-label="Peta interaktif sebaran pendataan Sub-SLS"></div><div class="map-legend"><span><i class="map-legend-dot complete"></i>Target tercapai</span><span><i class="map-legend-dot status-progress"></i>Dalam proses</span><span><i class="map-legend-dot none"></i>Belum didata</span><span><i class="map-legend-dot unmatched"></i>Tidak ada data</span></div></div></div>
+                <div class="col-12 col-xl-4"><aside class="map-panel-card map-detail-panel h-100" id="mapDetailPanel"><div class="map-panel-heading"><strong><i class="bi bi-info-circle me-1"></i>Detail Wilayah</strong><span class="small text-secondary">Sub-SLS</span></div><div id="mapDetailContent" class="map-detail-content"><div class="map-empty-state"><i class="bi bi-cursor"></i><strong>Pilih poligon pada peta</strong><span>Arahkan kursor untuk melihat ringkasan, lalu klik poligon untuk mengunci detail wilayah.</span></div></div></aside></div>
+            </div>
+            <div class="small text-secondary mt-2" id="mapDataNote">Status peta dihitung dari snapshot Deployment terbaru. Wilayah tanpa pasangan ID Sub-SLS ditampilkan terpisah.</div>
+        </section>
+
             <script>
                 (() => {
                     const header = document.querySelector('.header');
@@ -3130,6 +3177,7 @@
             <!-- SheetJS -->
             <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
             <script src="https://unpkg.com/tabulator-tables@6.3.0/dist/js/tabulator.min.js"></script>
+            <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 
             <!-- JS -->
             <script src="js/master_name.js"></script>
@@ -3142,8 +3190,9 @@
             <script src="js/app.js?v=87"></script>
             <script src="js/se2026_workload.js?v=87"></script>
             <script src="js/se2026_deployment_officers.js"></script>
-            <script src="js/business/business_app.js?v=87"></script>
+            <script src="js/business/business_app.js?v=96"></script>
             <script src="js/deployment_officers.js"></script>
+            <script src="js/se2026_map.js?v=98"></script>
 
 </body>
 

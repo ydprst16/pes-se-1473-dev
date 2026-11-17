@@ -5,6 +5,7 @@ if(file_exists(__DIR__.'/config.local.php')) require_once __DIR__.'/config.local
 require_once __DIR__.'/lib_security.php';
 date_default_timezone_set('Asia/Jakarta'); header('Content-Type: application/json; charset=utf-8'); header('Cache-Control: no-store');
 $env=sec_sb_env(); $prefix='deployment/';
+if (empty($env['url']) || empty($env['key'])) dep_fail('Supabase belum dikonfigurasi. Buat api/config.local.php dari api/config.local.example.php dan isi SUPABASE_URL serta SUPABASE_SERVICE_KEY.',503);
 function dep_fail($m,$c=400){http_response_code($c);echo json_encode(['status'=>'error','message'=>$m],JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);exit;}
 function dep_req($method,$path,$headers=[],$body=null){$r=sec_sb_request($method,$path,$headers,$body);return ['code'=>$r['status_code'],'body'=>$r['body'],'error'=>$r['error']];}
 function dep_upload($path,$body){$e=sec_sb_env();return dep_req('POST',"/object/{$e['bucket']}/".$path,['Content-Type: application/json','x-upsert: true'],$body);}
@@ -29,7 +30,7 @@ try {
   sec_audit_write(['action'=>'deployment_upload','date'=>$date,'sources'=>$data['sources'],'ssls'=>count($clean),'status'=>'success','error'=>null]);
   echo json_encode(['status'=>'ok','date'=>$date,'totalUniqueSsls'=>count($clean),'latestUpdated'=>$latestUpdated,'latestDate'=>$latestUpdated?$date:$latestDate]); exit;
  }
- if($action==='latest'||$action==='get'){$date=$_GET['date']??''; if($action==='get'&&!preg_match('/^\d{4}-\d{2}-\d{2}$/',$date))dep_fail('Tanggal tidak valid.');$r=dep_download($prefix.($action==='latest'?'latest.json':'history/'.$date.'.json'));if($r['error']||$r['code']!==200)dep_fail('Snapshot deployment tidak ditemukan.',404);echo $r['body'];exit;}
+ if($action==='latest'||$action==='get'){$date=$_GET['date']??''; if($action==='get'&&!preg_match('/^\d{4}-\d{2}-\d{2}$/',$date))dep_fail('Tanggal tidak valid.');$r=dep_download($prefix.($action==='latest'?'latest.json':'history/'.$date.'.json'));if($r['error']) dep_fail('Gagal menghubungi Supabase: '.$r['error'],502); if($r['code']===404) dep_fail('Snapshot deployment terbaru belum ada di Storage: deployment/latest.json.',404); if($r['code']!==200) dep_fail('Supabase Storage mengembalikan HTTP '.$r['code'].'. '.$r['body'],502);echo $r['body'];exit;}
  if($action==='list'){$r=dep_list($prefix.'history/');if($r['error']||$r['code']>=400)dep_fail('Gagal mengambil histori deployment.',502);$files=json_decode($r['body'],true)?:[];$items=[];foreach($files as $f)if(preg_match('/^(\d{4}-\d{2}-\d{2})\.json$/',$f['name']??'',$m))$items[]=['date'=>$m[1],'updated_at'=>$f['updated_at']??($f['created_at']??null)];usort($items,fn($a,$b)=>strcmp($b['date'],$a['date']));echo json_encode(['status'=>'ok','items'=>$items]);exit;}
  dep_fail('Action tidak dikenal.',404);
 } catch(Throwable $e){sec_audit_write(['action'=>'deployment_api','status'=>'failed','error'=>$e->getMessage()]);dep_fail($e->getMessage(),500);}
